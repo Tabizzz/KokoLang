@@ -1,0 +1,46 @@
+.func sum 
+{
+	.locals 3
+	.stack 2
+	// iterations
+	push 1000000
+	stvar 0
+	// total
+	push 0.0
+	stvar 1
+	// i
+	push 0
+	stvar 2
+
+	comp:
+	ldvar 2
+	ldvar 0
+	oplt
+	goif end
+
+	ldvar 1
+	ldvar 2
+	add
+	stvar 1
+
+	// i++;
+	ldvar 2
+	push 1
+	add
+	stvar 2
+	go comp
+
+	end:
+	ldvar 1
+	call trace
+	ret
+	stackc
+}
+
+.func main
+{
+	.locals 0
+	push "Hello world"
+	call trace
+	call sum
+}
