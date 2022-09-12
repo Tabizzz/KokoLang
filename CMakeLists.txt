@@ -34,11 +34,13 @@ antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURC
 # add our project source directories
 include_directories(${PROJECT_SOURCE_DIR}
 					 ${PROJECT_SOURCE_DIR}/libs/
+					 ${PROJECT_SOURCE_DIR}/Interpreter/
+					 ${PROJECT_SOURCE_DIR}/Runtime/
   )
   
 
 add_executable(KokoLang "KokoLang.cpp"
-				${ANTLR_KokoLangParser_CXX_OUTPUTS})
+				${ANTLR_KokoLangParser_CXX_OUTPUTS} "klapi.c" "Interpreter/ProgramVisitor.cpp")
 
 # link required libraries
 target_link_libraries(KokoLang antlr4_static)
