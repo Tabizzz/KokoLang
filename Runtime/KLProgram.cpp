@@ -9,7 +9,7 @@ void KLProgram::AddFunctions(vector<KLFunction> functions)
 {
 }
 
-int KLProgram::Run(vector<KLInstruction> program)
+int KLProgram::Run(KLProgram* program)
 {
 	return 0;
 }

@@ -23,5 +23,5 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 {
 	auto name = ctx->Id()->getText();
 	cout << "Find function with name: " << name << endl;
-	return NULL;
+	return KLFunction();
 }

@@ -11,5 +11,5 @@ class KLProgram
 public:
 	vector<KLInstruction> Build();
 	void AddFunctions(vector<KLFunction> functions);
-	static int Run(vector<KLInstruction> program);
+	static int Run(KLProgram* program);
 };

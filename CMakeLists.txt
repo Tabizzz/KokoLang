@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 # required if linking to static library
 add_definitions(-DANTLR4CPP_STATIC)
 
+set(ANTLR4_ZIP_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/antlr/antlr4-master.zip)
+
 # using /MD flag for antlr4_runtime (for Visual C++ compilers only)
 set(ANTLR4_WITH_STATIC_CRT OFF)
 # add external build for antlrcpp
@@ -22,11 +24,6 @@ include_directories(${ANTLR4_INCLUDE_DIRS})
 set(ANTLR_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/tools/antlr-4.10.1-complete.jar)
 # add macros to generate ANTLR Cpp code from grammar
 find_package(ANTLR REQUIRED)
-
-# CMake commands copied by the CMake file for CImg
-
-# To use PKG_CHECK_MODULES to find some optional packages
-find_package(PkgConfig)
 
 # Call macro to add lexer and grammar to your build dependencies.
 antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/)

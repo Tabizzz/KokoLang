@@ -31,11 +31,11 @@ int main(int argc, const char* argv[])
 
 		ProgramVisitor visitor;
 
-		KLProgram program = any_cast<KLProgram>(visitor.visitProgram(tree));
+		KLProgram* program = any_cast<KLProgram*>(visitor.visitProgram(tree));
 
-		auto instructionList = program.Build();
+		auto instructionList = program->Build();
 
-		auto exit = KLProgram::Run(instructionList);
+		auto exit = KLProgram::Run(program);
 
 		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>(stop - start);
