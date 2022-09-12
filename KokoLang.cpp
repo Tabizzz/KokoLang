@@ -1,11 +1,7 @@
+#include "KokoLang.h"
 #include <iostream>
 #include <chrono>
 
-#include "antlr4-runtime.h"
-#include "libs/KokoLangLexer.h"
-#include "libs/KokoLangParser.h"
-#include "klapi.h"
-#include "Interpreter/ProgramVisitor.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -18,7 +14,7 @@ int main(int argc, const char* argv[])
 		bool time = false;
 		if (argc > 2)
 		{
-			if (argv[2] == "-t")
+			if (!strcmp("-t", argv[2]))
 			{
 				time = true;
 			}
@@ -35,16 +31,18 @@ int main(int argc, const char* argv[])
 
 		ProgramVisitor visitor;
 
-		auto program = visitor.visitProgram(tree);
+		KLProgram program = any_cast<KLProgram>(visitor.visitProgram(tree));
+
+		auto instructionList = program.Build();
+
+		auto exit = KLProgram::Run(instructionList);
 
 		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>(stop - start);
-		// To get the value of duration use the count()
-		// member function on the duration object
 		if(time)
 			cout << "program execution:" << duration.count()<< "ms" << endl;
 
-		return 0;
+		return exit;
 	}
 
 	return 1;
