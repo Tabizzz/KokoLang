@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 # required if linking to static library
 add_definitions(-DANTLR4CPP_STATIC)
 
-set(ANTLR4_ZIP_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/antlr/antlr4-master.zip)
+set(ANTLR4_ZIP_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/deps/antlr/antlr4-master.zip)
 
 # using /MD flag for antlr4_runtime (for Visual C++ compilers only)
 set(ANTLR4_WITH_STATIC_CRT OFF)
@@ -26,21 +26,36 @@ set(ANTLR_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/tools/antlr-4.10.1-complete.jar
 find_package(ANTLR REQUIRED)
 
 # Call macro to add lexer and grammar to your build dependencies.
-antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/)
+antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/lib/gen/)
 
 # add our project source directories
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/lib)
 
+set(include_files 
+	"src/include/KokoLang.h"
+	"src/include/klapi.h"
+	"src/include/Imports.h"
+	"src/include/Runtime/KLRuntime.h"
+	"src/include/Runtime/KLProgram.h"
+	"src/include/Runtime/KLFunction.h"
+	"src/include/Runtime/KLInstruction.h"
+	"src/lib/KokoLangInternal.h"
+	"src/lib/Interpreter/KLInterpreter.h"
+	"src/lib/Interpreter/ProgramVisitor.h")
+
+set(source_files 
+	"src/lib/klapi.cpp" 
+	"src/lib/Interpreter/ProgramVisitor.cpp"
+	"src/lib/RuntimeImpl/KLFunction.cpp"
+	"src/lib/RuntimeImpl/KLProgram.cpp")
 
 add_library(KokoLang SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
-			"klapi.cpp" 
-			"Interpreter/ProgramVisitor.cpp" 
-			"Runtime/KLFunction.cpp"
-			"Runtime/KLProgram.cpp")
+			${source_files}
+			${include_files})
 
-add_executable(KokoLangTest "KokoLang.cpp")
-
+add_executable(KokoLangTest "src/kokolang/KokoLang.cpp")
 
 # link required libraries
 target_link_libraries(KokoLang antlr4_static)
