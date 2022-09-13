@@ -14,13 +14,18 @@ KLAPI KLProgram* klCreateProgramFromFile(const char* filename)
 	KokoLangParser parser(&tokens);
 
 	auto tree = parser.program();
+	if (parser.getNumberOfSyntaxErrors() > 0) return nullptr;
 
 	ProgramVisitor visitor;
-
 	return any_cast<KLProgram*>(visitor.visitProgram(tree));
 }
 
 KLAPI void DestroyAny(void* obj)
 {
 	delete obj;
+}
+
+KLAPI void DestroyArray(void* obj)
+{
+	delete[] obj;
 }

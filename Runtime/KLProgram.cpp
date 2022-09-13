@@ -1,15 +1,22 @@
 #include "KLRuntime.h"
 
-vector<KLInstruction> KLProgram::Build()
-{
-	return vector<KLInstruction>();
-}
-
-void KLProgram::AddFunctions(vector<KLFunction> functions)
+void KLProgram::Build()
 {
 }
 
-int KLProgram::Run(KLProgram* program)
+void KLProgram::AddFunctions(const vector<KLFunction*>& functions) const
 {
-	return 0;
+	for each (KLFunction* function in functions)
+	{
+		cout << "Adding function " << function->getName() << endl;
+	}
+}
+
+const int KLProgram::Run(const KLProgram* program)
+{
+	if (program)
+	{
+		return 0;
+	}
+	return 1;
 }

@@ -23,14 +23,14 @@ int main(int argc, const char* argv[])
 
 		KLProgram* program = klCreateProgramFromFile(argv[1]);
 
-		auto instructionList = program->Build();
+		program->Build();
 
 		auto exit = KLProgram::Run(program);
 
 		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>(stop - start);
-		if(time)
-			cout << "program execution:" << duration.count()<< "ms" << endl;
+		if (time)
+			cout << "program execution:" << duration.count() << "ms" << endl;
 
 		return exit;
 	}

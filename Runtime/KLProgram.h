@@ -9,7 +9,9 @@ using namespace std;
 class CPPAPI KLProgram
 {
 public:
-	vector<KLInstruction> Build();
-	void AddFunctions(vector<KLFunction> functions);
-	static int Run(KLProgram* program);
+	void Build();
+	void AddFunctions(const vector<KLFunction*>& functions) const;
+	static const int Run(const KLProgram* program);
+private:
+	bool build;
 };

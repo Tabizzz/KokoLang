@@ -36,6 +36,7 @@ add_library(KokoLang SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
 			"klapi.cpp" 
 			"Interpreter/ProgramVisitor.cpp" 
+			"Runtime/KLFunction.cpp"
 			"Runtime/KLProgram.cpp")
 
 add_executable(KokoLangTest "KokoLang.cpp")
