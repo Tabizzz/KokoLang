@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class KLInstruction
+class CPPAPI KLInstruction
 {
 
 };

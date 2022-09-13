@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class KLFunction
+class CPPAPI KLFunction
 {
 	
 };

@@ -1,5 +1,4 @@
-#include "KLInterpreter.h"
-#include "Runtime/KLRuntime.h"
+#include "KokoLangInternal.h"
 
 using namespace std;
 

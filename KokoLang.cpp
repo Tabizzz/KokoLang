@@ -20,18 +20,8 @@ int main(int argc, const char* argv[])
 			}
 		}
 		auto start = high_resolution_clock::now();
-		std::ifstream stream;
-		stream.open(argv[1]);
-		ANTLRInputStream input(stream);
-		KokoLangLexer lexer(&input);
-		CommonTokenStream tokens(&lexer);
-		KokoLangParser parser(&tokens);
 
-		auto tree = parser.program();
-
-		ProgramVisitor visitor;
-
-		KLProgram* program = any_cast<KLProgram*>(visitor.visitProgram(tree));
+		KLProgram* program = klCreateProgramFromFile(argv[1]);
 
 		auto instructionList = program->Build();
 

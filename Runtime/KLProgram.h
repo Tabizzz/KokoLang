@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class KLProgram
+class CPPAPI KLProgram
 {
 public:
 	vector<KLInstruction> Build();

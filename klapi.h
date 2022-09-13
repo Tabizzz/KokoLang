@@ -1,4 +1,4 @@
-
+#pragma once
 #ifndef KLAPI_H
 #define KLAPI_H
 #if defined _WIN32 || defined __CYGWIN__
@@ -26,11 +26,11 @@
 #define KLAPI EXTERN API
 
 
+#include "Runtime/KLRuntime.h"
 
+KLAPI KLProgram* klCreateProgramFromFile(const char* filename);
 
-
-
-
+KLAPI void DestroyAny(void* obj);
 
 #endif // !KLAPI_H
 

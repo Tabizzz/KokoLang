@@ -2,7 +2,7 @@
 
 #include "libs/KokoLangBaseVisitor.h"
 
-class  ProgramVisitor : KokoLangBaseVisitor 
+class ProgramVisitor : KokoLangBaseVisitor
 {
 public:
 	antlrcpp::Any visitProgram(KokoLangParser::ProgramContext* ctx);
