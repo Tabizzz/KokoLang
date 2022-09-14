@@ -34,7 +34,6 @@
 	ldvar 1
 	call trace
 	ret
-	stackc
 }
 
 .func main

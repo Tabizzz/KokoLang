@@ -42,13 +42,13 @@ set(include_files
 	"src/include/Runtime/KLInstruction.h"
 	"src/lib/KokoLangInternal.h"
 	"src/lib/Interpreter/KLInterpreter.h"
-	"src/lib/Interpreter/ProgramVisitor.h" src/include/Runtime/KLObject.h src/include/Runtime/KLTypes.h)
+	"src/lib/Interpreter/ProgramVisitor.h" src/include/Runtime/KLObject.h src/include/Runtime/KLTypes.h src/include/Runtime/OpCodes.h)
 
 set(source_files 
 	"src/lib/klapi.cpp" 
 	"src/lib/Interpreter/ProgramVisitor.cpp"
 	"src/lib/RuntimeImpl/KLFunction.cpp"
-	"src/lib/RuntimeImpl/KLProgram.cpp")
+	"src/lib/RuntimeImpl/KLProgram.cpp" src/lib/RuntimeImpl/KLInstruction.cpp src/lib/klapi_types.cpp)
 
 add_library(KokoLang SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}

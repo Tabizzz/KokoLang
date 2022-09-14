@@ -1,4 +1,6 @@
 ﻿#include "KokoLangInternal.h"
+#include "ProgramVisitor.h"
+
 
 using namespace std;
 
@@ -34,8 +36,24 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 	}
 	auto function = new KLFunction(name, locals, stack);
 	auto sentences = body->sentence();
-
+	auto sentencecount = sentences.size();
+	vector<KLInstruction*> instructions;
+	for (int i = 0; i < sentencecount; ++i) {
+		instructions.push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
+	}
 
 	cout << "Find function with name: " << name << " with " << locals << " locals" << endl;
 	return function;
+}
+
+any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
+	KLInstruction* instruction;
+	auto opcodectx = ctx->opcode();
+	string name;
+	if(!opcodectx)
+	{
+		name = ctx->label()->Id()->getText();
+		
+	}
+	return instruction;
 }

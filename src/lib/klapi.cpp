@@ -21,7 +21,7 @@ KLAPI KLProgram* klCreateProgramFromFile(const char* filename)
 	return any_cast<KLProgram*>(visitor.visitProgram(tree));
 }
 
-KLProgram* klCreateProgramFromString(const char *code)
+KLAPI KLProgram* klCreateProgramFromString(const char *code)
 {
 	ANTLRInputStream input(code);
 	KokoLangLexer lexer(&input);

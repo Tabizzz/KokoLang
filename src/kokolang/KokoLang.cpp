@@ -22,7 +22,6 @@ int main(int argc, const char* argv[])
 		auto start = high_resolution_clock::now();
 
 		KLProgram* program = klCreateProgramFromFile(argv[1]);
-
 		program->Build();
 
 		auto exit = KLProgram::Run(program);
