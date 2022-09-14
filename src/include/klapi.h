@@ -30,6 +30,8 @@
 
 KLAPI KLProgram* klCreateProgramFromFile(const char* filename);
 
+KLAPI KLProgram* klCreateProgramFromString(const char* code);
+
 KLAPI void DestroyAny(void* obj);
 
 KLAPI void DestroyArray(void* obj);
