@@ -1,4 +1,4 @@
-#include "KokoLangInternal.h"
+﻿#include "KokoLangInternal.h"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+﻿cmake_minimum_required(VERSION 3.7)
 
 include(ExternalProject)
 
@@ -104,6 +104,7 @@ else()
       CMAKE_CACHE_ARGS
           -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
           -DWITH_STATIC_CRT:BOOL=${ANTLR4_WITH_STATIC_CRT}
+          -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
       INSTALL_COMMAND ""
       EXCLUDE_FROM_ALL 1)
 endif()

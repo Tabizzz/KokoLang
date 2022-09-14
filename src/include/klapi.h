@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef KLAPI_H
 #define KLAPI_H
 #if defined _WIN32 || defined __CYGWIN__

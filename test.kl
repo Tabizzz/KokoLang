@@ -1,4 +1,4 @@
-.func sum 
+﻿.func sum 
 {
 	.locals 3
 	.stack 2

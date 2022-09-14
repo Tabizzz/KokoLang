@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Imports.h"
 #include "antlr4-runtime.h"
 #include "klapi.h"

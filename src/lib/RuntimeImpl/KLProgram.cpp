@@ -1,4 +1,4 @@
-#include "Runtime/KLRuntime.h"
+﻿#include "Runtime/KLRuntime.h"
 
 void KLProgram::Build()
 {
@@ -6,7 +6,7 @@ void KLProgram::Build()
 
 void KLProgram::AddFunctions(const vector<KLFunction*>& functions) const
 {
-	for each (KLFunction* function in functions)
+	for (KLFunction* function : functions)
 	{
 		cout << "Adding function " << function->getName() << endl;
 	}

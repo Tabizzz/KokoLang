@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+﻿cmake_minimum_required(VERSION 3.7)
 
 project("Kokolang")
 
@@ -57,7 +57,9 @@ add_library(KokoLang SHARED
 
 add_executable(KokoLangTest "src/kokolang/KokoLang.cpp")
 
+
+find_package(Threads REQUIRED)
 # link required libraries
-target_link_libraries(KokoLang antlr4_static)
+target_link_libraries(KokoLang antlr4_static Threads::Threads)
 
 target_link_libraries(KokoLangTest KokoLang)

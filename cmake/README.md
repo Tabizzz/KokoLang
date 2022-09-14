@@ -1,4 +1,4 @@
-## Getting started with Antlr4Cpp
+﻿## Getting started with Antlr4Cpp
 
 Here is how you can use this external project to create the antlr4cpp demo to start your project off.
 

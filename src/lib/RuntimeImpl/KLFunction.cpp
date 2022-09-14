@@ -1,4 +1,4 @@
-#include "KokoLangInternal.h"
+﻿#include "KokoLangInternal.h"
 
 KLFunction::KLFunction(string name, int locals, int stack)
 {

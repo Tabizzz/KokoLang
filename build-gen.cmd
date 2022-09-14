@@ -1,4 +1,4 @@
-@setlocal
+﻿@setlocal
 @echo off
 
 set KOKOLANG_ROOT=%~dp0
