@@ -53,7 +53,59 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 	if(!opcodectx)
 	{
 		name = ctx->label()->Id()->getText();
-		
+		return new KLInstruction(name);
 	}
+	auto opcode = getOpcode(opcodectx);
+	auto operand = getOperand(opcodectx, opcode);
+
 	return instruction;
+}
+
+OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
+	auto code = pContext->Id()->getText();
+	// https://stackoverflow.com/a/16388594
+	static const std::map<std::string, OpCodes> optionStrings {
+			{ "noc", noc },
+			{ "go", go },
+			{ "push", push },
+			{ "stvar", stvar },
+			{ "ldvar", ldvar },
+			{ "oplt", oplt },
+			{ "goif", goif },
+			{ "add", add },
+			{ "ret", ret },
+			{ "call", call },
+			//...
+	};
+
+	auto itr = optionStrings.find(code);
+	if( itr != optionStrings.end() ) {
+		return itr->second;
+	}
+
+	throw std::invalid_argument( "invalid opcode in program" );
+}
+
+KlObject* ProgramVisitor::getOperand(KokoLangParser::OpcodeContext *pContext, OpCodes codes) {
+	switch (codes) {
+		case noc:
+		case add:
+		case ret:
+			break;
+		case oplt:
+			break;
+		case go:
+			break;
+		case push:
+			break;
+		case stvar:
+			break;
+		case ldvar:
+			break;
+		case goif:
+			break;
+		case call:
+			break;
+	}
+	return nullptr;
 }

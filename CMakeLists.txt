@@ -42,7 +42,7 @@ set(include_files
 	"src/include/Runtime/KLInstruction.h"
 	"src/lib/KokoLangInternal.h"
 	"src/lib/Interpreter/KLInterpreter.h"
-	"src/lib/Interpreter/ProgramVisitor.h" src/include/Runtime/KLObject.h src/include/Runtime/KLTypes.h src/include/Runtime/OpCodes.h)
+	"src/lib/Interpreter/ProgramVisitor.h" src/include/Runtime/KLObject.h src/include/Runtime/KLTypes.h src/include/Runtime/OpCodes.h src/include/klapi_types.h src/include/Runtime/KLCall.h)
 
 set(source_files 
 	"src/lib/klapi.cpp" 

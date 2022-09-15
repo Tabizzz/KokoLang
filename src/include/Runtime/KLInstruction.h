@@ -9,10 +9,11 @@ using namespace std;
 class CPPAPI KLInstruction
 {
 public:
-	KLInstruction();
+	explicit KLInstruction(string& name);
 	KLInstruction(OpCodes opcode, KlObject* operand);
 	~KLInstruction();
 
+	char* label;
 	OpCodes opcode;
 	KlObject* operand;
 };

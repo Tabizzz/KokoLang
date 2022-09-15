@@ -1,4 +1,4 @@
-﻿#include "Runtime/KLRuntime.h"
+﻿#include "KokoLangInternal.h"
 
 void KLProgram::Build()
 {
@@ -12,7 +12,7 @@ void KLProgram::AddFunctions(const vector<KLFunction*>& functions) const
 	}
 }
 
-const int KLProgram::Run(const KLProgram* program)
+int KLProgram::Run(const KLProgram* program)
 {
 	if (program)
 	{

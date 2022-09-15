@@ -1,11 +1,10 @@
 ﻿#include "KokoLang.h"
 #include <iostream>
 #include <chrono>
-
+#include <cstring>
 
 using namespace std;
 using namespace std::chrono;
-using namespace antlr4;
 
 int main(int argc, const char* argv[]) 
 {

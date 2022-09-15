@@ -22,8 +22,8 @@ typedef struct {
 
 typedef struct {
 	KLOBJECTHEAD
-	const char *value;
-	int size;
+	char* value;
+	size_t size;
 } kl_string;
 
 typedef struct {

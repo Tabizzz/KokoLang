@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Imports.h"
+#include "Runtime/KLObject.h"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-﻿.func sum 
+﻿.func sum
 {
 	.locals 3
 	.stack 2
@@ -11,7 +11,7 @@
 	// i
 	push 0
 	stvar 2
-
+	
 	comp:
 	ldvar 2
 	ldvar 0
