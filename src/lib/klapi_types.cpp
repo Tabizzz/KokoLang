@@ -1,6 +1,6 @@
 #include "KokoLangInternal.h"
 
-#define BUILTIN_TYPE(Name, str, base) static KlType Name = {.name = str, .size = sizeof(base),
+#define BUILTIN_TYPE(Name, str, base) static KlType Name = { str, 0, sizeof(base),
 
 void kint_initializer(KlObject* obj) {
 	auto ptr = KLCAST(kl_int, obj);
@@ -24,16 +24,16 @@ void kstring_initializer(KlObject* obj) {
 }
 
 BUILTIN_TYPE(kltype_int, "int", kl_int)
-	.initializer = kint_initializer
+	kint_initializer
 };
 BUILTIN_TYPE(kltype_float, "float", kl_float)
-	.initializer = kfloat_initializer
+	kfloat_initializer
 };
 BUILTIN_TYPE(kltype_string, "string", kl_string)
-	.initializer = kstring_initializer
+	kstring_initializer
 };
 BUILTIN_TYPE(kltype_bool, "bool", kl_bool)
-	.initializer = kbool_initializer
+	kbool_initializer
 };
 
 KLAPI KlType* klBType_Int() {

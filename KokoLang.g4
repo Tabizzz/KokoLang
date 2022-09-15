@@ -1,4 +1,4 @@
-﻿grammar KokoLang;
+grammar KokoLang;
 
 
 program: (function nlo)+;
