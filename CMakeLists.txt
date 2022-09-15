@@ -61,7 +61,13 @@ add_library(KokoLangLib SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
 			${source_files}
 			${include_files})
+add_library(KokoLangLibStatic STATIC
+		${ANTLR_KokoLangParser_CXX_OUTPUTS}
+		${source_files}
+		${include_files})
 set_target_properties(KokoLangLib PROPERTIES OUTPUT_NAME "kokolang")
+set_target_properties(KokoLangLibStatic PROPERTIES OUTPUT_NAME "kokolang-static")
+target_compile_definitions(KokoLangLibStatic PRIVATE KOKOLANG_STATIC)
 
 add_executable(KokoLangExe "src/kokolang/KokoLang.cpp")
 set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kokolang")
@@ -69,6 +75,7 @@ set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kokolang")
 find_package(Threads REQUIRED)
 # link required libraries
 target_link_libraries(KokoLangLib antlr4_static Threads::Threads)
+target_link_libraries(KokoLangLibStatic antlr4_static Threads::Threads)
 
 target_link_libraries(KokoLangExe KokoLangLib)
 

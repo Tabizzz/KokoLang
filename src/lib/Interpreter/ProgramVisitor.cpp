@@ -1,7 +1,6 @@
 ﻿#include "KokoLangInternal.h"
 #include "ProgramVisitor.h"
 
-
 using namespace std;
 
 any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
@@ -64,7 +63,7 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	auto code = pContext->Id()->getText();
 	// https://stackoverflow.com/a/16388594
-	static const std::map<std::string, OpCodes> optionStrings {
+	static const map<string, OpCodes> optionStrings {
 			{ "noc", noc },
 			{ "go", go },
 			{ "push", push },

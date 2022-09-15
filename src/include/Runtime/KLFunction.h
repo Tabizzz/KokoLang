@@ -11,7 +11,7 @@ public:
 	KLFunction(string name, int locals, int stack);
 	~KLFunction();
 
-	const string getName();
+	string getName();
 private:
 	string FunctionName;
 };

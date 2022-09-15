@@ -1,15 +1,15 @@
-﻿#include "KokoLangInternal.h"
+﻿#include <utility>
+
+#include "KokoLangInternal.h"
 
 KLFunction::KLFunction(string name, int locals, int stack)
 {
-	FunctionName = name;
+	FunctionName = std::move(name);
 }
 
-KLFunction::~KLFunction()
-{
-}
+KLFunction::~KLFunction() = default;
 
-const string KLFunction::getName()
+string KLFunction::getName()
 {
 	return FunctionName;
 }

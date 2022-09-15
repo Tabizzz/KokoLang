@@ -11,6 +11,8 @@
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef KokoLangLib_EXPORTS
 #define EXPORT __declspec(dllexport)
+#elif defined KOKOLANG_STATIC
+#define EXPORT 
 #else
 #define EXPORT __declspec(dllimport)
 #endif
