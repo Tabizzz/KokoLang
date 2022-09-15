@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Imports.h"
+#include "KLImports.h"
 #include "Runtime/OpCodes.h"
 #include "Runtime/KLObject.h"
 

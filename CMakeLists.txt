@@ -35,31 +35,41 @@ include_directories(${PROJECT_SOURCE_DIR}/src/lib)
 set(include_files 
 	"src/include/KokoLang.h"
 	"src/include/klapi.h"
-	"src/include/Imports.h"
+	"src/include/KLImports.h"
 	"src/include/Runtime/KLRuntime.h"
 	"src/include/Runtime/KLProgram.h"
 	"src/include/Runtime/KLFunction.h"
 	"src/include/Runtime/KLInstruction.h"
 	"src/lib/KokoLangInternal.h"
 	"src/lib/Interpreter/KLInterpreter.h"
-	"src/lib/Interpreter/ProgramVisitor.h" src/include/Runtime/KLObject.h src/include/Runtime/KLTypes.h src/include/Runtime/OpCodes.h src/include/klapi_types.h src/include/Runtime/KLCall.h)
+	"src/lib/Interpreter/ProgramVisitor.h"
+	src/include/Runtime/KLObject.h
+	src/include/Runtime/KLTypes.h
+	src/include/Runtime/OpCodes.h
+	src/include/klapi_types.h
+	src/include/Runtime/KLCall.h)
 
 set(source_files 
 	"src/lib/klapi.cpp" 
 	"src/lib/Interpreter/ProgramVisitor.cpp"
 	"src/lib/RuntimeImpl/KLFunction.cpp"
-	"src/lib/RuntimeImpl/KLProgram.cpp" src/lib/RuntimeImpl/KLInstruction.cpp src/lib/klapi_types.cpp)
+	"src/lib/RuntimeImpl/KLProgram.cpp"
+	src/lib/RuntimeImpl/KLInstruction.cpp
+	src/lib/klapi_types.cpp)
 
-add_library(KokoLang SHARED
+add_library(KokoLangLib SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
 			${source_files}
 			${include_files})
+set_target_properties(KokoLangLib PROPERTIES OUTPUT_NAME "kokolang")
 
-add_executable(KokoLangTest "src/kokolang/KokoLang.cpp")
-
+add_executable(KokoLangExe "src/kokolang/KokoLang.cpp")
+set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kokolang")
 
 find_package(Threads REQUIRED)
 # link required libraries
-target_link_libraries(KokoLang antlr4_static Threads::Threads)
+target_link_libraries(KokoLangLib antlr4_static Threads::Threads)
 
-target_link_libraries(KokoLangTest KokoLang)
+target_link_libraries(KokoLangExe KokoLangLib)
+
+

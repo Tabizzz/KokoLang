@@ -1,5 +1,8 @@
-﻿#pragma once
-#include "Imports.h"
+﻿/*
+ * This header import all the other headers in kokolang
+ */
+#pragma once
+#include "KLImports.h"
 #include "klapi.h"
 #include "klapi_types.h"
 #include "Runtime/KLRuntime.h"
