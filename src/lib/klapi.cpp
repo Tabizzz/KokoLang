@@ -2,7 +2,6 @@
 #include "KokoLangInternal.h"
 #include "klapi.h"
 
-
 using namespace antlr4;
 
 KLAPI KLProgram* klCreateProgramFromFile(const char* filename)
@@ -35,12 +34,6 @@ KLAPI KLProgram* klCreateProgramFromString(const char *code)
 	return any_cast<KLProgram*>(visitor.visitProgram(tree));
 }
 
-KLAPI void DestroyAny(void* obj)
-{
+void klDestroyProgram(KLProgram* obj) {
 	delete obj;
-}
-
-KLAPI void DestroyArray(void* obj)
-{
-	delete[] obj;
 }

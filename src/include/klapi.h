@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+
 #ifndef KLAPI_H
 #define KLAPI_H
 #if defined _WIN32 || defined __CYGWIN__
@@ -31,9 +33,7 @@ KLAPI KLProgram* klCreateProgramFromFile(const char* filename);
 
 KLAPI KLProgram* klCreateProgramFromString(const char* code);
 
-KLAPI void DestroyAny(void* obj);
-
-KLAPI void DestroyArray(void* obj);
+KLAPI void klDestroyProgram(KLProgram* obj);
 
 #endif // !KLAPI_H
 
