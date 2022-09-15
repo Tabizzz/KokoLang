@@ -9,15 +9,26 @@
 #include <vector>
 
 #if defined _WIN32 || defined __CYGWIN__
-#ifdef KLNO_EXPORT
-#define CPPAPI
+#ifdef KokoLangLib_EXPORTS
+#define EXPORT __declspec(dllexport)
 #else
-#define CPPAPI __declspec(dllexport)
+#define EXPORT __declspec(dllimport)
 #endif
 #else
 #ifdef __GNUC__
-#define CPPAPI  __attribute__((__visibility__("default")))
+#define EXPORT  __attribute__((__visibility__("default")))
 #else
-#define CPPAPI
+#define EXPORT
 #endif
 #endif
+
+#if defined __cplusplus
+#define EXTERN extern "C"
+#else
+#include <stdarg.h>
+#include <stdbool.h>
+#define EXTERN extern
+#endif
+
+#define CAPI EXTERN EXPORT
+#define CPPAPI EXPORT

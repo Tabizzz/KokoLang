@@ -1,39 +1,17 @@
 ﻿#pragma once
 
+#include "KLImports.h"
 
-#ifndef KLAPI_H
-#define KLAPI_H
-#if defined _WIN32 || defined __CYGWIN__
-#ifdef KLNO_EXPORT
-#define API
-#else
-#define API __declspec(dllexport)
-#endif
-#else
-#ifdef __GNUC__
-#define API  __attribute__((__visibility__("default")))
-#else
-#define API
-#endif
-#endif
-
-#if defined __cplusplus
-#define EXTERN extern "C"
-#else
-#include <stdarg.h>
-#include <stdbool.h>
-#define EXTERN extern
-#endif
-
-#define KLAPI EXTERN API
+#ifndef CAPI_H
+#define CAPI_H
 
 #include "Runtime/KLRuntime.h"
 
-KLAPI KLProgram* klCreateProgramFromFile(const char* filename);
+CAPI KLProgram* klCreateProgramFromFile(const char* filename);
 
-KLAPI KLProgram* klCreateProgramFromString(const char* code);
+CAPI KLProgram* klCreateProgramFromString(const char* code);
 
-KLAPI void klDestroyProgram(KLProgram* obj);
+CAPI void klDestroyProgram(KLProgram* obj);
 
-#endif // !KLAPI_H
+#endif // !CAPI_H
 

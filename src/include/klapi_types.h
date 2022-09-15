@@ -3,14 +3,14 @@
 
 #define KLCAST(x,y) (x*)y;
 
-KLAPI KlType* klBType_Int();
+CAPI KlType* klBType_Int();
 
-KLAPI KlType* klBType_Float();
+CAPI KlType* klBType_Float();
 
-KLAPI KlType* klBType_Bool();
+CAPI KlType* klBType_Bool();
 
-KLAPI KlType* klBType_String();
+CAPI KlType* klBType_String();
 
-KLAPI KlObject* klNew(KlType* type);
+CAPI KlObject* klNew(KlType* type);
 
-KLAPI void klDeref(KlObject* object);
+CAPI void klDeref(KlObject* object);

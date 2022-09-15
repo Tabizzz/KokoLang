@@ -1,10 +1,9 @@
 ﻿
 #include "KokoLangInternal.h"
-#include "klapi.h"
 
 using namespace antlr4;
 
-KLAPI KLProgram* klCreateProgramFromFile(const char* filename)
+CAPI KLProgram* klCreateProgramFromFile(const char* filename)
 {
 	std::ifstream stream;
 	stream.open(filename);
@@ -20,7 +19,7 @@ KLAPI KLProgram* klCreateProgramFromFile(const char* filename)
 	return any_cast<KLProgram*>(visitor.visitProgram(tree));
 }
 
-KLAPI KLProgram* klCreateProgramFromString(const char *code)
+CAPI KLProgram* klCreateProgramFromString(const char *code)
 {
 	ANTLRInputStream input(code);
 	KokoLangLexer lexer(&input);

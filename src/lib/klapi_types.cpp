@@ -36,23 +36,23 @@ BUILTIN_TYPE(kltype_bool, "bool", kl_bool)
 	kbool_initializer
 };
 
-KLAPI KlType* klBType_Int() {
+CAPI KlType* klBType_Int() {
 	return &kltype_int;
 }
 
-KLAPI KlType* klBType_Float() {
+CAPI KlType* klBType_Float() {
 	return &kltype_float;
 }
 
-KLAPI KlType* klBType_Bool() {
+CAPI KlType* klBType_Bool() {
 	return &kltype_bool;
 }
 
-KLAPI KlType* klBType_String() {
+CAPI KlType* klBType_String() {
 	return &kltype_string;
 }
 
-KLAPI KlObject *klNew(KlType *type) {
+CAPI KlObject *klNew(KlType *type) {
 	auto size = type->size;
 	auto space = (KlObject*)malloc(size);
 	space->type = type;
@@ -63,7 +63,7 @@ KLAPI KlObject *klNew(KlType *type) {
 	return space;
 }
 
-KLAPI void klDeref(KlObject* object) {
+CAPI void klDeref(KlObject* object) {
 	assert(object->refs > 0);
 	object->refs--;
 	object->type->inscount--;
