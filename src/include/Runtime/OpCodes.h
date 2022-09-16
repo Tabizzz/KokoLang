@@ -116,6 +116,7 @@ enum OpCodes
 	has,
 	is,
 	as,
+	newi,
 	size,
 	ins,
 	ref,
@@ -123,6 +124,5 @@ enum OpCodes
 	build,
 
 #pragma endregion
-
 
 };

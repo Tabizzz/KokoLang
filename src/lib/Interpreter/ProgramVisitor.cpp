@@ -112,6 +112,7 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{ "has",		OpCodes::has		},
 			{ "is",		OpCodes::is		},
 			{ "as",		OpCodes::as		},
+			{ "new", 	OpCodes::newi	},
 			{ "sizeof",	OpCodes::size	},
 			{ "ins",		OpCodes::ins		},
 			{ "ref",		OpCodes::ref		},
