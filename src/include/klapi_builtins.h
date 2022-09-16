@@ -16,11 +16,15 @@
 #define KFLOAT(x) KLCAST(kl_float , KLFLOAT(x))
 #define KLBOOL(x) klBuiltinBool(x)
 #define KBOOL(x) KLCAST(kl_bool, KLBOOL(x))
+#ifdef __cplusplus
 #define KLSTR(x) klBuiltinString(x)
+#else
+#define KLSTR(x) klBuiltinString_c(x)
+#endif
 #define KSTR(x) KLCAST(kl_string, KLSTR(x))
 
 CAPI KlObject* klBuiltinInt(int val);
 CAPI KlObject* klBuiltinFloat(double val);
 CAPI KlObject* klBuiltinBool(bool val);
 CAPI KlObject* klBuiltinString_c(const char* val);
-CPPAPI KlObject* klBuiltinString(string& val);
+CPPAPI KlObject* klBuiltinString(const string& val);

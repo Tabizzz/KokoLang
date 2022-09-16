@@ -9,12 +9,11 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 	auto functionContexts = ctx->function();
 	auto funcionCount = functionContexts.size();
 
-	vector<KLFunction*> functions;
+	program->functions.reserve(funcionCount);
 	for (size_t i = 0; i < funcionCount; i++)
 	{
-		functions.push_back(any_cast<KLFunction*>(visitFunction(functionContexts[i])));
+		program->functions.push_back(any_cast<KLFunction*>(visitFunction(functionContexts[i])));
 	}
-	program->AddFunctions(functions);
 
 	return program;
 }
@@ -36,11 +35,10 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 	auto function = new KLFunction(name, locals, stack);
 	auto sentences = body->sentence();
 	auto sentencecount = sentences.size();
-	vector<KLInstruction*> instructions;
+	function->body.reserve(sentencecount);
 	for (int i = 0; i < sentencecount; ++i) {
-		instructions.push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
+		function->body.push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
 	}
-
 	cout << "Find function with name: " << name << " with " << locals << " locals" << endl;
 	return function;
 }
@@ -56,7 +54,7 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 	}
 	auto opcode = getOpcode(opcodectx);
 	auto operand = getOperand(opcodectx, opcode);
-
+	instruction = new KLInstruction(opcode, operand);
 	return instruction;
 }
 
@@ -64,18 +62,63 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	auto code = pContext->Id()->getText();
 	// https://stackoverflow.com/a/16388594
 	static const map<string, OpCodes> optionStrings {
-			{ "noc", noc },
-			{ "go", go },
-			{ "push", push },
-			{ "stvar", stvar },
-			{ "ldvar", ldvar },
-			{ "oplt", oplt },
-			{ "goif", goif },
-			{ "add", add },
-			{ "ret", ret },
-			{ "call", call },
-			//...
+			{ "noc",	OpCodes::noc	},
+			{ "go",		OpCodes::go		},
+			{ "goif",	OpCodes::goif	},
+			{ "goifn",	OpCodes::goifn	},
+			{ "push",	OpCodes::push	},
+			{ "pop",	OpCodes::pop	},
+			{ "dup",	OpCodes::dup	},
+			{ "clear",	OpCodes::clear	},
+			{ "stackl",	OpCodes::stackl	},
+			{ "stvar",	OpCodes::stvar	},
+			{ "ldvar",	OpCodes::ldvar	},
+			{ "set",	OpCodes::set	},
+			{ "get",	OpCodes::get	},
+			{ "starg",	OpCodes::starg	},
+			{ "ldarg",	OpCodes::ldarg	},
+			{ "and",	OpCodes::and	},
+			{ "or",		OpCodes:: or	},
+			{ "xor",	OpCodes::xor	},
+			{ "oplt",	OpCodes::oplt	},
+			{ "ople",	OpCodes::ople	},
+			{ "opgt",	OpCodes::opgt	},
+			{ "opge",	OpCodes::opge	},
+			{ "opeq",	OpCodes::opeq	},
+			{ "opne",	OpCodes::opne	},
+			{ "add",	OpCodes::add	},
+			{ "sub",	OpCodes::sub	},
+			{ "mul",	OpCodes::mul	},
+			{ "div",	OpCodes::div	},
+			{ "mod",	OpCodes::mod	},
+			{ "pow",	OpCodes::pow	},
+			{ "root",	OpCodes::root	},
+			{ "log",	OpCodes::log	},
+			{ "tstr",	OpCodes::tstr	},
+			{ "hash",	OpCodes::hash	},
+			{ "fash",	OpCodes::fash	},
+			{ "tbit",	OpCodes::tbit	},
+			{ "jump",	OpCodes::jump	},
+			{ "ret",	OpCodes::ret	},
+			{ "call",	OpCodes::call	},
+			{ "aloc",	OpCodes::aloc	},
+			{ "free",	OpCodes::free	},
+			{ "copy",	OpCodes::copy	},
+			{ "fill",	OpCodes::fill	},
+			{ "arr",	OpCodes::arr	},
+			{ "arl",	OpCodes::arl	},
+			{ "lde",	OpCodes::lde	},
+			{ "ste",	OpCodes::ste	},
+			{ "has",	OpCodes::has	},
+			{ "is",		OpCodes::is		},
+			{ "as",		OpCodes::as		},
+			{ "size",	OpCodes::size	},
+			{ "ins",	OpCodes::ins	},
+			{ "ref",	OpCodes::ref	},
+			{ "deref",	OpCodes::deref	},
+			{ "build",	OpCodes::build	},
 	};
+	OpCodes codee = getOpcode(nullptr);
 
 	auto itr = optionStrings.find(code);
 	if( itr != optionStrings.end() ) {
@@ -85,21 +128,30 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	throw std::invalid_argument( "invalid opcode in program" );
 }
 
+KlObject* kliCheckInteger(KokoLangParser::ValueContext* ctx)
+{
+	if(ctx->Number())
+	{
+		int value = stoi(ctx->Number()->getText());
+		return KLINT(value);
+	}
+	throw std::invalid_argument( "invalid operand in program" );
+}
+
 KlObject* ProgramVisitor::getOperand(KokoLangParser::OpcodeContext *pContext, OpCodes codes) {
 	switch (codes) {
 		case noc:
 		case add:
 		case ret:
 			break;
+		case stvar:
+		case ldvar:
+			return kliCheckInteger(pContext->value());
 		case oplt:
 			break;
 		case go:
 			break;
 		case push:
-			break;
-		case stvar:
-			break;
-		case ldvar:
 			break;
 		case goif:
 			break;

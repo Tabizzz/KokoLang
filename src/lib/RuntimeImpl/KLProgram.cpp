@@ -1,15 +1,15 @@
 ﻿#include "KokoLangInternal.h"
 
-void KLProgram::Build()
+KLProgram::~KLProgram()
 {
+	for (auto func : functions)
+	{
+		delete func;
+	}
 }
 
-void KLProgram::AddFunctions(const vector<KLFunction*>& functions) const
+void KLProgram::Build()
 {
-	for (KLFunction* function : functions)
-	{
-		cout << "Adding function " << function->getName() << endl;
-	}
 }
 
 int KLProgram::Run(const KLProgram* program)

@@ -5,7 +5,9 @@
 
 KLInstruction::KLInstruction(string& name)
 {
-	label = name.data();
+	auto size = name.size();
+	label = new char[size + 1] { };
+	name.copy(label, size);
 	opcode = noc;
 	operand = nullptr;
 }
@@ -17,4 +19,14 @@ KLInstruction::KLInstruction(OpCodes code, KlObject* toperand)
 	operand = toperand;
 }
 
-KLInstruction::~KLInstruction() = default;
+KLInstruction::~KLInstruction()
+{
+	if (label)
+	{
+		delete[] label;
+	}
+	if (operand)
+	{
+		klDeref(operand);
+	}
+}

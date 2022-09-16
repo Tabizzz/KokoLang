@@ -70,7 +70,7 @@ set_target_properties(KokoLangLibStatic PROPERTIES OUTPUT_NAME "kokolang-static"
 target_compile_definitions(KokoLangLibStatic PRIVATE KOKOLANG_STATIC)
 
 add_executable(KokoLangExe "src/kokolang/KokoLang.cpp")
-set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kokolang")
+set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kl")
 
 find_package(Threads REQUIRED)
 # link required libraries

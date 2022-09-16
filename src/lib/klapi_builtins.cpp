@@ -24,7 +24,7 @@ KlObject *klBuiltinBool(bool val) {
 	return base;
 }
 
-CPPAPI KlObject *klBuiltinString(string &val) {
+CPPAPI KlObject *klBuiltinString(const string &val) {
 	auto base = klNew(KLType_string);
 	auto obj = KLCAST(kl_string , base);
 	obj->size = val.size();

@@ -1,11 +1,10 @@
 ﻿#pragma once
 
 #include "KLImports.h"
+#include "Runtime/KLRuntime.h"
 
 #ifndef CAPI_H
 #define CAPI_H
-
-#include "Runtime/KLRuntime.h"
 
 CAPI KLProgram* klCreateProgramFromFile(const char* filename);
 

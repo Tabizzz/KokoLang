@@ -8,12 +8,22 @@ enum OpCodes
 	 *	no stack transitions.
 	 */
 	noc,
+
+#pragma region local jumps
+
 	/*
 	 *  move to a target instruction by index, can be used with labels
 	 *
 	 *  no stack transitions.
 	 */
 	go,
+	goif,
+	goifn,
+
+#pragma endregion
+
+#pragma region stack operations
+
 	/*
 	 * push a value in the stack, can push variables.
 	 *
@@ -21,11 +31,98 @@ enum OpCodes
 	 * ... -> ... value
 	 */
 	push,
-	stvar,	// set a local variable with
+	pop,
+	dup,
+	clear,
+	stackl,
+
+#pragma endregion
+
+#pragma region variable manipulation
+
+	stvar,
 	ldvar,
+	set,
+	get,
+	starg,
+	ldarg,
+
+#pragma endregion
+
+#pragma region boolean operations
+
+	and,
+	or,
+	xor,
 	oplt,
-	goif,
+	ople,
+	opgt,
+	opge,
+	opeq,
+	opne,
+
+#pragma endregion
+
+#pragma region arithmetic operations
+
 	add,
+	sub,
+	mul,
+	div,
+	mod,
+	pow,
+	root,
+	log,
+
+#pragma endregion
+
+#pragma region convertion to builtin types
+
+	tstr,
+	hash,
+	fash,
+	tbit,
+
+#pragma endregion
+
+#pragma region function related jumps
+
+	jump,
 	ret,
-	call
+	call,
+
+#pragma endregion
+
+#pragma region memory
+
+	aloc,
+	free,
+	copy,
+	fill,
+
+#pragma endregion
+
+#pragma region arrays
+
+	arr,
+	arl,
+	lde,
+	ste,
+
+#pragma endregion
+
+#pragma region struct
+
+	has,
+	is,
+	as,
+	size,
+	ins,
+	ref,
+	deref,
+	build,
+
+#pragma endregion
+
+
 };

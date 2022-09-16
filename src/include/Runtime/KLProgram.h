@@ -7,9 +7,11 @@
 class CPPAPI KLProgram
 {
 public:
+	~KLProgram();
 	void Build();
-	void AddFunctions(const std::vector<KLFunction*>& functions) const;
 	static int Run(const KLProgram* program);
+
+	vector<KLFunction*> functions;
 private:
 	bool build;
 };
