@@ -40,33 +40,50 @@ set(include_files
 	"src/include/Runtime/KLProgram.h"
 	"src/include/Runtime/KLFunction.h"
 	"src/include/Runtime/KLInstruction.h"
-	"src/lib/KokoLangInternal.h"
-	"src/lib/Interpreter/KLInterpreter.h"
-	"src/lib/Interpreter/ProgramVisitor.h"
-	src/include/Runtime/KLObject.h
-	src/include/Runtime/KLTypes.h
-	src/include/Runtime/OpCodes.h
-	src/include/klapi_types.h
-	src/include/Runtime/KLCall.h "src/include/klapi_builtins.h")
+	"src/include/Runtime/KLObject.h"
+	"src/include/Runtime/KLTypes.h"
+	"src/include/Runtime/OpCodes.h"
+	"src/include/klapi_types.h"
+	"src/include/Runtime/KLCall.h" 
+	"src/include/klapi_builtins.h"
+)
 
 set(source_files 
 	"src/lib/klapi.cpp" 
-	"src/lib/Interpreter/ProgramVisitor.cpp"
 	"src/lib/RuntimeImpl/KLFunction.cpp"
 	"src/lib/RuntimeImpl/KLProgram.cpp"
-	src/lib/RuntimeImpl/KLInstruction.cpp
-	src/lib/klapi_types.cpp "src/lib/klapi_builtins.cpp")
+	"src/lib/RuntimeImpl/KLInstruction.cpp"
+	"src/lib/klapi_types.cpp"
+	"src/lib/klapi_builtins.cpp")
+
+set(lib_files
+	"src/include/KokoLangLib.h"
+	"src/lib/KokoLangInternal.h"
+	"src/lib/Interpreter/KLInterpreter.h"
+	"src/lib/Interpreter/ProgramVisitor.h"
+	"src/lib/Interpreter/ProgramVisitor.cpp" 
+	"src/lib/KokoLangLib.cpp")
+
+add_library(KokoLangRuntime SHARED
+			${source_files}
+			${include_files})
+add_library(KokoLangRuntimeStatic STATIC
+			${source_files}
+			${include_files})
+
+set_target_properties(KokoLangRuntime PROPERTIES OUTPUT_NAME "klruntime")
+set_target_properties(KokoLangRuntimeStatic PROPERTIES OUTPUT_NAME "klruntime-static")
+target_compile_definitions(KokoLangRuntimeStatic PRIVATE KOKOLANG_STATIC)
+
 
 add_library(KokoLangLib SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
-			${source_files}
-			${include_files})
+			${lib_files})
 add_library(KokoLangLibStatic STATIC
-		${ANTLR_KokoLangParser_CXX_OUTPUTS}
-		${source_files}
-		${include_files})
+			${ANTLR_KokoLangParser_CXX_OUTPUTS}
+			${lib_files})
+
 set_target_properties(KokoLangLib PROPERTIES OUTPUT_NAME "kokolang")
-set_target_properties(KokoLangLibStatic PROPERTIES OUTPUT_NAME "kokolang-static")
 target_compile_definitions(KokoLangLibStatic PRIVATE KOKOLANG_STATIC)
 
 add_executable(KokoLangExe "src/kokolang/KokoLang.cpp")
@@ -74,9 +91,9 @@ set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kl")
 
 find_package(Threads REQUIRED)
 # link required libraries
-target_link_libraries(KokoLangLib antlr4_static Threads::Threads)
-target_link_libraries(KokoLangLibStatic antlr4_static Threads::Threads)
+target_link_libraries(KokoLangLib antlr4_static KokoLangRuntime Threads::Threads)
+target_link_libraries(KokoLangLibStatic antlr4_static KokoLangRuntime Threads::Threads)
 
-target_link_libraries(KokoLangExe KokoLangLib)
+target_link_libraries(KokoLangExe KokoLangLib KokoLangRuntime)
 
 

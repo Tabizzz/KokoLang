@@ -1,5 +1,6 @@
 #include "KokoLangInternal.h"
 #include "klapi_types.h"
+#include <cassert>
 
 #define BUILTIN_TYPE(Name, str, base) static KlType Name = { str, 0, sizeof(base),
 

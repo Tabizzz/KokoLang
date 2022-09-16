@@ -9,7 +9,7 @@
 #include <vector>
 
 #if defined _WIN32 || defined __CYGWIN__
-#ifdef KokoLangLib_EXPORTS
+#ifdef KokoLangRuntime_EXPORTS
 #define EXPORT __declspec(dllexport)
 #elif defined KOKOLANG_STATIC
 #define EXPORT 

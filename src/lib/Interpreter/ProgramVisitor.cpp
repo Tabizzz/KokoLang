@@ -1,4 +1,4 @@
-﻿#include "KokoLangInternal.h"
+﻿#include "KokoLangLib.h"
 #include "ProgramVisitor.h"
 
 using namespace std;
@@ -89,11 +89,11 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{ "add",	OpCodes::add	},
 			{ "sub",	OpCodes::sub	},
 			{ "mul",	OpCodes::mul	},
-			{ "div",	OpCodes::div	},
+			{ "div",	OpCodes::divi	},
 			{ "mod",	OpCodes::mod	},
-			{ "pow",	OpCodes::pow	},
+			{ "pot",	OpCodes::pot	},
 			{ "root",	OpCodes::root	},
-			{ "log",	OpCodes::log	},
+			{ "log",	OpCodes::ln		},
 			{ "tstr",	OpCodes::tstr	},
 			{ "hash",	OpCodes::hash	},
 			{ "fash",	OpCodes::fash	},
@@ -102,7 +102,7 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{ "ret",	OpCodes::ret	},
 			{ "call",	OpCodes::call	},
 			{ "aloc",	OpCodes::aloc	},
-			{ "free",	OpCodes::free	},
+			{ "free",	OpCodes::freei	},
 			{ "copy",	OpCodes::copy	},
 			{ "fill",	OpCodes::fill	},
 			{ "arr",	OpCodes::arr	},
@@ -118,7 +118,6 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{ "deref",	OpCodes::deref	},
 			{ "build",	OpCodes::build	},
 	};
-	OpCodes codee = getOpcode(nullptr);
 
 	auto itr = optionStrings.find(code);
 	if( itr != optionStrings.end() ) {

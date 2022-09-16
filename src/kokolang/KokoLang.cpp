@@ -1,4 +1,6 @@
 ﻿#include "KokoLang.h"
+#include "KokoLangLib.h"
+
 #include <iostream>
 #include <chrono>
 #include <cstring>
@@ -20,7 +22,6 @@ int main(int argc, const char* argv[])
 		}
 
 		auto start = high_resolution_clock::now();
-		auto str = KSTR("");
 
 		KLProgram* program = klCreateProgramFromFile(argv[1]);
 		program->Build();

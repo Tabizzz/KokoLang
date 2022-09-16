@@ -68,11 +68,11 @@ enum OpCodes
 	add,
 	sub,
 	mul,
-	div,
+	divi,
 	mod,
-	pow,
+	pot,
 	root,
-	log,
+	ln,
 
 #pragma endregion
 
@@ -96,7 +96,7 @@ enum OpCodes
 #pragma region memory
 
 	aloc,
-	free,
+	freei,
 	copy,
 	fill,
 

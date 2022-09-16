@@ -9,7 +9,7 @@ using namespace std;
 /// <summary>
 /// A instruction 
 /// </summary>
-CPPAPI struct KLInstruction
+struct CPPAPI KLInstruction
 {
 	explicit KLInstruction(string& name);
 	KLInstruction(OpCodes opcode, KlObject* operand);

@@ -6,9 +6,7 @@
 #ifndef CAPI_H
 #define CAPI_H
 
-CAPI KLProgram* klCreateProgramFromFile(const char* filename);
-
-CAPI KLProgram* klCreateProgramFromString(const char* code);
+CAPI KLProgram* klCreateProgram();
 
 CAPI void klDestroyProgram(KLProgram* obj);
 
