@@ -21,7 +21,8 @@ typedef struct _klObject {
 	size_t refs;			// how many objects are referencing this
 } KlObject;
 
-typedef void (*klinitializer)(KlObject*); // the initializer is the responsible for example set ints to 0
+typedef void (*klinitializer)(KlObject*);   // the initializer is the responsible for example set ints to 0
+typedef void (*klfinalizer)(KlObject*);     // the finalizer is the responsible for example free memory allocation/ deref other object
 
 typedef struct _klTYpe {
 	//KLOBJECTHEAD
@@ -29,6 +30,7 @@ typedef struct _klTYpe {
 	size_t inscount;			// the number of instances
 	size_t size;				// the size to allocate this a object of this type
 	klinitializer initializer;	// the initializer to this type
+	klfinalizer finalizer;      // the finalizer to this type
 } KlType;
 
 

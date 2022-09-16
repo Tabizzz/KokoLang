@@ -5,10 +5,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#define KLTYPE_int klBType_Int()
-#define KLType_float klBType_Float()
-#define KLtype_string klBType_String()
-#define KLtype_bool klBType_Bool()
 
 typedef struct {
 	KLOBJECTHEAD

@@ -47,7 +47,7 @@ set(include_files
 	src/include/Runtime/KLTypes.h
 	src/include/Runtime/OpCodes.h
 	src/include/klapi_types.h
-	src/include/Runtime/KLCall.h)
+	src/include/Runtime/KLCall.h "src/include/klapi_builtins.h")
 
 set(source_files 
 	"src/lib/klapi.cpp" 
@@ -55,7 +55,7 @@ set(source_files
 	"src/lib/RuntimeImpl/KLFunction.cpp"
 	"src/lib/RuntimeImpl/KLProgram.cpp"
 	src/lib/RuntimeImpl/KLInstruction.cpp
-	src/lib/klapi_types.cpp)
+	src/lib/klapi_types.cpp "src/lib/klapi_builtins.cpp")
 
 add_library(KokoLangLib SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
