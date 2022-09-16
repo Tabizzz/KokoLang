@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "KokoLang.h"
 #include "antlr4-runtime.h"

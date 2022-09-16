@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "KLImports.h"
 #ifdef __cplusplus
 extern "C"

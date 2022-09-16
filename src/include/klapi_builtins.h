@@ -1,4 +1,4 @@
-/*
+﻿/*
 * This file contain utility methods and macros for creating builtin types instances
 */
 #pragma once

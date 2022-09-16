@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 enum OpCodes
 {
@@ -51,9 +51,9 @@ enum OpCodes
 
 #pragma region boolean operations
 
-	and,
-	or,
-	xor,
+	andi,
+	ori,
+	xori,
 	oplt,
 	ople,
 	opgt,
