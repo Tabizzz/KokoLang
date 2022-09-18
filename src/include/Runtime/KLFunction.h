@@ -13,8 +13,9 @@ private:
 public:
 	explicit KLFunction(string name);
 	~KLFunction();
+	void reallocateLabels();
 	string getName();
 	vector<KLInstruction*> body;
-	unsigned char locals, stack, margs;
+	unsigned char locals, stack, margs, size;
 	char args;
 };

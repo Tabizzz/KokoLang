@@ -46,6 +46,7 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 	for (int i = 0; i < sentencecount; ++i) {
 		function->body.push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
 	}
+	function->size = function->body.size();
 	return function;
 }
 

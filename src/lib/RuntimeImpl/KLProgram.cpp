@@ -1,4 +1,5 @@
-﻿#include "KokoLangInternal.h"
+﻿#include <iostream>
+#include "KokoLangInternal.h"
 
 KLProgram::~KLProgram()
 {
@@ -10,13 +11,30 @@ KLProgram::~KLProgram()
 
 void KLProgram::Build()
 {
+	for (auto func: functions) {
+		func->reallocateLabels();
+	}
+
 }
 
 int KLProgram::Run(const KLProgram* program)
 {
 	if (program)
 	{
-		return 0;
+		KLFunction* main;
+		for (auto func: program->functions) {
+			if(func->getName() == "main")
+			{
+				main = func;
+				break;
+			}
+		}
+		if(main)
+		{
+			return 0;
+		}
+		cout<<"Error: unable to find entry point 'main'" << endl;
+		return 1;
 	}
 	return 1;
 }
