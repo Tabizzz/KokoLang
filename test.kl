@@ -38,6 +38,7 @@
 
 .func main
 {
+	.locals 0
 	.stack 1
 	push "Hello world"
 	call out

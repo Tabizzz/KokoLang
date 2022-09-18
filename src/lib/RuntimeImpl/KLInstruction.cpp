@@ -9,24 +9,23 @@ KLInstruction::KLInstruction(string& name)
 	label = new char[size + 1] { };
 	name.copy(label, size);
 	opcode = noc;
-	operand = nullptr;
+	foperand = nullptr;
+	soperand = nullptr;
 }
 
-KLInstruction::KLInstruction(OpCodes code, KlObject* toperand)
+KLInstruction::KLInstruction(OpCodes code, KlObject* operandf, KlObject*operands)
 {
 	label = nullptr;
 	opcode = code;
-	operand = toperand;
+	foperand = operandf;
+	soperand = operands;
 }
 
-KLInstruction::~KLInstruction()
-{
-	if (label)
-	{
-		delete[] label;
-	}
-	if (operand)
-	{
-		klDeref(operand);
-	}
+KLInstruction::~KLInstruction() {
+	delete[] label;
+
+	klDeref(foperand);
+
+	klDeref(soperand);
+
 }

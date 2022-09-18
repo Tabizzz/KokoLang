@@ -1,7 +1,6 @@
 ﻿#include "KokoLang.h"
 #include "KokoLangLib.h"
 
-#include <iostream>
 #include <chrono>
 #include <cstring>
 
@@ -20,16 +19,14 @@ int main(int argc, const char* argv[])
 				time = true;
 			}
 		}
-
-		auto start = high_resolution_clock::now();
-
 		KLProgram* program = klCreateProgramFromFile(argv[1]);
 		program->Build();
 
+		auto start = high_resolution_clock::now();
 		auto exit = KLProgram::Run(program);
+		auto stop = high_resolution_clock::now();
 		// destroy any created program!
 		klDestroyProgram(program);
-		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>(stop - start);
 		if (time)
 			cout << "program execution:" << duration.count() << "ms" << endl;

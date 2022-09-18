@@ -75,6 +75,7 @@ CAPI KlObject *klNew(KlType *type) {
 }
 
 CAPI void klDeref(KlObject* object) {
+	if(!object) return;
 	assert(object->refs > 0);
 	assert(object->type->inscount > 0);
 	object->refs--;

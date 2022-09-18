@@ -12,5 +12,7 @@ public:
 
 	static OpCodes getOpcode(KokoLangParser::OpcodeContext *pContext);
 
-	static KlObject *getOperand(KokoLangParser::OpcodeContext *pContext, OpCodes codes);
+	static void
+	getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject **sOperand,
+				KokoLangParser::ValueContext *fContext, KokoLangParser::ValueContext *sContext);
 };

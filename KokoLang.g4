@@ -15,15 +15,17 @@ sentence: (opcode | label) nlr;
 
 label: Id Dp;
 
-opcode: Id value?;
+opcode: Id value? value?;
 
 nlr: NL+;
 
 nlo: NL*;
 
-value: Null | Bool | String | Number | Id;
+value: Null | bool | String | Number | Id;
 
-// / instructions / //
+bool: True | False;
+
+// / from here are the token definitions for the lexer / //
 
 COMMENT: Scomment ANY* -> channel(HIDDEN);
 
@@ -47,11 +49,21 @@ LOCALS: 'locals';
 
 FUNC: 'func';
 
+VAR: 'var';
+
+STRUCT: 'struct';
+
+IMPORT: 'import';
+
+INCLUDE: 'include';
+
 // / lang values / // 
 
 Null: 'null';
 
-Bool: 'true' | 'false';
+True: 'true';
+
+False: 'false';
 
 Id: LETTER+;
 
