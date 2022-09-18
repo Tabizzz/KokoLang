@@ -34,15 +34,15 @@ BUILTIN_TYPE(kltype_int, "int", kl_int)
 	kint_initializer,
 	nullptr
 };
-BUILTIN_TYPE(kltype_float, "float", kl_float)
+BUILTIN_TYPE(kltype_float, "flt", kl_float)
 	kfloat_initializer,
 	nullptr
 };
-BUILTIN_TYPE(kltype_string, "string", kl_string)
+BUILTIN_TYPE(kltype_string, "str", kl_string)
 	kstring_initializer,
 	kstring_finalizer
 };
-BUILTIN_TYPE(kltype_bool, "bool", kl_bool)
+BUILTIN_TYPE(kltype_bool, "bit", kl_bool)
 	kbool_initializer,
 	nullptr
 };

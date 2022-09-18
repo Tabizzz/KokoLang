@@ -32,14 +32,14 @@
 
 	end:
 	ldvar 1
-	call trace
+	call out
 	ret
 }
 
 .func main
 {
-	.locals 0
+	.stack 1
 	push "Hello world"
-	call trace
+	call out
 	call sum
 }
