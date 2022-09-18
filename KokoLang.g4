@@ -5,11 +5,19 @@ program: (function nlo)+;
 
 function: Sdot FUNC Id nlo funcblock;
 
-funcblock: Bopen nlo local stack? sentence+ Bclose;
+funcblock: Bopen nlo funcattrs sentence+ Bclose;
+
+funcattrs: funcattr*;
+
+funcattr : local | stack | margs | args;
 
 stack: Sdot STACK Number nlr;
 
 local: Sdot LOCALS Number nlr;
+
+args: Sdot ARGS Number nlr;
+
+margs: Sdot MARGS Number nlr;
 
 sentence: (opcode | label) nlr;
 
@@ -44,6 +52,10 @@ fragment ANY: ~[\r\n];
 // / lang keywords / //
 
 STACK: 'stack';
+
+ARGS: 'args';
+
+MARGS: 'marg';
 
 LOCALS: 'locals';
 

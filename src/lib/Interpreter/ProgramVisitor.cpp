@@ -18,28 +18,34 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 	return program;
 }
 
+#define FUNCATTR(x) auto x##c = attr->x(); \
+					if(x##c) *x = stoi(x##c->Number()->getText());
+
+void parseFunctionAttributes(KokoLangParser::FuncattrsContext *pContext, unsigned char* local, unsigned char *stack, char *args,
+							 unsigned char *margs)
+{
+	auto vect = pContext->funcattr();
+
+	for (auto attr : vect) {
+		FUNCATTR(local)
+		FUNCATTR(stack)
+		FUNCATTR(args)
+		FUNCATTR(margs)
+	}
+}
+
 any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 {
 	auto name = ctx->Id()->getText();
 	auto body = ctx->funcblock();
-	auto localstext = body->local()->Number()->getText();
-	auto locals = stoi(localstext);
-	if (locals < 0) locals = 0;
-	auto stackctx = body->stack();
-	int stack = 10;
-	if (stackctx)
-	{
-		stack = stoi(stackctx->Number()->getText());
-		if (stack < 0) stack = 0;
-	}
-	auto function = new KLFunction(name, locals, stack);
+	auto function = new KLFunction(name);
+	parseFunctionAttributes(ctx->funcblock()->funcattrs(), &function->locals, &function->stack, &function->args, &function->margs);
 	auto sentences = body->sentence();
 	auto sentencecount = sentences.size();
 	function->body.reserve(sentencecount);
 	for (int i = 0; i < sentencecount; ++i) {
 		function->body.push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
 	}
-	cout << "Find function with name: " << name << " with " << locals << " locals" << endl;
 	return function;
 }
 

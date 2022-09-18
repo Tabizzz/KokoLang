@@ -8,11 +8,13 @@ using namespace std;
 
 class CPPAPI KLFunction
 {
+private:
+	string FunctionName;
 public:
-	KLFunction(string name, int locals, int stack);
+	explicit KLFunction(string name);
 	~KLFunction();
 	string getName();
 	vector<KLInstruction*> body;
-private:
-	string FunctionName;
+	unsigned char locals, stack, margs;
+	char args;
 };
