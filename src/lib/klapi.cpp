@@ -1,11 +1,11 @@
 ﻿
 #include "KokoLangInternal.h"
 
-CAPI KLProgram* klCreateProgram()
+CAPI KLPackage* klCreateProgram()
 {
-	return new KLProgram();
+	return new KLPackage();
 }
 
-CAPI void klDestroyProgram(KLProgram* obj) {
+CAPI void klDestroyProgram(KLPackage* obj) {
 	delete obj;
 }

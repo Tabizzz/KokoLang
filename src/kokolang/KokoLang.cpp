@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 using namespace std::chrono;
@@ -19,11 +20,11 @@ int main(int argc, const char* argv[])
 				time = true;
 			}
 		}
-		KLProgram* program = klCreateProgramFromFile(argv[1]);
+		KLPackage* program = klCreateProgramFromFile(argv[1]);
 		program->Build();
 
 		auto start = high_resolution_clock::now();
-		auto exit = KLProgram::Run(program);
+		auto exit = KLPackage::Run(program);
 		auto stop = high_resolution_clock::now();
 		// destroy any created program!
 		klDestroyProgram(program);

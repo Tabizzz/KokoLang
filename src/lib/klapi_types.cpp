@@ -2,7 +2,13 @@
 #include "klapi_types.h"
 #include <cassert>
 
-#define BUILTIN_TYPE(Name, str, base) static KlType Name = { str, 0, sizeof(base),
+#define BUILTIN_TYPE(Name, str, base) \
+static KlType Name =                  \
+{                                     \
+                                      \
+	str,                              \
+	0,                                \
+	sizeof(base),
 
 void kint_initializer(KlObject* obj) {
 	auto ptr = KLCAST(kl_int, obj);

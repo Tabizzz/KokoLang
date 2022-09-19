@@ -37,7 +37,7 @@ set(include_files
 	"src/include/klapi.h"
 	"src/include/KLImports.h"
 	"src/include/Runtime/KLRuntime.h"
-	"src/include/Runtime/KLProgram.h"
+	"src/include/Runtime/KLPackage.h"
 	"src/include/Runtime/KLFunction.h"
 	"src/include/Runtime/KLInstruction.h"
 	"src/include/Runtime/KLObject.h"
@@ -51,7 +51,7 @@ set(include_files
 set(source_files 
 	"src/lib/klapi.cpp" 
 	"src/lib/RuntimeImpl/KLFunction.cpp"
-	"src/lib/RuntimeImpl/KLProgram.cpp"
+	"src/lib/RuntimeImpl/KLPackage.cpp"
 	"src/lib/RuntimeImpl/KLInstruction.cpp"
 	"src/lib/klapi_types.cpp"
 	"src/lib/klapi_builtins.cpp")

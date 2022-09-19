@@ -27,6 +27,22 @@ typedef struct {
 	bool value;
 } kl_bool;
 
+typedef struct {
+	KLOBJECTHEAD
+	void* value;
+} kl_ptr;
+
+typedef struct {
+	KLOBJECTHEAD
+	KlObject** value;
+} kl_optr;
+
+typedef struct{
+	KLOBJECTHEAD
+	unsigned int dimension;
+	unsigned int size;
+	KlObject** content;
+} kl_arr;
 #ifdef __cplusplus
 };
 #endif

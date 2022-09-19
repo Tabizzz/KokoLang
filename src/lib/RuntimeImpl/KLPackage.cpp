@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include "KokoLangInternal.h"
 
-KLProgram::~KLProgram()
+KLPackage::~KLPackage()
 {
 	for (auto func : functions)
 	{
@@ -9,7 +9,7 @@ KLProgram::~KLProgram()
 	}
 }
 
-void KLProgram::Build()
+void KLPackage::Build()
 {
 	for (auto func: functions) {
 		func->reallocateLabels();
@@ -17,7 +17,7 @@ void KLProgram::Build()
 
 }
 
-int KLProgram::Run(const KLProgram* program)
+int KLPackage::Run(const KLPackage* program)
 {
 	if (program)
 	{

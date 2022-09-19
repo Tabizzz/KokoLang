@@ -9,7 +9,6 @@ extern "C"
 
 #define KLINVOKE(x) if(x) x
 
-struct _klObject;
 struct _klTYpe;
 
 /*

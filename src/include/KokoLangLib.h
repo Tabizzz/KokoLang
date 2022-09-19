@@ -19,6 +19,6 @@
 
 #define KLIBAPI EXTERN LIBEXPORT
 
-KLIBAPI KLProgram* klCreateProgramFromFile(const char* filename);
+KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename);
 
-KLIBAPI KLProgram* klCreateProgramFromString(const char* code);
+KLIBAPI KLPackage* klCreateProgramFromString(const char* code);

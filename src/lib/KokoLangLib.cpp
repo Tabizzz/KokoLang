@@ -8,7 +8,7 @@ using namespace antlr4;
 using namespace std;
 
 
-KLIBAPI KLProgram* klCreateProgramFromFile(const char* filename)
+KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename)
 {
 	std::ifstream stream;
 	stream.open(filename);
@@ -21,10 +21,10 @@ KLIBAPI KLProgram* klCreateProgramFromFile(const char* filename)
 	if (parser.getNumberOfSyntaxErrors() > 0) return nullptr;
 
 	ProgramVisitor visitor;
-	return any_cast<KLProgram*>(visitor.visitProgram(tree));
+	return any_cast<KLPackage*>(visitor.visitProgram(tree));
 }
 
-KLIBAPI KLProgram* klCreateProgramFromString(const char *code)
+KLIBAPI KLPackage* klCreateProgramFromString(const char *code)
 {
 	ANTLRInputStream input(code);
 	KokoLangLexer lexer(&input);
@@ -35,5 +35,5 @@ KLIBAPI KLProgram* klCreateProgramFromString(const char *code)
 	if (parser.getNumberOfSyntaxErrors() > 0) return nullptr;
 
 	ProgramVisitor visitor;
-	return any_cast<KLProgram*>(visitor.visitProgram(tree));
+	return any_cast<KLPackage*>(visitor.visitProgram(tree));
 }

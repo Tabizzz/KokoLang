@@ -5,7 +5,7 @@ using namespace std;
 
 any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 {
-	auto program = new KLProgram();
+	auto program = new KLPackage();
 	auto functionContexts = ctx->function();
 	auto funcionCount = functionContexts.size();
 

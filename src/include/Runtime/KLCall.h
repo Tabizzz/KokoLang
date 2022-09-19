@@ -6,6 +6,7 @@ using namespace std;
 /*
  * Represent the scope of a function call, this contains the evaluation stack, the locals and the arguments of the function.
  */
-class CPPAPI KLCall
+struct CPPAPI KLCall
 {
+
 };

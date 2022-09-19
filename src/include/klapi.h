@@ -6,9 +6,9 @@
 #ifndef CAPI_H
 #define CAPI_H
 
-CAPI KLProgram* klCreateProgram();
+CAPI KLPackage* klCreateProgram();
 
-CAPI void klDestroyProgram(KLProgram* obj);
+CAPI void klDestroyProgram(KLPackage* obj);
 
 #endif // !CAPI_H
 
