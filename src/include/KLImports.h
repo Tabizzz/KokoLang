@@ -34,3 +34,5 @@
 
 #define CAPI EXTERN EXPORT
 #define CPPAPI EXPORT
+
+typedef unsigned char kbyte;

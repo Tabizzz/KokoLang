@@ -2,42 +2,46 @@
 
 #include "Runtime/KLObject.h"
 
+/*
+ * builtin kl types
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct {
+typedef struct kl_int {
 	KLOBJECTHEAD
 	int value;
 } kl_int;
 
-typedef struct {
+typedef struct kl_float {
 	KLOBJECTHEAD
 	double value;
 } kl_float;
 
-typedef struct {
+typedef struct kl_string {
 	KLOBJECTHEAD
 	char* value;
 	size_t size;
 } kl_string;
 
-typedef struct {
+typedef struct kl_bool {
 	KLOBJECTHEAD
 	bool value;
 } kl_bool;
 
-typedef struct {
+typedef struct kl_ptr {
 	KLOBJECTHEAD
 	void* value;
 } kl_ptr;
 
-typedef struct {
+typedef struct kl_optr {
 	KLOBJECTHEAD
 	KlObject** value;
 } kl_optr;
 
-typedef struct{
+typedef struct kl_arr {
 	KLOBJECTHEAD
 	unsigned int dimension;
 	unsigned int size;
