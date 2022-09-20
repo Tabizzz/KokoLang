@@ -12,7 +12,7 @@
 	push 0
 	stvar 2
 	
-	comp:
+	:comp
 	ldvar 2
 	ldvar 0
 	oplt
@@ -30,7 +30,7 @@
 	stvar 2
 	go comp
 
-	end:
+	:end
 	ldvar 1
 	call out
 	ret

@@ -4,28 +4,28 @@
 
 CAPI KlObject* klBuiltinInt(int val)
 {
-	auto base = klNew(KLType_int);
+	auto base = klIns(&klBType_Int);
 	auto obj = KLCAST(kl_int, base);
 	obj->value = val;
 	return base;
 }
 
 KlObject *klBuiltinFloat(double val) {
-	auto base = klNew(KLType_float);
+	auto base = klIns(&klBType_Float);
 	auto obj = KLCAST(kl_float , base);
 	obj->value = val;
 	return base;
 }
 
 KlObject *klBuiltinBool(bool val) {
-	auto base = klNew(KLType_bool);
+	auto base = klIns(&klBType_Bool);
 	auto obj = KLCAST(kl_bool, base);
 	obj->value = val;
 	return base;
 }
 
 CPPAPI KlObject *klBuiltinString(const string &val) {
-	auto base = klNew(KLType_string);
+	auto base = klIns(&klBType_String);
 	auto obj = KLCAST(kl_string , base);
 	obj->size = val.size();
 	obj->value = new char[obj->size + 1]{};

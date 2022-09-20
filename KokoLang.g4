@@ -21,9 +21,9 @@ margs: Sdot MARGS Number nlr;
 
 sentence: (opcode | label) nlr;
 
-label: Id Dp;
+label: Dp Id;
 
-opcode: Id value? value?;
+opcode: Id value*;
 
 nlr: NL+;
 

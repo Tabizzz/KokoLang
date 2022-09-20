@@ -2,82 +2,158 @@
 #include "klapi_types.h"
 #include <cassert>
 
-#define BUILTIN_TYPE(Name, str, base) \
-static KlType Name =                  \
-{                                     \
-                                      \
-	str,                              \
-	0,                                \
-	sizeof(base),
-
-void kint_initializer(KlObject* obj) {
+void kint_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_int, obj);
 	ptr->value = 0;
 }
 
-void kfloat_initializer(KlObject* obj) {
+void kfloat_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_float, obj);
 	ptr->value = 0;
 }
 
-void kbool_initializer(KlObject* obj) {
+void kbool_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_bool, obj);
 	ptr->value = false;
 }
 
-void kstring_initializer(KlObject* obj) {
+void kstring_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	ptr->value = nullptr;
 	ptr->size = 0;
 }
 
-void kstring_finalizer(KlObject* obj) {
+void kstring_end(KlObject* obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	delete[] ptr->value;
 }
 
-BUILTIN_TYPE(kltype_int, "int", kl_int)
-	kint_initializer,
+void kptr_init(KlObject* obj) {
+	auto ptr = KLCAST(kl_ptr, obj);
+	ptr->value = nullptr;
+}
+
+void koptr_init(KlObject* obj) {
+	auto ptr = KLCAST(kl_optr, obj);
+	ptr->value = nullptr;
+}
+
+void karr_init(KlObject* obj) {
+	auto ptr = KLCAST(kl_arr, obj);
+	ptr->dimension = 0;
+	ptr->size = 0;
+	ptr->content = nullptr;
+}
+
+KlType klBType_Int =
+{
+		KlObject(),
+		"int",
+		0,
+		sizeof(kl_int),
+		kint_init,
+		nullptr,
+		nullptr
+};
+
+KlType klBType_Float =
+{
+		KlObject(),
+		"fltt",
+		0,
+		sizeof(kl_float),
+		kfloat_init,
+		nullptr,
+		nullptr
+};
+
+KlType klBType_Bool =
+{
+		KlObject(),
+		"bit",
+		0,
+		sizeof(kl_bool),
+		kbool_init,
+		nullptr,
+		nullptr
+};
+
+KlType klBType_String =
+{
+		KlObject(),
+		"str",
+		0,
+		sizeof(kl_string),
+		kstring_init,
+		nullptr,
+		kstring_end
+};
+
+KlType klBType_Ptr =
+{
+		KlObject(),
+		"ptr",
+		0,
+		sizeof (kl_ptr),
+		kptr_init,
+		nullptr,
+		nullptr
+};
+
+KlType klBType_OPtr =
+{
+		KlObject(),
+		"optr",
+		0,
+		sizeof (kl_optr),
+		koptr_init,
+		nullptr,
+		nullptr
+};
+
+KlType klBType_Arr =
+{
+		KlObject(),
+		"arr",
+		0,
+		sizeof (kl_arr),
+		karr_init,
+		nullptr,
+		nullptr
+};
+
+KlType klBType_Type =
+{
+	KlObject(),
+	"type",
+	0,
+	sizeof (KlType),
+	nullptr,
+	nullptr,
 	nullptr
 };
-BUILTIN_TYPE(kltype_float, "flt", kl_float)
-	kfloat_initializer,
-	nullptr
-};
-BUILTIN_TYPE(kltype_string, "str", kl_string)
-	kstring_initializer,
-	kstring_finalizer
-};
-BUILTIN_TYPE(kltype_bool, "bit", kl_bool)
-	kbool_initializer,
-	nullptr
-};
 
-CAPI KlType* klBType_Int() {
-	return &kltype_int;
+KlObject *klNewVar(KlType *type, KlObject *args, ...) {
+	return nullptr;
 }
 
-CAPI KlType* klBType_Float() {
-	return &kltype_float;
+KlObject *klNew(KlType *type, KlObject **args, int argc) {
+	return nullptr;
 }
 
-CAPI KlType* klBType_Bool() {
-	return &kltype_bool;
-}
-
-CAPI KlType* klBType_String() {
-	return &kltype_string;
-}
-
-CAPI KlObject *klNew(KlType *type) {
+CAPI KlObject *klIns(KlType *type) {
 	auto size = type->size;
 	auto space = (KlObject*)malloc(size);
 	space->type = type;
 	space->refs = 1;
 	type->inscount++;
+	// call the initializer
 	KLINVOKE(type->initializer)(space);
-	// call constructor
 	return space;
+}
+
+CAPI inline void klRef(KlObject *object) {
+	object->refs++;
 }
 
 CAPI void klDeref(KlObject* object) {
@@ -85,15 +161,15 @@ CAPI void klDeref(KlObject* object) {
 	assert(object->refs > 0);
 	assert(object->type->inscount > 0);
 	object->refs--;
-	object->type->inscount--;
-	if(object->refs == 0)
-	{
-		// call destructor
-		KLINVOKE(object->type->finalizer)(object);
-		free(object);
+	if(object->refs == 0) {
+		klDestroy(object);
 	}
 }
 
-CAPI void klRef(KlObject *object) {
-	object->refs++;
+CAPI void klDestroy(KlObject *object) {
+	if(!object) return;
+	object->type->inscount--;
+	// call finalizer
+	KLINVOKE(object->type->finalizer)(object);
+	free(object);
 }

@@ -5,14 +5,16 @@ using namespace std;
 
 any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 {
-	auto program = new KLPackage();
+	auto program = klCreatePackage();
 	auto functionContexts = ctx->function();
 	auto funcionCount = functionContexts.size();
 
-	program->functions.reserve(funcionCount);
 	for (size_t i = 0; i < funcionCount; i++)
 	{
-		program->functions.push_back(any_cast<KLFunction*>(visitFunction(functionContexts[i])));
+		auto func = any_cast<KLFunction*>(visitFunction(functionContexts[i]));
+		auto name = KLCAST(kl_string, func->name);
+
+		program->functions->insert(pair<string, KlObject*>(name->value, KLWRAP(func)));
 	}
 
 	return program;
@@ -38,26 +40,30 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 {
 	auto name = ctx->Id()->getText();
 	auto body = ctx->funcblock();
-	auto function = new KLFunction(name);
+	auto function = KLCAST(KLFunction, klIns(&klBType_Func));
+	function->name = KLSTR(name);
+	function->body = new vector<KLInstruction*>();
+
 	parseFunctionAttributes(ctx->funcblock()->funcattrs(), &function->locals, &function->stack, &function->args, &function->margs);
 	auto sentences = body->sentence();
 	auto sentencecount = sentences.size();
-	function->body.reserve(sentencecount);
 	for (int i = 0; i < sentencecount; ++i) {
-		function->body.push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
+		function->body->push_back(any_cast<KLInstruction*>(visitSentence(sentences[i])));
 	}
-	function->size = function->body.size();
+	function->size = function->body->size();
 	return function;
 }
 
 any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
-	KLInstruction* instruction;
 	auto opcodectx = ctx->opcode();
 	string name;
+	auto instruction = KLCAST(KLInstruction, klIns(&klBType_Instruction));
+
 	if(!opcodectx)
 	{
 		name = ctx->label()->Id()->getText();
-		return new KLInstruction(name);
+		instruction->label = KLSTR(name);
+		return instruction;
 	}
 	auto opcode = getOpcode(opcodectx);
 	KlObject* foperand = nullptr;
@@ -73,7 +79,9 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 
 	getOperands(&opcode, &foperand, &soperand, fval, sval);
 
-	instruction = new KLInstruction(opcode, foperand, soperand);
+	instruction->opcode = opcode;
+	instruction->foperand = foperand;
+	instruction->soperand = soperand;
 	return instruction;
 }
 

@@ -3,37 +3,40 @@
 #include "KokoLangInternal.h"
 #include "Runtime/KLFunction.h"
 
-KLFunction::KLFunction(string name)
+void kfunc_instantiator(KlObject * obj)
 {
-	FunctionName = std::move(name);
-	locals = 0;
-	stack = 10;
-	args = 0;
-	margs = 0;
-	size = 0;
+	auto func = KLCAST(KLFunction, obj);
+	func->external = false;
+	func->name = nullptr;
+	func->invokable = nullptr;
+	func->locals = 0;
+	func->stack = 10;
+	func->args = 0;
+	func->margs = 0;
+	func->size = 0;
+	func->body = nullptr;
 }
 
-KLFunction::~KLFunction()
+void kfunc_destructor(KlObject* obj)
 {
-	for (auto ins : body)
-	{
-		delete ins;
+	auto func = KLCAST(KLFunction, obj);
+	klDeref(func->name);
+	if(!func->external) {
+		for (auto ins: *func->body) {
+			klDeref(KLWRAP(ins));
+		}
+		delete func->body;
 	}
 }
 
-string KLFunction::getName()
-{
-	return FunctionName;
-}
-
-void KLFunction::reallocateLabels() {
-	auto olsize = size;
-	for (int i = 0; i < body.size(); i++)
+void klFunction_reallocateLabels(KLFunction* function) {
+	auto olsize = function->size;
+	for (int i = 0; i < function->body->size(); i++)
 	{
-		auto instruction = body[i];
+		auto instruction = (*function->body)[i];
 		if(instruction->opcode == noc)
 		{
-			for (auto ref: body) {
+			for (auto ref: *function->body) {
 				auto reflabel = false;
 				switch (ref->opcode) {
 					case go:
@@ -46,17 +49,30 @@ void KLFunction::reallocateLabels() {
 				}
 				if(reflabel) {
 					auto label = KLCAST(kl_string, ref->foperand);
-					if(strcmp(label->value, instruction->label) == 0)
+					auto label2 =  KLCAST(kl_string, instruction->label);
+					if(strcmp(label->value, label2->value) == 0)
 					{
 						klDeref(instruction->foperand);
 						instruction->foperand = KLINT(i);
 					}
 				}
 			}
-			body.erase(next(body.begin(), i--));
+			function->body->erase(next(function->body->begin(), i--));
 		}
 	}
-	size = body.size();
+	function->size = function->body->size();
 	// resize the body if we delete instructions
-	if(size < olsize) body.shrink_to_fit();
+	if(function->size < olsize) function->body->shrink_to_fit();
 }
+
+
+KlType klBType_Func =
+{
+		KlObject(),
+		"func",
+		0,
+		sizeof(KLFunction),
+		kfunc_instantiator,
+		nullptr,
+		kfunc_destructor
+};

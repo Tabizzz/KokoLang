@@ -2,30 +2,31 @@
 
 #include "KokoLangInternal.h"
 
-
-KLInstruction::KLInstruction(string& name)
+void kins_init(KlObject* pack)
 {
-	auto size = name.size();
-	label = new char[size + 1] { };
-	name.copy(label, size);
-	opcode = noc;
-	foperand = nullptr;
-	soperand = nullptr;
+	auto ins = KLCAST(KLInstruction, pack);
+	ins->label = nullptr;
+	ins->opcode = noc;
+	ins->foperand = nullptr;
+	ins->soperand = nullptr;
+	ins->call = nullptr;
 }
 
-KLInstruction::KLInstruction(OpCodes code, KlObject* operandf, KlObject*operands)
+void kins_end(KlObject* pack)
 {
-	label = nullptr;
-	opcode = code;
-	foperand = operandf;
-	soperand = operands;
+	auto ins = KLCAST(KLInstruction, pack);
+	klDeref(ins->label);
+	klDeref(ins->foperand);
+	klDeref(ins->soperand);
 }
 
-KLInstruction::~KLInstruction() {
-	delete[] label;
-
-	klDeref(foperand);
-
-	klDeref(soperand);
-
-}
+KlType klBType_Instruction =
+{
+		KlObject(),
+		"instruction",
+		0,
+		sizeof(KLInstruction),
+		kins_init,
+		nullptr,
+		kins_end
+};

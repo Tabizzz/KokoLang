@@ -8,29 +8,55 @@
 using namespace std;
 using namespace std::chrono;
 
-int main(int argc, const char* argv[]) 
+#define MEASURE(x, y)if(time) start = high_resolution_clock::now(); 	\
+y;                                                                      \
+if (time)  {															\
+sub = high_resolution_clock::now() - start;								\
+duration = duration_cast<microseconds>(sub);                         	\
+if(duration.count() < 1000)    {                                      	\
+cout << x << duration.count() << "μs" << endl; 							\
+}else {                                                              	\
+durationms = duration_cast<milliseconds>(sub);                      	\
+if(durationms.count() < 1000)    {                                      \
+cout << x << durationms.count() << "ms" << endl; 						\
+}else {  																\
+durations = duration_cast<seconds>(sub);                   		 		\
+cout << x << durations.count() << "s" << endl;                          \
+}}}
+
+
+int main(int argc, const char* argv[])
 {
-	if (argc > 1)
-	{
+	if (argc > 1) {
 		bool time = false;
-		if (argc > 2)
-		{
-			if (!strcmp("-t", argv[2]))
-			{
+		if (argc > 2) {
+			if (!strcmp("-t", argv[2])) {
 				time = true;
 			}
 		}
-		KLPackage* program = klCreateProgramFromFile(argv[1]);
-		program->Build();
 
 		auto start = high_resolution_clock::now();
-		auto exit = KLPackage::Run(program);
-		auto stop = high_resolution_clock::now();
-		// destroy any created program!
-		klDestroyProgram(program);
-		auto duration = duration_cast<milliseconds>(stop - start);
-		if (time)
-			cout << "program execution:" << duration.count() << "ms" << endl;
+		auto sub = high_resolution_clock::now() - start;
+		auto duration = duration_cast<microseconds>(sub);
+		auto durationms = duration_cast<milliseconds>(sub);
+		auto durations = duration_cast<seconds>(sub);
+
+		klInit();
+
+		MEASURE("Program parse: ", KLPackage *program = klCreateProgramFromFile(argv[1]))
+
+		int exit;
+		if(program) {
+			klRegisterPackage(program);
+
+			MEASURE("Program build: ", klPackage_Build(program))
+			MEASURE("Program run: ", exit = klPackage_Run(program, argc, argv))
+		} else {
+			exit = -1;
+		}
+
+		klEnd();
+
 		return exit;
 	}
 

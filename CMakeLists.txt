@@ -46,7 +46,7 @@ set(include_files
 	"src/include/klapi_types.h"
 	"src/include/Runtime/KLCall.h" 
 	"src/include/klapi_builtins.h"
-)
+		src/lib/RuntimeImpl/KLFunctionImpl.h)
 
 set(source_files 
 	"src/lib/klapi.cpp" 
@@ -54,7 +54,7 @@ set(source_files
 	"src/lib/RuntimeImpl/KLPackage.cpp"
 	"src/lib/RuntimeImpl/KLInstruction.cpp"
 	"src/lib/klapi_types.cpp"
-	"src/lib/klapi_builtins.cpp")
+	"src/lib/klapi_builtins.cpp" src/lib/RuntimeImpl/KLCall.cpp)
 
 set(lib_files
 	"src/include/KokoLangLib.h"
