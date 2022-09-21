@@ -57,22 +57,31 @@ CAPI void klPackage_Build(KLPackage *klPackage)
 	for (const auto& func: *klPackage->functions) {
 		klFunction_reallocateLabels(KLCAST(KLFunction, func.second));
 	}
+
+}
+
+KlObject **argstoobject(const char **pString, int i)
+{
+	auto ret = new KlObject* [i];
+
+	for (int j = 0; j < i; ++j) {
+		ret[j] = KLSTR(pString[j]);
+	}
+
+	return ret;
 }
 
 CAPI int klPackage_Run(KLPackage *program, int argc, const char **argv) {
 	if (program)
 	{
 		KLFunction* main;
-		for (const auto& func: *program->functions) {
-			if(func.first == "main")
-			{
-				main = KLCAST(KLFunction, func.second);
-				break;
-			}
-		}
-		if(main)
+		auto find = program->functions->find("main");
+		if(find != program->functions->end())
 		{
+			main = KLCAST(KLFunction, find->second);
+			auto args = argstoobject(argv, argc);
 
+			main->invokable(find->second, args, KLINT(argc));
 			return 0;
 		}
 		cout<<"Error: unable to find entry point 'main'" << endl;

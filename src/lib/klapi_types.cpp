@@ -152,8 +152,8 @@ CAPI KlObject *klIns(KlType *type) {
 	return space;
 }
 
-CAPI inline void klRef(KlObject *object) {
-	object->refs++;
+CAPI void klRef(KlObject *object) {
+	if(object) object->refs++;
 }
 
 CAPI void klDeref(KlObject* object) {

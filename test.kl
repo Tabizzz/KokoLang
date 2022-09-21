@@ -1,7 +1,10 @@
-﻿.func sum
+﻿.func main
 {
 	.locals 3
-	.stack 2
+	.stack  2
+	.marg   1
+	.args  -1
+
 	// iterations
 	push 1000000
 	stvar 0
@@ -34,13 +37,4 @@
 	ldvar 1
 	call out
 	ret
-}
-
-.func main
-{
-	.locals 0
-	.stack 1
-	push "Hello world"
-	call out
-	call sum
 }

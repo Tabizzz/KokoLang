@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+#include <stack>
 #include "KLImports.h"
 #include "Runtime/KLObject.h"
 using namespace std;
@@ -9,7 +11,14 @@ using namespace std;
  */
 struct CPPAPI KLCall
 {
-	KLOBJECTHEAD
+	unsigned short next;
+	bool exit;
+	kbyte stackc;
+	kbyte argc;
+	stack<KlObject*, vector<KlObject*>>
+	evaluationStack;
+	KlObject** args;
+	KlObject** locals;
 };
 
 /*

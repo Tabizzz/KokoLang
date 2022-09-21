@@ -1,7 +1,62 @@
 ﻿#include <utility>
 #include <cstring>
+#include <iostream>
 #include "KokoLangInternal.h"
 #include "Runtime/KLFunction.h"
+#include "KLFunctionImpl.h"
+
+
+void initToNull(KlObject *pObject[], int count) {
+	for (int i = 0; i < count; ++i) {
+		pObject[i] = nullptr;
+	}
+}
+
+KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
+{
+	auto func = KLCAST(KLFunction, caller);
+	auto passedArgs = KLCAST(kl_int, argsc)->value;
+	if(passedArgs < func->margs){
+		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
+		" expected  at least" << (int)func->margs << " argv but received " << passedArgs << endl;
+		exit(1);
+	}
+	else if(func->args >= 0 && passedArgs > func->args)
+	{
+		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
+		" expected maximum " << (int)func->args << " argv but received " << passedArgs << endl;
+		exit(1);
+	}
+	int argc = func->args == -1 ? passedArgs : func->args;
+
+	// the call of this function
+	KLCall call{};
+	call.next = 0;
+	KlObject* args[argc];
+	KlObject* locals[func->locals];
+	// set args and locals to null
+	initToNull(args, argc);
+	initToNull(locals, func->locals);
+	// copy passed args
+	for (int i = 0; i < passedArgs; ++i) {
+		args[i] = argv[i];
+		klRef(argv[i]);
+	}
+	call.locals = locals;
+	call.args = args;
+
+	// execute the code
+	while (!call.exit)
+	{
+		auto ins = (*func->body)[call.next++];
+		ins->call(caller, &call, ins->foperand, ins->soperand);
+	}
+
+	// final cleanup
+
+
+	return nullptr;
+}
 
 void kfunc_instantiator(KlObject * obj)
 {
@@ -59,12 +114,17 @@ void klFunction_reallocateLabels(KLFunction* function) {
 			}
 			function->body->erase(next(function->body->begin(), i--));
 		}
+		else
+		{
+			klFunction_setInstructionCall(instruction);
+		}
 	}
 	function->size = function->body->size();
 	// resize the body if we delete instructions
 	if(function->size < olsize) function->body->shrink_to_fit();
-}
 
+	function->invokable = kliFunctionImpl;
+}
 
 KlType klBType_Func =
 {

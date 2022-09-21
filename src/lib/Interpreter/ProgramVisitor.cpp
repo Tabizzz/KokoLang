@@ -12,9 +12,14 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 	for (size_t i = 0; i < funcionCount; i++)
 	{
 		auto func = any_cast<KLFunction*>(visitFunction(functionContexts[i]));
-		auto name = KLCAST(kl_string, func->name);
+		string name = KLCAST(kl_string, func->name)->value;
 
-		program->functions->insert(pair<string, KlObject*>(name->value, KLWRAP(func)));
+		auto find = program->functions->find(name);
+		if(find == program->functions->end()) {
+			program->functions->insert(pair<string, KlObject *>(name, KLWRAP(func)));
+		} else {
+			cout << "ignoring repeat function definition: " << name << endl;
+		}
 	}
 
 	return program;
