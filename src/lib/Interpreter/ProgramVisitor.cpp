@@ -123,9 +123,6 @@ OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{ "mul",		OpCodes::mul	},
 			{ "div",		OpCodes::divi	},
 			{ "mod",		OpCodes::mod	},
-			{ "pot",		OpCodes::pot	},
-			{ "root",		OpCodes::root	},
-			{ "ln",			OpCodes::ln		},
 			{ "tstr",		OpCodes::tstr	},
 			{ "tint",		OpCodes::tint	},
 			{ "tflt",		OpCodes::tflt	},
@@ -270,9 +267,6 @@ void ProgramVisitor::getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject 
 		case mul:
 		case divi:
 		case mod:
-		case pot:
-		case root:
-		case ln:
 		case tstr:
 		case tint:
 		case tflt:

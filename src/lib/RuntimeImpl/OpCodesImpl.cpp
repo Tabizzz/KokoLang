@@ -123,12 +123,6 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case mod:
 			break;
-		case pot:
-			break;
-		case root:
-			break;
-		case ln:
-			break;
 		case tstr:
 			break;
 		case tint:

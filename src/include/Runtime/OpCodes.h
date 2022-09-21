@@ -416,46 +416,6 @@ enum OpCodes : unsigned char
 	 * - the result of the operation is pushed onto the stack.
 	 */
 	mod,
-	/*
-	 * Computes the power of the first value raised to the second in the stack.
-	 *
-	 * usage:
-	 * pot
-	 *
-	 * stack transition:
-	 * ... obj power -> ... result
-	 *
-	 * - obj and power are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
-	 */
-	pot,
-	/*
-	 * Computes the root of the first value order of the second value on the stack
-	 *
-	 * usage:
-	 * root
-	 *
-	 * stack transition:
-	 * ... obj order -> ... result
-	 *
-	 * - obj and order are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
-	 */
-	root,
-	/*
-	 * Computes the logarithm of the first value with base on the second value on
-	 * the stack.
-	 *
-	 * usage:
-	 * log
-	 *
-	 * stack transition:
-	 * ... obj base -> ... result
-	 *
-	 * - obj and base are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
-	 */
-	ln,
 
 #pragma endregion
 
