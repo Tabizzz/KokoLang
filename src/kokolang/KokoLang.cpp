@@ -43,6 +43,11 @@ int main(int argc, const char* argv[])
 
 		klInit();
 
+		MEASURE("Test: ", auto total = 0; for (int i = 0; i < 100000000; ++i) {
+			total += i;
+		}
+		cout << total << endl)
+
 		MEASURE("Program parse: ", KLPackage *program = klCreateProgramFromFile(argv[1]))
 
 		int exit;

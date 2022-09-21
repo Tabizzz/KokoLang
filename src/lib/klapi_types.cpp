@@ -1,10 +1,30 @@
 ﻿#include "KokoLangInternal.h"
 #include "klapi_types.h"
 #include <cassert>
+#include <iostream>
 
 void kint_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_int, obj);
 	ptr->value = 0;
+}
+
+int kint_comparer(KlObject* x, KlObject* y) {
+	auto first = KASINT(x);
+	int second;
+	if(y->type == &klBType_Int) {
+		second = KASINT(y);
+	} else {
+		second = KASINT(y->type->toType(y, KLWRAP(&klBType_Int)));
+	}
+
+	if(first < second) {
+		return 1;
+	}
+	else if( second < first) {
+		return -1;
+	}
+
+	return 0;
 }
 
 void kfloat_init(KlObject* obj) {
@@ -53,7 +73,14 @@ KlType klBType_Int =
 		sizeof(kl_int),
 		kint_init,
 		nullptr,
-		nullptr
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kint_comparer
 };
 
 KlType klBType_Float =
@@ -142,6 +169,8 @@ KlObject *klNew(KlType *type, KlObject **args, int argc) {
 }
 
 CAPI KlObject *klIns(KlType *type) {
+
+	static int creations = 0;
 	auto size = type->size;
 	auto space = (KlObject*)malloc(size);
 	space->type = type;

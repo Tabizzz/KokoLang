@@ -7,10 +7,12 @@
 
 #define KLINT(x) klBuiltinInt(x)
 #define KINT(x) KLCAST(kl_int, KLINT(x))
+#define KASINT(x) KLCAST(kl_int, x)->value
 #define KLFLOAT(x) klBuiltinFloat(x)
 #define KFLOAT(x) KLCAST(kl_float , KLFLOAT(x))
 #define KLBOOL(x) klBuiltinBool(x)
 #define KBOOL(x) KLCAST(kl_bool, KLBOOL(x))
+#define KASBOOL(x) KLCAST(kl_bool, x)->value
 #ifdef __cplusplus
 #define KLSTR(x) klBuiltinString(x)
 #else

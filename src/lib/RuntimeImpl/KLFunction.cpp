@@ -4,7 +4,9 @@
 #include "KokoLangInternal.h"
 #include "Runtime/KLFunction.h"
 #include "KLFunctionImpl.h"
+#include <chrono>
 
+using namespace std::chrono;
 
 void initToNull(KlObject *pObject[], int count) {
 	for (int i = 0; i < count; ++i) {
@@ -49,9 +51,16 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 	while (!call.exit)
 	{
 		auto ins = (*func->body)[call.next++];
-		ins->call(caller, &call, ins->foperand, ins->soperand);
+		if(ins->opcode == OpCodes::call)
+		{
+			auto top = call.evaluationStack.top();
+			auto val = KASINT(top);
+			cout << val << endl;
+		} else
+		{
+			ins->call(caller, &call, ins->foperand, ins->soperand);
+		}
 	}
-
 	// final cleanup
 
 
@@ -102,13 +111,13 @@ void klFunction_reallocateLabels(KLFunction* function) {
 					default:
 						break;
 				}
-				if(reflabel) {
+				if(reflabel && ref->foperand->type == &klBType_String) {
 					auto label = KLCAST(kl_string, ref->foperand);
 					auto label2 =  KLCAST(kl_string, instruction->label);
 					if(strcmp(label->value, label2->value) == 0)
 					{
-						klDeref(instruction->foperand);
-						instruction->foperand = KLINT(i);
+						klDeref(ref->foperand);
+						ref->foperand = KLINT(i);
 					}
 				}
 			}

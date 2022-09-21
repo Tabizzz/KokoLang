@@ -28,6 +28,16 @@ typedef KlObject* (*klinvokable)			// a delegate for invokable objects like cons
 		KlObject **args,					// the args passed to the function
 		KlObject *argc);					// the number of arguments passed to the function
 
+typedef int (*klcomparer)					// a binary operator, receive two objects and returns a new one
+		(KlObject* first,
+		 KlObject* second);
+
+typedef KlObject* (*klbinaryop)				// a binary operator, receive two objects and returns a new one
+	   (KlObject* first,
+		KlObject* second);
+typedef KlObject* (*klunaryop)				// a unary operation, receive one object and returns a new one
+	   (KlObject* obj);
+
 typedef struct KlType {
 	KLOBJECTHEAD
 	const char *name;			// the name of the type
@@ -36,6 +46,23 @@ typedef struct KlType {
 	klinitializer initializer;	// the initializer to this type
 	KlObject* constructor;		// the constructor of the type
 	klfinalizer finalizer;      // the finalizer to this type
+
+	klunaryop toString;			// return the string representation of the type
+	klunaryop toInt;			// return the int representation of the type
+	klunaryop toFloat;			// return the float representation of the type
+	klunaryop toBool;			// return the bool representation of the type
+	klbinaryop toType;			// convert the type to another type
+	klunaryop cast;				// convert the instance of another type to this type
+
+	klcomparer comparer;		// the comparer of the type
+	klbinaryop equal;			// the equality checker of the type
+
+	klbinaryop opAdd;			// addition operation
+	klbinaryop opSub;			// subtraction operation
+	klbinaryop opMul;			// multiplication operation
+	klbinaryop opDiv;			// division operation
+	klbinaryop opMod;			// modulo operation
+
 } KlType;
 
 

@@ -18,7 +18,6 @@ KlObject* utilPopTop(KLCall* call)
 void utilPushTop(KlObject * caller, KLCall* call, KlObject* obj)
 {
 	auto func = KLCAST(KLFunction, caller);
-	klRef(obj);
 	if(call->stackc < func->stack) {
 		call->evaluationStack.push(obj);
 		call->stackc++;
@@ -29,6 +28,49 @@ void utilPushTop(KlObject * caller, KLCall* call, KlObject* obj)
 }
 
 void opcode_noc(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand){}
+
+void opcode_go(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+{
+	call->next = KASINT(foperand);
+}
+
+void opcode_add(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+{
+	auto first = utilPopTop(call);
+	auto second = utilPopTop(call);
+
+	auto f = KLCAST(kl_int, first);
+	auto s = KLCAST(kl_int, second);
+
+	s->value = f->value + s->value;
+
+	klDeref(second);
+	klDeref(first);
+}
+
+void opcode_goif(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+{
+	auto op = utilPopTop(call);
+	if(op && KASBOOL(op)) {
+		call->next = KASINT(foperand);
+	}
+	klDeref(op);
+}
+
+void opcode_oplt(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+{
+	auto second = utilPopTop(call);
+	auto first = utilPopTop(call);
+	auto operation = first->type->comparer(first, second);
+	klDeref(second);
+	klDeref(first);
+	if(operation == 1) {
+		utilPushTop(caller, call, KLBOOL(true));
+		return;
+	}
+
+	utilPushTop(caller, call, nullptr);
+}
 
 void opcode_ldvar(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
 {
@@ -50,6 +92,7 @@ void opcode_stvar(KlObject * caller, KLCall *call, KlObject *foperand, KlObject 
 
 void opcode_push(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
 {
+	klRef(foperand);
 	utilPushTop(caller, call, foperand);
 }
 
@@ -65,8 +108,10 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			instruction->call = opcode_noc;
 			break;
 		case go:
+			instruction->call = opcode_go;
 			break;
 		case goif:
+			instruction->call = opcode_goif;
 			break;
 		case goifn:
 			break;
@@ -102,6 +147,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 		case xori:
 			break;
 		case oplt:
+			instruction->call = opcode_oplt;
 			break;
 		case ople:
 			break;
@@ -114,6 +160,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 		case opne:
 			break;
 		case add:
+			instruction->call = opcode_add;
 			break;
 		case sub:
 			break;
