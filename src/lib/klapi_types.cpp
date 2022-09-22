@@ -9,12 +9,12 @@ void kint_init(KlObject* obj) {
 }
 
 int kint_comparer(KlObject* x, KlObject* y) {
-	auto first = KASINT(x);
+	int first = KASINT(x);
 	int second;
 	if(y->type == &klBType_Int) {
 		second = KASINT(y);
 	} else {
-		second = KASINT(y->type->toType(y, KLWRAP(&klBType_Int)));
+		second = KASINT(y->type->toInt(y));
 	}
 
 	if(first < second) {
@@ -23,7 +23,6 @@ int kint_comparer(KlObject* x, KlObject* y) {
 	else if( second < first) {
 		return -1;
 	}
-
 	return 0;
 }
 
@@ -169,8 +168,6 @@ KlObject *klNew(KlType *type, KlObject **args, int argc) {
 }
 
 CAPI KlObject *klIns(KlType *type) {
-
-	static int creations = 0;
 	auto size = type->size;
 	auto space = (KlObject*)malloc(size);
 	space->type = type;

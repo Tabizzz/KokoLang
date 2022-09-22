@@ -6,7 +6,7 @@
 	.args  -1
 
 	// iterations
-	push 100000
+	push 1000000
 	stvar 0
 	// total
 	push 0

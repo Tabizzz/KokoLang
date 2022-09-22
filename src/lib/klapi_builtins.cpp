@@ -2,7 +2,7 @@
 #include "klapi_builtins.h"
 
 
-CAPI KlObject* klBuiltinInt(int val)
+CAPI KlObject* klBuiltinInt(long val)
 {
 	auto base = klIns(&klBType_Int);
 	auto obj = KLCAST(kl_int, base);

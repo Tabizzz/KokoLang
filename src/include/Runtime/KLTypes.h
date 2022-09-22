@@ -12,7 +12,7 @@ extern "C" {
 
 typedef struct kl_int {
 	KLOBJECTHEAD
-	int value;
+	long value;
 } kl_int;
 
 typedef struct kl_float {

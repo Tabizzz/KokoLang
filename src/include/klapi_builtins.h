@@ -29,7 +29,7 @@
 /*
  * Creates new int instance
  */
-CAPI KlObject* klBuiltinInt(int val);
+CAPI KlObject* klBuiltinInt(long val);
 
 /*
  * Creates new float instance
