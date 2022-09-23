@@ -29,6 +29,15 @@ void utilPushTop(KlObject * caller, KLCall* call, KlObject* obj)
 
 void opcode_noc(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand){}
 
+void opcode_goifn(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+{
+	auto op = utilPopTop(call);
+	if(!op || !KASBOOL(op)) {
+		call->next = KASINT(foperand);
+	}
+	klDeref(op);
+}
+
 void opcode_go(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
 {
 	call->next = KASINT(foperand);
@@ -114,6 +123,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			instruction->call = opcode_goif;
 			break;
 		case goifn:
+			instruction->call = opcode_goifn;
 			break;
 		case push:
 			instruction->call = opcode_push;

@@ -16,10 +16,10 @@
 	stvar 2
 	
 	:comp
-	ldvar 0
 	ldvar 2
+	ldvar 0
 	oplt
-	goif end
+	goifn end
 
 	ldvar 1
 	ldvar 2
@@ -32,5 +32,7 @@
 	go comp
 
 	:end
+	ldvar 1
+	call out
 	ret
 }

@@ -54,6 +54,9 @@ typedef struct KlType {
 	klbinaryop toType;			// convert the type to another type
 	klunaryop cast;				// convert the instance of another type to this type
 
+	/*
+	 * The comparer must return 1 if second is bigger and -1 is first is bigger.
+	 */
 	klcomparer comparer;		// the comparer of the type
 	klbinaryop equal;			// the equality checker of the type
 

@@ -43,7 +43,7 @@ int main(int argc, const char* argv[])
 
 		klInit();
 
-		MEASURE("Test: ", auto total = 0; for (int i = 0; i < 100000000; ++i) {
+		MEASURE("Test: ", long total = 0; for (int i = 0; i < 1000000; i++) {
 			total += i;
 		}
 		cout << total << endl)
