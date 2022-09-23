@@ -29,23 +29,28 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 		" expected maximum " << (int)func->args << " argv but received " << passedArgs << endl;
 		exit(1);
 	}
-	int argc = func->args == -1 ? passedArgs : func->args;
+	auto argc = func->args == -1 ? passedArgs : func->args;
 
 	// the call of this function
 	KLCall call{};
 	call.next = 0;
-	KlObject* args[argc];
-	KlObject* locals[func->locals];
-	// set args and locals to null
-	initToNull(args, argc);
-	initToNull(locals, func->locals);
-	// copy passed args
+	call.st.reserve(argc + func->locals + CALL_REG_COUNT);
+	call.argc = argc;
+	call.st.push_back(KLINT(0));
+	call.st.push_back(KLFLOAT(0));
+	// locals by default to null
+	for (int i = 0; i < func->locals; ++i) {
+		call.st.push_back(nullptr);
+	}
+	// copy all the passed args
 	for (int i = 0; i < passedArgs; ++i) {
-		args[i] = argv[i];
+		call.st.push_back(argv[i]);
 		klRef(argv[i]);
 	}
-	call.locals = locals;
-	call.args = args;
+	// fill not passed args with null
+	for (int i = 0; i < argc - passedArgs; ++i) {
+		call.st.push_back(nullptr);
+	}
 
 	// execute the code
 	while (!call.exit)

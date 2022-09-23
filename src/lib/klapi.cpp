@@ -39,7 +39,6 @@ CAPI void klInit()
 	// define runtime specific types
 	STDREGTYPE(klBType_Instruction)
 	STDREGTYPE(klBType_Func)
-	STDREGTYPE(klBType_Call)
 	STDREGTYPE(klBType_Package)
 
 	packages = new map<string, KLPackage*>();

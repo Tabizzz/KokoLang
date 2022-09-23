@@ -76,7 +76,7 @@ void opcode_ldvar(KlObject * caller, KLCall *call, KlObject *foperand, KlObject 
 {
 	auto index = KLCAST(kl_int, foperand)->value;
 	// get the local, ref and then push onto the stack
-	auto local = call->locals[index];
+	auto local = call->st[index + CALL_REG_COUNT];
 	klRef(local);
 	utilPushTop(caller, call, local);
 }
@@ -86,8 +86,8 @@ void opcode_stvar(KlObject * caller, KLCall *call, KlObject *foperand, KlObject 
 	auto val = utilPopTop(call);
 	auto index = KLCAST(kl_int, foperand)->value;
 	// decrease the ref count of the current local.
-	klDeref(call->locals[index]);
-	call->locals[index] = val;
+	klDeref(call->st[index + CALL_REG_COUNT]);
+	call->st[index + CALL_REG_COUNT] = val;
 }
 
 void opcode_push(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
