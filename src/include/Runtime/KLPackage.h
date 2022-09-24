@@ -17,9 +17,9 @@ struct CPPAPI KLPackage
 {
 	KLOBJECTHEAD
 	/*
-	 * he Tname of the package, is not possible to have multiples packages with the
-	 * same name.
-	 */
+	* The name of the package, is not possible to have multiples packages with the
+	* same name.
+	*/
 	KlObject* name;
 	map<string, KlObject *>* functions;		// the functions defined in the package
 	map<string, KlObject *>* variables;		// the globals var of the package.
@@ -52,4 +52,4 @@ CAPI void klPackage_Build(KLPackage* klPackage);
  */
 CAPI int klPackage_Run(KLPackage* klPackage, int argc, const char* argv[]);
 
-extern KlType klBType_Package;
+CAPI KlType klBType_Package;

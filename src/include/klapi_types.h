@@ -11,42 +11,42 @@
 /*
  * Builtin type int.
  */
-extern KlType klBType_Int;
+CAPI KlType klBType_Int;
 
 /*
  * Builtin type flt.
  */
-extern KlType klBType_Float;
+CAPI KlType klBType_Float;
 
 /*
  * Builtin type bit.
  */
-extern KlType klBType_Bool;
+CAPI KlType klBType_Bool;
 
 /*
  * Builtin type str.
  */
-extern KlType klBType_String;
+CAPI KlType klBType_String;
 
 /*
  * Builtin type ptr.
  */
-extern KlType klBType_Ptr;
+CAPI KlType klBType_Ptr;
 
 /*
  * Builtin type object ptr.
  */
-extern KlType klBType_OPtr;
+CAPI KlType klBType_OPtr;
 
 /*
  * Builtin type arr.
  */
-extern KlType klBType_Arr;
+CAPI KlType klBType_Arr;
 
 /*
  * Builtin type type.
  */
-extern KlType klBType_Type;
+CAPI KlType klBType_Type;
 
 /*
  * Create a new object calling the constructor of the type.

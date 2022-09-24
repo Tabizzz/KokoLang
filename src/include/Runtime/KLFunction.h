@@ -31,7 +31,7 @@ struct CPPAPI KLFunction {
  * Type definition for KLFunction.
  * This type is defined when call klInit.
  */
-extern KlType klBType_Func;
+CAPI KlType klBType_Func;
 
 #ifdef __cplusplus
 }

@@ -233,7 +233,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case ldfld:
 			break;
-		case ref:
+		case OpCodes::ref:
 			break;
 		case deref:
 			break;

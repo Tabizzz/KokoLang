@@ -1,6 +1,7 @@
 ﻿
 #include "KokoLangInternal.h"
 #include "klapi.h"
+#include <stdexcept>
 
 #define  STDREGTYPE(x) klDefType(&x); klPackageRegType(stdPackage, &x);
 
@@ -16,7 +17,7 @@ void kliBuildStdLib()
 
 CAPI void klInit()
 {
-	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value), "kl_int and kl_float dont have the same size.");
+	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) <= sizeof(KLCAST(kl_float, nullptr)->value), "kl_int and kl_float dont have the same size.");
 
 	kliBuildStdLib();
 

@@ -2,14 +2,6 @@
 #include "KokoLangInternal.h"
 #include "Runtime/KLPackage.h"
 
-/*
-
-int KLPackage::Run(const KLPackage* program)
-{
-
-}
-*/
-
 void kpack_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
@@ -71,7 +63,7 @@ KlObject **argstoobject(const char **pString, int i)
 	return ret;
 }
 
-CAPI int klPackage_Run(KLPackage *program, int argc, const char **argv) {
+CAPI int klPackage_Run(KLPackage* program, int argc, const char* argv[]) {
 	if (program)
 	{
 		KLFunction* main;
