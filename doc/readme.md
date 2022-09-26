@@ -54,4 +54,4 @@ To create a function you need to use this syntax:
 ### opcodes
 kokolang has a list of opcodes to operate with vars and the stack:
 
-you can see the list of opcodes and the docs in the file [OpCodes.h](https://github.com/Tabizzz/KokoLang/blob/master/src/include/Runtime/OpCodes.h)
+you can see the list of opcodes and the docs in the file [KOpcode.h](https://github.com/Tabizzz/KokoLang/blob/master/src/include/Runtime/KOpcode.h)

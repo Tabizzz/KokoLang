@@ -144,7 +144,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case set:
 			break;
-		case OpCodes::get:
+		case KOpcode::get:
 			break;
 		case starg:
 			break;
@@ -205,9 +205,9 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case freei:
 			break;
-		case OpCodes::copy:
+		case KOpcode::copy:
 			break;
-		case OpCodes::fill:
+		case KOpcode::fill:
 			break;
 		case arr:
 			break;
@@ -227,13 +227,13 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case newi:
 			break;
-		case OpCodes::size:
+		case KOpcode::size:
 			break;
 		case stfld:
 			break;
 		case ldfld:
 			break;
-		case OpCodes::ref:
+		case KOpcode::ref:
 			break;
 		case deref:
 			break;

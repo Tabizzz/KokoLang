@@ -56,7 +56,7 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 	while (!call.exit)
 	{
 		auto ins = (*func->body)[call.next++];
-		if(ins->opcode == OpCodes::call)
+		if(ins->opcode == KOpcode::call)
 		{
 			auto top = call.evaluationStack.top();
 			auto val = KASINT(top);

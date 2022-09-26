@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-enum OpCodes : unsigned char
+enum KOpcode : unsigned char
 {
 	/*
 	 *	no code, used for labels only, can be used manually to do "nothing" in one instruction.

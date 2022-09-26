@@ -10,9 +10,9 @@ public:
 	antlrcpp::Any visitFunction(KokoLangParser::FunctionContext* ctx) override;
 	std::any visitSentence(KokoLangParser::SentenceContext *ctx) override;
 
-	static OpCodes getOpcode(KokoLangParser::OpcodeContext *pContext);
+	static KOpcode getOpcode(KokoLangParser::OpcodeContext *pContext);
 
 	static void
-	getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject **sOperand,
+	getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject **sOperand,
 				KokoLangParser::ValueContext *fContext, KokoLangParser::ValueContext *sContext);
 };

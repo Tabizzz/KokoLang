@@ -1,9 +1,9 @@
 ﻿#pragma once
 /*
- * Generic kokolang functions.
+ * Generic kokolang functions exposed to the C API.
  */
 
-#include "KLImports.h"
+#include "klimports.h"
 #include "Runtime/KLRuntime.h"
 
 #ifndef CAPI_H

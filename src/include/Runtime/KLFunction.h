@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include "KLImports.h"
+#include "klimports.h"
 #include "Runtime/KLObject.h"
 #include "Runtime/KLInstruction.h"
-#include "Runtime/KLTypes.h"
+#include "kltypedef.h"
 
 #ifdef __cplusplus
 extern "C" {

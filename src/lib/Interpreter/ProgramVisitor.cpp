@@ -90,68 +90,68 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 	return instruction;
 }
 
-OpCodes ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
+KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	auto code = pContext->Id()->getText();
 	// https://stackoverflow.com/a/16388594
-	static const map<string, OpCodes> optionStrings {
-			{ "noc",		OpCodes::noc	},
-			{ "go",			OpCodes::go		},
-			{ "goif",		OpCodes::goif	},
-			{ "goifn",		OpCodes::goifn	},
-			{ "push",		OpCodes::push	},
-			{ "pop",		OpCodes::pop	},
-			{ "dup",		OpCodes::dup	},
-			{ "clear",		OpCodes::clear	},
-			{ "stackl",		OpCodes::stackl	},
-			{ "stvar",		OpCodes::stvar	},
-			{ "ldvar",		OpCodes::ldvar	},
-			{ "set",		OpCodes::set	},
-			{ "get",		OpCodes::get	},
-			{ "starg",		OpCodes::starg	},
-			{ "ldarg",		OpCodes::ldarg	},
-			{ "and",		OpCodes::andi	},
-			{ "or",			OpCodes::ori	},
-			{ "xor",		OpCodes::xori	},
-			{ "oplt",		OpCodes::oplt	},
-			{ "ople",		OpCodes::ople	},
-			{ "opgt",		OpCodes::opgt	},
-			{ "opge",		OpCodes::opge	},
-			{ "opeq",		OpCodes::opeq	},
-			{ "opne",		OpCodes::opne	},
-			{ "add",		OpCodes::add	},
-			{ "sub",		OpCodes::sub	},
-			{ "mul",		OpCodes::mul	},
-			{ "div",		OpCodes::divi	},
-			{ "mod",		OpCodes::mod	},
-			{ "tstr",		OpCodes::tstr	},
-			{ "tint",		OpCodes::tint	},
-			{ "tflt",		OpCodes::tflt	},
-			{ "tbit",		OpCodes::tbit	},
-			{ "tobj",		OpCodes::tobj	},
-			{ "cast",		OpCodes::cast	},
-			{ "jump",		OpCodes::jump	},
-			{ "ret",		OpCodes::ret	},
-			{ "call",		OpCodes::call	},
-			{ "argc",		OpCodes::argc	},
-			{ "aloc",		OpCodes::aloc	},
-			{ "free",		OpCodes::freei	},
-			{ "copy",		OpCodes::copy	},
-			{ "fill",		OpCodes::fill	},
-			{ "arr",		OpCodes::arr	},
-			{ "arl",		OpCodes::arl	},
-			{ "ard",		OpCodes::ard	},
-			{ "lde",		OpCodes::lde	},
-			{ "ste",		OpCodes::ste	},
-			{ "type",		OpCodes::type	},
-			{ "typeof",		OpCodes::typeofi},
-			{ "is",			OpCodes::is		},
-			{ "new",		OpCodes::newi	},
-			{ "size",		OpCodes::size	},
-			{ "stfld",		OpCodes::stfld	},
-			{ "ldfld",		OpCodes::ldfld	},
-			{ "ref",		OpCodes::ref	},
-			{ "deref",		OpCodes::deref	},
-			{ "ins",		OpCodes::ins	},
+	static const map<string, KOpcode> optionStrings {
+			{ "noc",    KOpcode::noc	},
+			{ "go",     KOpcode::go		},
+			{ "goif",   KOpcode::goif	},
+			{ "goifn",  KOpcode::goifn	},
+			{ "push",   KOpcode::push	},
+			{ "pop",    KOpcode::pop	},
+			{ "dup",    KOpcode::dup	},
+			{ "clear",  KOpcode::clear	},
+			{ "stackl", KOpcode::stackl	},
+			{ "stvar",  KOpcode::stvar	},
+			{ "ldvar",  KOpcode::ldvar	},
+			{ "set",    KOpcode::set	},
+			{ "get",    KOpcode::get	},
+			{ "starg",  KOpcode::starg	},
+			{ "ldarg",  KOpcode::ldarg	},
+			{ "and",    KOpcode::andi	},
+			{ "or",     KOpcode::ori	},
+			{ "xor",    KOpcode::xori	},
+			{ "oplt",   KOpcode::oplt	},
+			{ "ople",   KOpcode::ople	},
+			{ "opgt",   KOpcode::opgt	},
+			{ "opge",   KOpcode::opge	},
+			{ "opeq",   KOpcode::opeq	},
+			{ "opne",   KOpcode::opne	},
+			{ "add",    KOpcode::add	},
+			{ "sub",    KOpcode::sub	},
+			{ "mul",    KOpcode::mul	},
+			{ "div",    KOpcode::divi	},
+			{ "mod",    KOpcode::mod	},
+			{ "tstr",   KOpcode::tstr	},
+			{ "tint",   KOpcode::tint	},
+			{ "tflt",   KOpcode::tflt	},
+			{ "tbit",   KOpcode::tbit	},
+			{ "tobj",   KOpcode::tobj	},
+			{ "cast",   KOpcode::cast	},
+			{ "jump",   KOpcode::jump	},
+			{ "ret",    KOpcode::ret	},
+			{ "call",   KOpcode::call	},
+			{ "argc",   KOpcode::argc	},
+			{ "aloc",   KOpcode::aloc	},
+			{ "free",   KOpcode::freei	},
+			{ "copy",   KOpcode::copy	},
+			{ "fill",   KOpcode::fill	},
+			{ "arr",    KOpcode::arr	},
+			{ "arl",    KOpcode::arl	},
+			{ "ard",    KOpcode::ard	},
+			{ "lde",    KOpcode::lde	},
+			{ "ste",    KOpcode::ste	},
+			{ "type",   KOpcode::type	},
+			{ "typeof", KOpcode::typeofi},
+			{ "is",     KOpcode::is		},
+			{ "new",    KOpcode::newi	},
+			{ "size",   KOpcode::size	},
+			{ "stfld",  KOpcode::stfld	},
+			{ "ldfld",  KOpcode::ldfld	},
+			{ "ref",    KOpcode::ref	},
+			{ "deref",  KOpcode::deref	},
+			{ "ins",    KOpcode::ins	},
 	};
 
 	auto itr = optionStrings.find(code);
@@ -209,7 +209,7 @@ KlObject* kliCheckOptionalIdentifier(KokoLangParser::ValueContext *ctx)
 	return nullptr;
 }
 
-KlObject* kliCheckPush(OpCodes *pCodes, KokoLangParser::ValueContext *ctx)
+KlObject* kliCheckPush(KOpcode *pCodes, KokoLangParser::ValueContext *ctx)
 {
 	if(!ctx) throw std::invalid_argument("missing required operand");
 	auto boolv = ctx->bool_();
@@ -237,14 +237,14 @@ KlObject* kliCheckPush(OpCodes *pCodes, KokoLangParser::ValueContext *ctx)
 	auto idv = ctx->Id();
 	if(idv)
 	{
-		*pCodes = OpCodes::get;
+		*pCodes = KOpcode::get;
 		return KLSTR(idv->getText());
 	}
 	return nullptr;
 }
 #pragma endregion
 
-void ProgramVisitor::getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject **sOperand,
+void ProgramVisitor::getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject **sOperand,
 								 KokoLangParser::ValueContext *fContext, KokoLangParser::ValueContext *sContext) {
 	switch (*pCodes) {
 #pragma region no operands
@@ -274,11 +274,11 @@ void ProgramVisitor::getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject 
 		case ret:
 		case argc:
 		case freei:
-		case OpCodes::copy:
-		case OpCodes::fill:
+		case KOpcode::copy:
+		case KOpcode::fill:
 		case ard:
 		case typeofi:
-		case OpCodes::ref:
+		case KOpcode::ref:
 		case deref:
 		case reserved_ext:
 			break;
@@ -287,8 +287,8 @@ void ProgramVisitor::getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject 
 		case go:
 		case goif:
 		case goifn:
-		case OpCodes::set:
-		case OpCodes::get:
+		case KOpcode::set:
+		case KOpcode::get:
 		case tobj:
 		case cast:
 		case type:
@@ -330,7 +330,7 @@ void ProgramVisitor::getOperands(OpCodes *pCodes, KlObject **fOperand, KlObject 
 			break;
 #pragma endregion
 #pragma region one optional identifier
-		case OpCodes::size:
+		case KOpcode::size:
 			*fOperand = kliCheckOptionalIdentifier(fContext);
 			break;
 #pragma endregion

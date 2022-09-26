@@ -2,7 +2,8 @@
 #include "klapi.h"
 
 /*
- * here are the builtin types and generic functions related to types.
+ * here are the builtin types and functions related  creating
+ * and deleting instances to types.
  */
 
 #define KLCAST(x, y) ((x*)y)

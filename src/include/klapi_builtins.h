@@ -3,7 +3,7 @@
 */
 #pragma once
 #include "klapi_types.h"
-#include "Runtime/KLTypes.h"
+#include "kltypedef.h"
 
 #define KLINT(x) klBuiltinInt(x)
 #define KINT(x) KLCAST(kl_int, KLINT(x))

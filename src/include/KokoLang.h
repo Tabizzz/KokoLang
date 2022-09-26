@@ -2,8 +2,10 @@
  * This header import all the other headers in kokolang
  */
 #pragma once
-#include "KLImports.h"
+#include "klimports.h"
 #include "klapi.h"
 #include "klapi_types.h"
 #include "klapi_builtins.h"
+#include "kltypedef.h"
+#include "KOpcode.h"
 #include "Runtime/KLRuntime.h"
