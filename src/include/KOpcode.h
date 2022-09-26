@@ -7,8 +7,6 @@ enum KOpcode : unsigned char
 	 *
 	 *	usage:
 	 *	noc
-	 *
-	 *	no stack transitions.
 	 */
 	noc,
 
@@ -22,189 +20,164 @@ enum KOpcode : unsigned char
 	 *
 	 * operators:
 	 * -label: the target label name or the index of the target instruction.
-	 *
-	 *  no stack transitions.
 	 */
 	go,
 	/*
-	 *  move to a target instruction by index if the value in the stack is true
+	 *  move to a target instruction by index if the value in the reg is true
 	 *  or not null, can be used with labels.
 	 *
 	 * usage:
-	 * goif <label>
+	 * goif <label> <reg>
 	 *
 	 * operators:
 	 * -label: the target label name or the index of the target instruction.
-	 *
-	 *  stack transition:
-	 *  ... value -> ...
-	 *
-	 *  - value is taken from the stack and evaluated, if is true or not null then
-	 *  jump to label, otherwise continue with the next instruction.
+	 * -reg: the index of the register to evaluate.
 	 */
 	goif,
 	/*
-	 *  move to a target instruction by index if the value in the stack is false
+	 *  move to a target instruction by index if the value in the reg is false
 	 *  or null, can be used with labels.
 	 *
 	 * usage:
-	 * goifn <label>
+	 * goifn <label> <reg>
 	 *
 	 * operators:
 	 * -label: the target label name or the index of the target instruction.
-	 *
-	 *  stack transition:
-	 *  ... value -> ...
-	 *
-	 *  - value is taken from the stack and evaluated, if is false or null then
-	 *  jump to label, otherwise continue with the next instruction.
+	 * -reg: the index of the register to evaluate.
 	 */
 	goifn,
 
 #pragma endregion
 
-#pragma region stack operations
+#pragma region register operations
 
 	/*
-	 * push a value in the stack, can push variables.
+	 * push a value into a register, can push variables.
 	 *
 	 * usage:
-	 * push <obj>
+	 * push <obj> <reg>
 	 *
 	 * operators:
-	 * -obj: any primitive value to push in the stack, if an identifier is used
-	 * the opcode will be replaced with a 'get' code.
-	 *
-	 * stack transition:
-	 * ... -> ... value
-	 *
-	 * - obj is pushed on the stack, if is a variable the value stored is pushed.
+	 * -obj: any primitive value to push in the stack, if an identifier is used.
+	 * -reg: the register to save the value.
 	 */
 	push,
 	/*
-	 * pop a value from the stack.
+	 * pop a value from the .
 	 *
 	 * usage:
-	 * pop
+	 * pop <reg>
 	 *
-	 * stack transition:
-	 * ... obj -> ...
-	 *
-	 * - obj, the last element in the stack is removed.
+	 * operators:
+	 * -reg: the register to remove, this register will be set to null.
 	 */
 	pop,
 	/*
-	 * duplicate the element in top of the stack.
+	 * duplicate the element in one register to other register.
+	 * this operation is a reference copy, even primitive types
+	 * are copy as reference so cant be optimal with primitives.
 	 *
 	 * usage:
-	 * dup
+	 * dup <src> <dest>
 	 *
-	 * stack transition:
-	 *
-	 * ... obj -> .. obj obj
-	 *
-	 * - obj is popped off of the stack duplicated and pushed again with the duplicated.
+	 * operators:
+	 * -src: the source register to duplicate.
+	 * -dest: the destination register, any current content will be
+	 * overwritten.
 	 */
 	dup,
 	/*
-	 * clear the stack.
+	 * Copy the value from one register to another.
+	 * this operation is a value copy, if the source and destination
+	 * objects are of the same type the value is copied based on the
+	 * type, if the types are different the source type can define an
+	 * operation to copy between types, if not operation is defined
+	 * then this code act like dup code.
 	 *
 	 * usage:
-	 * clear
+	 * cp <src> <dest>
 	 *
-	 * stack transition:
-	 * ... ->
-	 *
-	 * - any object in the stack will be popped off.
+	 * operators:
+	 * -src: the source register to copy.
+	 * -dest: the destination register, any current content will be
+	 * overwritten.
 	 */
-	clear,
+	cp,
 	/*
-	 * push the current amount of items in the stack as an int.
+	 * This code operate exactly like cp but the source register is
+	 * set to null.
 	 *
 	 * usage:
-	 * stackl
+	 * mv <src> <dest>
 	 *
-	 * stack transition:
-	 * ... -> ... count
-	 *
-	 * - the stack count is pushed in the stack.
+	 * operators:
+	 * -src: the source register to copy.
+	 * -dest: the destination register, any current content will be
+	 * overwritten.
 	 */
-	stackl,
+	mv,
+	/*
+	 * Get the value of a flag of the call and save it as a bool.
+	 *
+	 * usage:
+	 * lflag <index> <reg>
+	 *
+	 * operators:
+	 * -index: the index of the flag (0 - 15).
+	 * -reg: the register to save the value.
+	 */
+	lflag,
 
 #pragma endregion
 
 #pragma region variable manipulation
 
 	/*
-	 * store the current value in the stack in the local var by index.
+	 * Copy one register to a global variable.
+	 * this copy operation acts like the cp code.
 	 *
 	 * usage:
-	 * stvar <index>
+	 * set <name> <reg>
 	 *
-	 * stack transition:
-	 * ... value -> ...
-	 *
-	 * -value is popped off of stack and stored in the given local var index
-	 */
-	stvar,
-	/*
-	 * load the value of a local var by index onto the stack.
-	 *
-	 * usage:
-	 * ldvar <index>
-	 *
-	 * stack transition:
-	 * ... -> ... value
-	 *
-	 * - the value of the local var is pushed onto the stack.
-	 */
-	ldvar,
-	/*
-	 * store the current value in the stack in the global var by name.
-	 *
-	 * usage:
-	 * set <name>
-	 *
-	 * stack transition:
-	 * ... value -> ...
-	 *
-	 * -value is popped off of stack and stored in the given global var name
+	 * operators:
+	 * -name: the identifier of the global variable.
+	 * -reg: the register to operate.
 	 */
 	set,
 	/*
-	 * load the value of a global var by name onto the stack.
+	 * Copy one global variable to a register.
+	 * this copy operation acts like the cp code.
 	 *
 	 * usage:
-	 * ldvar <name>
+	 * get <name> <reg>
 	 *
-	 * stack transition:
-	 * ... -> ... value
-	 *
-	 * - the value of the global var is pushed onto the stack.
+	 * operators:
+	 * -name: the identifier of the global variable.
+	 * -reg: the register to operate.
 	 */
 	get,
 	/*
-	 * store the current value in the stack in the arg slot by index.
+	 * Copy one register to an argument by index.
+	 * this copy operation acts like the cp code.
 	 *
 	 * usage:
-	 * starg <index>
+	 * starg <index> <reg>
 	 *
-	 * stack transition:
-	 * ... value -> ...
-	 *
-	 * -value is popped off of stack and stored in the given arg slot index
+	 * operators:
+	 * -index: the index of the argument.
+	 * -reg: the register to operate.
 	 */
 	starg,
 	/*
-	 * load the value of an arg slot by index onto the stack.
+	 * Copy one argument by index to a register.
+	 * this copy operation acts like the cp code.
 	 *
 	 * usage:
-	 * ldarg <index>
+	 * ldarg <index> <reg>
 	 *
-	 * stack transition:
-	 * ... -> ... value
-	 *
-	 * - the value of the arg slot is pushed onto the stack.
+	 * operators:
+	 * -index: the index of the argument.
+	 * -reg: the register to operate.
 	 */
 	ldarg,
 
@@ -213,137 +186,119 @@ enum KOpcode : unsigned char
 #pragma region boolean operations
 
 	/*
-	 * Computes the AND operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the AND operation of two values and set the check flag.
 	 * AND evaluates to true only if the two values are true.
 	 *
-	 * *A value count as true if is different from 0, false or is not null
+	 * *A value is true if is different from 0, false or is not null
 	 *
 	 * usage:
-	 * and
+	 * and <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the AND operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	andi,
 	/*
-	 * Computes the OR operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the OR operation of two values and set the check flag
 	 * OR evaluates to true if one or two of the operands are true.
 	 *
-	 * *A value count as true if is different from 0, false or is not null
+	 * *A value is true if is different from 0, false or is not null
 	 *
 	 * usage:
-	 * or
+	 * or <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the OR operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	ori,
 	/*
-	 * Computes the XOR operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the XOR operation of two values and set the check flag.
 	 * XOR evaluates to true if and only if one of the operands are true.
 	 *
-	 * *A value count as true if is different from 0, false or is not null
+	 * *A value is true if is different from 0, false or is not null
 	 *
 	 * usage:
-	 * xor
+	 * xor <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the XOR operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	xori,
 	/*
-	 * Computes the LT operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the LT operation of two values and set the check flag.
 	 * LT evaluates to true if the first operand is less than the second.
 	 *
 	 * usage:
-	 * oplt
+	 * oplt <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *|
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the LT operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	oplt,
 	/*
-	 * Computes the LE operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the LE operation of two values and set the check flag.
 	 * LE evaluates to true if the first operand is less than or equal to the second.
 	 *
 	 * usage:
-	 * ople
+	 * ople <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the LE operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	ople,
 	/*
-	 * Computes the GT operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the GT operation of two values and set the check flag.
 	 * GT evaluates to true if the first operand is greater than the second.
 	 *
 	 * usage:
-	 * opgt
+	 * opgt <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the GT operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	opgt,
 	/*
-	 * Computes the GE operation of two values and pushes the result onto the evaluation stack.
+	 * Computes the GE operation of two values and set the check flag.
 	 * GE evaluates to true if the first operand is greater than or equal to the second.
 	 *
 	 * usage:
-	 * opge
+	 * opge <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the GE operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	opge,
 	/*
-	 * Computes the EQ operation of two values and pushes the result onto the evaluation stack.
-	 * EQ evaluates to true if the operands are equal, by default this means that are the same
-	 * pointer.
+	 * Computes the EQ operation of two values and set the check flag.
+	 * EQ evaluates to true if the operands are equal, by default this means that are
+	 * the same pointer.
 	 *
 	 * usage:
-	 * opeq
+	 * opeq <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the EQ operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	opeq,
 	/*
-	 * Computes the NE operation of two values and pushes the result onto the evaluation stack.
-	 * NE evaluates to true if the operands are not equal, by default this means that are not the
-	 * same pointer.
+	 * Computes the NE operation of two values and set the check flag.
+	 * NE evaluates to true if the operands are not equal, by default this means that
+	 * are not the same pointer.
 	 *
 	 * usage:
-	 * opne
+	 * opne <a> <b>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the NE operation is pushed onto the stack.
+	 * operators:
+	 * -a: first object to evaluate.
+	 * -b: second object to evaluate.
 	 */
 	opne,
 
@@ -352,68 +307,65 @@ enum KOpcode : unsigned char
 #pragma region arithmetic operations
 
 	/*
-	 * Add two values and push the result in the stack.
+	 * Add two values and save the result in the given register.
 	 *
 	 * usage:
-	 * add
+	 * add <a> <b> <res>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
+	 * operators:
+	 * -a: the first register to operate.
+	 * -b: the second register to operate.
+	 * -res: the register to save the result.
 	 */
 	add,
 	/*
-	 * Subtract two values and push the result in the stack.
+	 * Subtract two values and save the result in the given register.
 	 *
 	 * usage:
-	 * sub
+	 * sub <a> <b> <res>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
+	 * operators:
+	 * -a: the first register to operate.
+	 * -b: the second register to operate.
+	 * -res: the register to save the result.
 	 */
 	sub,
 	/*
-	 * Multiply two values and push the result in the stack.
+	 * Multiply two values and save the result in the given register.
 	 *
 	 * usage:
-	 * mul
+	 * mul <a> <b> <res>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
+	 * operators:
+	 * -a: the first register to operate.
+	 * -b: the second register to operate.
+	 * -res: the register to save the result.
 	 */
 	mul,
 	/*
-	 * Divide the first value by the second value in the stack.
+	 * Divide the first value by the second value and save the result
+	 * in the given register.
 	 *
 	 * usage:
-	 * div
+	 * div <a> <b> <res>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
+	 * operators:
+	 * -a: the first register to operate.
+	 * -b: the second register to operate.
+	 * -res: the register to save the result.
 	 */
 	divi,
 	/*
-	 * Compute the modulo of the first value by the second value on the stack.
+	 * Compute the modulo of the first value by the second value and
+	 * save the result in the given register.
 	 *
 	 * usage:
-	 * mod
+	 * mod <a> <b> <res>
 	 *
-	 * stack transition:
-	 * ... obj1 obj2 -> ... result
-	 *
-	 * - obj1 and obj2 are popped off of the stack and the operation is executed.
-	 * - the result of the operation is pushed onto the stack.
+	 * operators:
+	 * -a: the first register to operate.
+	 * -b: the second register to operate.
+	 * -res: the register to save the result.
 	 */
 	mod,
 
@@ -422,91 +374,75 @@ enum KOpcode : unsigned char
 #pragma region convertion to types
 
 	/*
-	 * Convert the value to the string representation and push the converted
-	 * value onto the stack.
+	 * Convert the value to the string representation and save the value
+	 * on the given register.
 	 *
 	 * usage:
-	 * tstr
+	 * tstr <src> <dest>
 	 *
-	 * stack transition:
-	 * ... obj -> ... str
-	 *
-	 * - obj is popped off of the stack and evaluated the conversion.
-	 * - the result of the conversion in pushed onto the stack.
+	 * operators:
+	 * -src: the object to convert.
+	 * -dest: the register to save the conversion.
 	 */
 	tstr,
 	/*
-	 * Convert the value to the int representation and push the converted
-	 * value onto the stack.
+	 * Convert the value to the int representation and save the value
+	 * on the given register.
 	 *
 	 * usage:
-	 * tint
+	 * tint <src> <dest>
 	 *
-	 * stack transition:
-	 * ... obj -> ... int
-	 *
-	 * - obj is popped off of the stack and evaluated the conversion.
-	 * - the result of the conversion in pushed onto the stack.
+	 * operators:
+	 * -src: the object to convert.
+	 * -dest: the register to save the conversion.
 	 */
 	tint,
 	/*
-	 * Convert the value to the float representation and push the converted
-	 * value onto the stack.
+	 * Convert the value to the float representation and save the value
+	 * on the given register.
 	 *
 	 * usage:
-	 * tflt
+	 * tflt <src> <dest>
 	 *
-	 * stack transition:
-	 * ... obj -> ... flt
-	 *
-	 * - obj is popped off of the stack and evaluated the conversion.
-	 * - the result of the conversion in pushed onto the stack.
+	 * operators:
+	 * -src: the object to convert.
+	 * -dest: the register to save the conversion.
 	 */
 	tflt,
 	/*
-	 * Convert the value to the bool representation and push the converted
-	 * value onto the stack.
+	 * Convert the value to the bool representation and save the value
+	 * on the given register.
 	 *
 	 * usage:
-	 * tbit
+	 * tbit <src> <dest>
 	 *
-	 * stack transition:
-	 * ... obj -> ... bit
-	 *
-	 * - obj is popped off of the stack and evaluated the conversion.
-	 * - the result of the conversion in pushed onto the stack.
+	 * operators:
+	 * -src: the object to convert.
+	 * -dest: the register to save the conversion.
 	 */
 	tbit,
 	/*
-	 * Convert the object in the stack to another type, this conversion is called
+	 * Convert an object to another type, this conversion is called
 	 * on the type of the object, not in the target type.
 	 *
 	 * usage:
-	 * tobj <type>
+	 * tobj <type> <src> <dest>
 	 *
 	 * -type: the target type to convert.
-	 *
-	 * stack transition:
-	 * ... value -> ... obj
-	 *
-	 * - value is popped off of the stack and evaluated the conversion.
-	 * - the result of the conversion in pushed onto the stack.
+	 * -src: the object to convert.
+	 * -dest: the register to save the conversion.
 	 */
 	tobj,
 	/*
-	 * Convert the object in the stack to another type, this conversion is called
+	 * Convert an object to another type, this conversion is called
 	 * on the target type, not in the current type of the object.
 	 *
 	 * usage:
-	 * cast <type>
+	 * cast <type> <src> <dest>
 	 *
 	 * -type: the target type to convert.
-	 *
-	 * stack transition:
-	 * ... value -> ... obj
-	 *
-	 * - value is popped off of the stack and evaluated the conversion.
-	 * - the result of the conversion in pushed onto the stack.
+	 * -src: the object to convert.
+	 * -dest: the register to save the conversion.
 	 */
 	cast,
 
@@ -519,100 +455,97 @@ enum KOpcode : unsigned char
 	 * caller of this function.
 	 *
 	 * usage:
-	 * jump <function> [params]
+	 * jump <function> <ret> [params]*
 	 *
 	 * operators:
 	 * -function: the identifier of the function to call.
-	 * -params: an optional int to specify the amount of params to send to the function,
-	 * if is not defined will be the amount defined by the function itself or all the
-	 * stack.
-	 *
-	 * *before returning the current method the stack must be empty.
-	 *
-	 * stack transition:
-	 * arg1 arg2 argN ->
-	 *
-	 * - all the args for the function are popped off of the stack, if the function
-	 * return something that result will be pushed on the caller stack, not in the
-	 * current stack.
+	 * -ret: a register to save the return value of the function, can be null to ignore.
+	 * -params: a list of registers used as params of the called function.
 	 */
 	jump,
 	/*
-	 * Exit from the current function and return to the caller pushing the object
-	 * in the stack onto the caller stack, if there is one present.
+	 * Exit from this function and call the target function in the context of the
+	 * caller of this function.
 	 *
 	 * usage:
-	 * ret
+	 * jump <function> <ret> <params>
 	 *
-	 * stack transition:
-	 * [object] ->
-	 *
-	 * - if there is an object in the stack will be popped off and pushed onto
-	 * the caller stack.
+	 * operators:
+	 * -function: the identifier of the function to call.
+	 * -ret: a register to save the return value of the function, can be null to ignore.
+	 * -params: the register with an array to be used as args of the function if the
+	 * register not contains an array the call will fail.
 	 */
-	ret,
+	jumpa,
 	/*
-	 * Invoke a target function, if the function return something the value will
-	 * be pushed onto the stack.
+	 * Invoke a target function, if the function return something the value will be set
+	 * in the given register.
 	 *
 	 * usage:
-	 * call <function> [params]
+	 * call <function> <ret> [params]*
 	 *
 	 * -function: the identifier of the function to call.
-	 * -params: an optional int to specify the amount of params to send to the function,
-	 * if is not defined will be the amount defined by the function itself or all the
-	 * stack.
-	 *
-	 * stack transition:
-	 * ... arg1 arg2 argN -> ... [result]
-	 *
-	 * - all the args for the function are popped off of the stack, if the function
-	 * return something that result will be pushed onto the stack.
+	 * -ret: a register to save the return value of the function, can be null to ignore.
+	 * -params: a list of registers used as params of the called function.
 	 */
 	call,
 	/*
-	 * Push onto the stack the amount of arguments passed to this function.
+	 * Invoke a target function, if the function return something the value will be set
+	 * in the given register.
 	 *
 	 * usage:
-	 * argc
+	 * call <function> <ret> <params>
 	 *
-	 * stack transition:
-	 * ... -> ... value
+	 * -function: the identifier of the function to call.
+	 * -ret: a register to save the return value of the function, can be null to ignore.
+	 * -params: the register with an array to be used as args of the function if the
+	 * register not contains an array the call will fail.
+	 */
+	calla,
+	/*
+	 * Set in a register the number of arguments passed to the function.
 	 *
-	 * -the amount of parameters passed to the function is pushed onto th stack.
+	 * usage:
+	 * argc <reg>
+	 *
+	 * -reg: register to save the value.
 	 */
 	argc,
+	/*
+	 * Exit from the current function and return to the caller with an optional
+	 * value.
+	 *
+	 * usage:
+	 * ret [reg]
+	 *
+	 * operators:
+	 * -reg: an optional register to return.
+	 */
+	ret,
 
 #pragma endregion
 
 #pragma region memory
 
 	/*
-	 * Allocates a block of memory of arbitrary size and push the pointer
-	 * to the beginning of the block onto the stack.
+	 * Allocates a block of memory of arbitrary size and save the pointer
+	 * to the beginning of the block in the given register.
 	 *
 	 * usage:
-	 * aloc <size>
+	 * aloc <size> <reg>
 	 *
 	 * operators:
 	 * -size: an int indicating the size in bytes of the block.
-	 *
-	 * stack transition:
-	 * ... -> ... ptr
-	 *
-	 * - the ptr to the block created will be pushed onto the stack.
+	 * -reg: the register to save the pointer.
 	 */
 	aloc,
 	/* Free a previously allocated block of memory by the pointer to the block.
 	 *
 	 * usage:
-	 * free
+	 * free <ptr>
 	 *
-	 * stack transition:
-	 * ... ptr -> ...
-	 *
-	 * - the pointer to the block of memory is popped off of the stack and the
-	 * memory is freed.
+	 * operators:
+	 * -ptr: the register that contains the pointer to free.
 	 */
 	freei,
 	/*
@@ -620,28 +553,26 @@ enum KOpcode : unsigned char
 	 * by pointers.
 	 *
 	 * usage:
-	 * copy
+	 * copy <src> <dest> <size>
 	 *
-	 * stack transition:
-	 * ... src dest size -> ...
-	 *
-	 * - the source pointer, destination pointer and size to copy are popped off of the
-	 * stack.
-	 * - the size is in bytes.
+	 * operators:
+	 * -src: the register with the source pointer.
+	 * -dest: the register with the destination pointer.
+	 * -size: an integer with the amount of bytes to copy or a register with the
+	 * integer.
 	 */
 	copy,
 	/*
 	 * Fill the target block of memory with a specific value.
 	 *
 	 * usage:
-	 * fill
+	 * fill <dest> <value> <size>
 	 *
-	 * stack transition:
-	 * ... dest value size -> ...
-	 *
-	 * - the destination pointer, the int value and the size to copy are popped off of
-	 * the stack.
-	 * - the size is in bytes.
+	 * operators:
+	 * -dest: the register with the target pointer.
+	 * -value: a register with the value to set or an integer.
+	 * -size: an integer with the amount of bytes to copy or a register with the
+	 * integer.
 	 */
 	fill,
 
@@ -653,79 +584,60 @@ enum KOpcode : unsigned char
 	 * Creates a new array object of the specific size.
 	 *
 	 * usage:
-	 * arr [dimensions]
+	 * arr <reg> <sizes>+
 	 *
 	 * operands:
-	 * -dimension: the number extra dimensions of the array. by default is 0,
-	 * this means 0 extra dimensions so the array will have only 1.
-	 *
-	 * stack transition:
-	 * ... size1 size2 sizeN -> ... arr
-	 *
-	 * - depending on the number of dimensions sizes are popped off of the
-	 * stack and the array object is pushed onto the stack.
+	 * -reg: the register to save the new array.
+	 * -sizes: this can be a register to an array of sizes, or you can pass a
+	 * list of sizes or register to sizes.
 	 */
 	arr,
 	/*
-	 * Push onto the stack the length of the array
+	 * Save in the given register the length of the array.
 	 *
 	 * usage:
-	 * arl [dimension]
+	 * arl <reg> <dimension> <out>
 	 *
 	 * operands:
-	 * -dimension: the dimension of the array to et the size, default to 0.
-	 *
-	 * stack transition:
-	 * ... arr -> ... length
-	 *
-	 * - the array is popped off of the stack and the length is pushed.
+	 * -reg: the register with the array.
+	 * -dimension: the dimension of the array to get the size. Can be an int or a register.
+	 * -out: the register to save the length.
 	 */
 	arl,
 	/*
-	 * Push onto the stack the dimension count of an array.
+	 * Save in the given register the dimension count of an array.
 	 *
 	 * usage:
-	 * ard
+	 * ard <reg>
 	 *
-	 * stack transition:
-	 * ... arr -> ... dims
-	 *
-	 * - the array is popped off of the stack and the dimension count is pushed.
+	 * operators:
+	 * -reg: the register containing the array.
 	 */
 	ard,
 	/*
 	 * Load the element of the array at the specific index.
 	 *
 	 * usage:
-	 * lde [dimensions]
+	 * lde <reg> <dest> <index>*
 	 *
 	 * operators:
-	 * -dimension: the number extra dimensions of the array. by default is 0,
-	 * this means 0 extra dimensions so the array will have only 1.
-	 *
-	 * stack transition:
-	 * ... index1 index2 indexN -> ... obj
-	 *
-	 * - the indices are popped off of the stack depending on the dimension.
-	 * - the object is pushed onto the stack.
+	 * -reg: the array to get the element.
+	 * -dest: the register to save the element.
+	 * -index: this can be a register to an array of indices, or you can pass a
+	 * list of indices or register to indices.
 	 */
 	lde,
 	/*
 	 * Store the element of the array at the specific index.
 	 *
 	 * usage:
-	 * ste [dimensions]
+	 * ste <reg> <src> <index>*
 	 *
 	 * operators:
-	 * -dimension: the number extra dimensions of the array. by default is 0,
-	 * this means 0 extra dimensions so the array will have only 1.
-	 *
-	 * stack transition:
-	 * ... value index1 index2 indexN -> ...
-	 *
-	 * - the value and the indices are popped off of the stack depending on
-	 * the dimension.
-	 * - the object is stored in the array.
+	 * -reg: the array to get the element.
+	 * -src: the element to set in the array.
+	 * -index: this can be a register to an array of indices, or you can pass a
+	 * list of indices or register to indices.
 	 */
 	ste,
 
@@ -734,50 +646,37 @@ enum KOpcode : unsigned char
 #pragma region types
 
 	/*
-	 * Push onto the stack the runtime pointer of the given type.
+	 * Save in the given register the runtime pointer of the given type.
 	 *
 	 * usage:
-	 * type <typename>
+	 * type <typename> <reg>
 	 *
 	 * operands:
-	 * -typename: the identifier of the type
-	 *
-	 * stack transition:
-	 * ... -> typeptr
-	 *
-	 * -the type pointer is pushed onto the stack.
+	 * -typename: the identifier of the type.
+	 * -reg: the register to save the type.
 	 */
 	type,
 	/*
-	 * Push onto the stack the runtime pointer of the type from the
-	 * object in the stack.
+	 * SAve in the given register the runtime pointer of the type from the
+	 * object.
 	 *
 	 * usage:
-	 * typeof
+	 * typeof <obj> <reg>
 	 *
-	 *
-	 * stack transition:
-	 * ... obj -> typeptr
-	 *
-	 * -obj is popped off of the stack and the type is evaluated.
-	 * -the type pointer is pushed onto the stack.
+	 * operators:
+	 * -obj: the object to get the type.
+	 * -reg: where to save the type.
 	 */
 	typeofi,
 	/*
 	 * Determines if an object is an instance of the given type.
 	 *
 	 * usage:
-	 * is <typename>
+	 * is <typename> <obj>
 	 *
 	 * operands:
 	 * -typename: the name of the type.
-	 *
-	 * stack transition:
-	 * ... obj -> ... result
-	 *
-	 * - the object is popped off of the stack and evaluated.
-	 * - if the object is an instance of the type then true is pushed
-	 * onto the stack, otherwise false is pushed.
+	 * -obj: the object to check.
 	 */
 	is,
 
@@ -789,90 +688,85 @@ enum KOpcode : unsigned char
 	 * Create a new instance of the given type calling the constructor of the type.
 	 *
 	 * usage:
-	 * new <typename> [params]
+	 * new <typename> <reg> [params]*
 	 *
 	 * operands:
 	 * -typename: the type identifier to create.
-	 * -params: an optional int to specify the amount of params to send to the constructor,
-	 * if is not defined will be the amount defined by the type itself or all the stack.
+	 * -reg: a register to save the created object.
+	 * -params: a list of registers used as params of the called function.
 	 */
 	newi,
 	/*
-	 * Push onto the stack the size in bytes of memory required by the type.
-	 * This opcode can be used in two ways, with operand and without operand, if the
-	 * operand is defined nothing is popped from the stack, and the size will be
-	 * the size to create an instance of the target type.
+	 * Create a new instance of the given type calling the constructor of the type.
 	 *
 	 * usage:
-	 * sizeof [typename]
+	 * new <typename> <reg> <params>
+	 *
+	 * operands:
+	 * -typename: the type identifier to create.
+	 * -reg: a register to save the created object.
+	 * -params: a register with an array with the params to pass to the constructor.
+	 */
+	newa,
+	/*
+	 * Push onto the stack the size in bytes of memory required by the type.
+	 *
+	 * usage:
+	 * sizeof (typename|register) <out>
 	 *
 	 * operands:
 	 * -typename: if defined, is the type identifier to get the size.
-	 *
-	 * stack transition:
-	 * ... obj -> ... size
-	 *
-	 * - if no type is defined then a object will be popped off of the stack and
-	 * push onto the stack the size of the type from the object.
+	 * -register: if defined, is a register to the object to get the type.
+	 * -out: the register to save the size.
 	 */
-	size,
+	sizeofi,
 	/*
 	 * Store the value in a field of the object.
 	 * Fields names depends on the type of the object.
 	 *
 	 * usage:
-	 * stfld <field>
+	 * stfld <obj> <field> <reg>
 	 *
 	 * operands:
+	 * -obj: the object to set the field.
 	 * -field: the name of the field to store.
-	 *
-	 * stack transition:
-	 * ... obj value -> ...
-	 *
-	 * - the object and the value are popped off of the stack and passed to the
-	 * type to set the field.
+	 * -reg: the register with the value to set in the field.
 	 */
 	stfld,
 	/*
-	 * Load the value od a field from the object.
+	 * Load the value of a field from the object.
 	 * Fields names depends on the type of the object.
 	 *
 	 * usage:
-	 * ldfld <field>
+	 * ldfld <obj> <field> <reg>
 	 *
 	 * operands:
+	 * -obj: the object to get the field.
 	 * -field: the name of the field to store.
-	 *
-	 * stack transition:
-	 * ... obj -> ... value
-	 *
-	 * - the object is popped off of the stack and passed to the type to get
-	 * the field.
-	 * - the value of the field is pushed onto the stack.
+	 * -reg: the register to save the field.
 	 */
 	ldfld,
 	/*
-	 * Increase the ref count of the element on top of the stack but without change
-	 * the stack.
+	 * Increase the ref count of the object.
 	 *
 	 * usage:
-	 * ref
+	 * ref <reg>
 	 *
-	 * no stack transitions.
+	 * operators:
+	 * -reg: the register with the object to increase the ref count.
 	 */
 	ref,
 	/*
-	 * Decrease the ref count of the element on top of the stack but without change
-	 * the stack.
+	 * Decrease the ref count of the object.
 	 *
 	 *  if the ref count of the object is now 0 the object will be destroyed leaving
-	 *  a null reference in the stack, this is planned to be use only in destructors
-	 *  followed with a pop.
+	 *  a null reference in the register, this is planned to be use only in destructors.
 	 *
 	 * usage:
-	 * deref
+	 * deref <reg>
 	 *
-	 * no stack transitions.
+	 * operators:
+	 * -reg: the register with the object to increase the ref count.
 	 */
 	deref,
 	/*
@@ -880,15 +774,11 @@ enum KOpcode : unsigned char
 	 * call the constructor.
 	 *
 	 * usage:
-	 * ins <type>
+	 * ins <type> <reg>
 	 *
 	 * operands:
-	 * -type: the type identifier to create.
-	 *
-	 * stack transition:
-	 * ... -> ... obj
-	 *
-	 * - the newly created object will be pushed onto the stack.
+	 * -type: the type identifier to create or a register with the type pointer.
+	 * -reg: register to save the new object.
 	 */
 	ins,
 

@@ -1,6 +1,6 @@
 ﻿.func main
 {
-	.locals 3
+	.locals 4
 	.stack  2
 	.marg   1
 	.args  -1
@@ -14,7 +14,7 @@
 	// i
 	push 0
 	stvar 2
-	
+
 	:comp
 	ldvar 2
 	ldvar 0
