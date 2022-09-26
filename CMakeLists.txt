@@ -64,6 +64,8 @@ set(lib_files
 	"src/lib/Interpreter/ProgramVisitor.cpp" 
 	"src/lib/KokoLangLib.cpp")
 
+add_compile_definitions(KOKOLANGLIB_STATIC)
+
 add_library(KokoLangRuntime SHARED
 			${source_files}
 			${include_files})
@@ -73,7 +75,7 @@ add_library(KokoLangRuntimeStatic STATIC
 
 set_target_properties(KokoLangRuntime PROPERTIES OUTPUT_NAME "klruntime")
 set_target_properties(KokoLangRuntimeStatic PROPERTIES OUTPUT_NAME "klruntime-static")
-target_compile_definitions(KokoLangRuntimeStatic PRIVATE KOKOLANG_STATIC)
+target_compile_definitions(KokoLangRuntimeStatic PRIVATE KOKOLANGLIB_STATIC)
 
 
 add_library(KokoLangLib SHARED
@@ -84,7 +86,7 @@ add_library(KokoLangLibStatic STATIC
 			${lib_files})
 
 set_target_properties(KokoLangLib PROPERTIES OUTPUT_NAME "kokolang")
-target_compile_definitions(KokoLangLibStatic PRIVATE KOKOLANG_STATIC)
+target_compile_definitions(KokoLangLibStatic PRIVATE KOKOLANGLIB_STATIC)
 
 add_executable(KokoLangExe "src/kokolang/KokoLang.cpp")
 set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kl")
@@ -94,6 +96,6 @@ find_package(Threads REQUIRED)
 target_link_libraries(KokoLangLib antlr4_static KokoLangRuntime Threads::Threads)
 target_link_libraries(KokoLangLibStatic antlr4_static KokoLangRuntime Threads::Threads)
 
-target_link_libraries(KokoLangExe KokoLangLib KokoLangRuntime)
+target_link_libraries(KokoLangExe KokoLangLibStatic KokoLangRuntime Threads::Threads)
 
 
