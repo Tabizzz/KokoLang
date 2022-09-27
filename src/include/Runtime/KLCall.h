@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <stack>
+#include <bitset>
 #include "klimports.h"
 #include "Runtime/KLObject.h"
 using namespace std;
@@ -8,10 +9,14 @@ using namespace std;
 // two regs, first one for int operations and second for float operations.
 #define CALL_REG_COUNT 2
 
-#define CALL_FLAG_EXIT 		1 << 0
-#define CALL_FLAG_RETURN 	1 << 1
-#define CALL_FLAG_CHECK 	1 << 5
-#define CALL_FLAG_DUP	 	1 << 6
+#define CALL_FLAG_EXIT 		0
+#define CALL_FLAG_RETURN 	1
+#define CALL_FLAG_CHECK 	5
+#define CALL_FLAG_DUP	 	6
+#define CALL_FLAG_COUNT		7
+
+#define CALL_HAS_FLAG(x, y) (x.flags[y])
+#define CALL_SET_FLAG(x, y, z) (x.flags[y] = z)
 
 /*
  * Represent the scope of a function call, this contains the evaluation stack,
@@ -24,7 +29,11 @@ struct CPPAPI KLCall
 	/*
 	 * The index of the next instruction to run.
 	 */
-	unsigned short next;
+	unsigned int next;
+	/*
+	 * The amount of args slots the function have.
+	 */
+	unsigned int argc;
 	/*
 	 * The flags of the call.
 	 * the bits are:
@@ -33,13 +42,8 @@ struct CPPAPI KLCall
 	 * 2-4: the index of the register that contains the return value, can be up to index 7.
 	 * 5: check flag, set to true when an operation result in true, like an and.
 	 * 6: dup flag, is set to true operations will set values by duplication and not by copy.
-	 * 7-15: reserved.
 	 */
-	unsigned short flags;
-	/*
-	 * The amount of args slots the function have.
-	 */
-	unsigned short argc;
+	bitset<CALL_FLAG_COUNT> flags;
 	/*
 	 * The local storage on the call.
 	 *

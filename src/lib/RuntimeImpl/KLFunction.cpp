@@ -53,21 +53,13 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 	}
 
 	// execute the code
-	while (!call.exit)
+	while (!CALL_HAS_FLAG(call, CALL_FLAG_EXIT))
 	{
 		auto ins = (*func->body)[call.next++];
-		if(ins->opcode == KOpcode::call)
-		{
-			auto top = call.evaluationStack.top();
-			auto val = KASINT(top);
-			cout << val << endl;
-		} else
-		{
-			ins->call(caller, &call, ins->foperand, ins->soperand);
-		}
+
+		ins->call(caller, &call, ins->operands, ins->operandc);
 	}
 	// final cleanup
-
 
 	return nullptr;
 }
@@ -116,13 +108,13 @@ void klFunction_reallocateLabels(KLFunction* function) {
 					default:
 						break;
 				}
-				if(reflabel && ref->foperand->type == &klBType_String) {
-					auto label = KLCAST(kl_string, ref->foperand);
+				if(reflabel && ref->operands[0]->type == &klBType_String) {
+					auto label = KLCAST(kl_string, ref->operands[0]);
 					auto label2 =  KLCAST(kl_string, instruction->label);
 					if(strcmp(label->value, label2->value) == 0)
 					{
-						klDeref(ref->foperand);
-						ref->foperand = KLINT(i);
+						klDeref(ref->operands[0]);
+						ref->operands[0] = KLINT(i);
 					}
 				}
 			}
