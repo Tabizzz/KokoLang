@@ -15,8 +15,8 @@ using namespace std;
 #define CALL_FLAG_DUP	 	6
 #define CALL_FLAG_COUNT		7
 
-#define CALL_HAS_FLAG(x, y) (x.flags[y])
-#define CALL_SET_FLAG(x, y, z) (x.flags[y] = z)
+#define CALL_HAS_FLAG(x, y) (x.flags.test(y))
+#define CALL_SET_FLAG(x, y, z) (x.flags.set(y, z))
 
 /*
  * Represent the scope of a function call, this contains the evaluation stack,

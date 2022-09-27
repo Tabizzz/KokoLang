@@ -17,6 +17,7 @@ void kins_end(KlObject* pack)
 	for (int i = 0; i < ins->operandc; ++i) {
 		klDeref(ins->operands[i]);
 	}
+	delete[] ins->operands;
 }
 
 KlType klBType_Instruction =

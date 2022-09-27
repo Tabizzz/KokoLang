@@ -3,23 +3,23 @@
 #include "KLFunctionImpl.h"
 
 
-void opcode_noc(const KlObject& caller,const KLCall& call,const KlObject** foperand, size_t operandc){}
-
-void opcode_goifn(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_noc(const KlObject& caller, KLCall& call,const KlObject** operands, size_t operandc){}
+/*
+void opcode_goifn(const KlObject& caller, KLCall& call,const KlObject** operands, size_t operandc)
 {
-	auto op = utilPopTop(call);
-	if(!op || !KASBOOL(op)) {
-		call->next = KASINT(foperand);
+	auto op = CALL_HAS_FLAG(call, CALL_FLAG_CHECK);
+	if(!op) {
+		call.next = KASINT(operands[0]);
 	}
-	klDeref(op);
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, !op);
 }
 
-void opcode_go(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_go(const KlObject& caller, KLCall& call,const KlObject** operands, size_t operandc)
 {
-	call->next = KASINT(foperand);
+	call.next = KASINT(operands);
 }
 
-void opcode_add(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_add(const KlObject& caller,KLCall& call,const KlObject** operands, size_t operandc)
 {
 	auto first = utilPopTop(call);
 	auto second = utilPopTop(call);
@@ -33,16 +33,16 @@ void opcode_add(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *s
 	klDeref(first);
 }
 
-void opcode_goif(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_goif(const KlObject& caller,KLCall& call,const KlObject** operands, size_t operandc)
 {
 	auto op = utilPopTop(call);
 	if(op && KASBOOL(op)) {
-		call->next = KASINT(foperand);
+		call->next = KASINT(operands);
 	}
 	klDeref(op);
 }
 
-void opcode_oplt(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_oplt(const KlObject& caller,KLCall& call,const KlObject** operands, size_t operandc)
 {
 	auto second = utilPopTop(call);
 	auto first = utilPopTop(call);
@@ -57,66 +57,55 @@ void opcode_oplt(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *
 	utilPushTop(caller, call, nullptr);
 }
 
-void opcode_ldvar(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_ldvar(const KlObject& caller,KLCall& call,const KlObject** operands, size_t operandc)
 {
-	auto index = KLCAST(kl_int, foperand)->value;
+	auto index = KLCAST(kl_int, operands)->value;
 	// get the local, ref and then push onto the stack
 	auto local = call->st[index + CALL_REG_COUNT];
 	klRef(local);
 	utilPushTop(caller, call, local);
 }
 
-void opcode_stvar(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_stvar(const KlObject& caller,KLCall& call,const KlObject** operands, size_t operandc)
 {
 	auto val = utilPopTop(call);
-	auto index = KLCAST(kl_int, foperand)->value;
+	auto index = KLCAST(kl_int, operands)->value;
 	// decrease the ref count of the current local.
 	klDeref(call->st[index + CALL_REG_COUNT]);
 	call->st[index + CALL_REG_COUNT] = val;
 }
 
-void opcode_push(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
+void opcode_push(const KlObject& caller,KLCall& call,const KlObject** operands, size_t operandc)
 {
-	klRef(foperand);
-	utilPushTop(caller, call, foperand);
+	klRef(operands);
+	utilPushTop(caller, call, operands);
 }
 
-void opcode_ret(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
-{
-	call->exit = true;
+void opcode_ret(const KlObject& caller, KLCall& call, const KlObject** operands, size_t operandc) {
+	CALL_SET_FLAG(call, CALL_FLAG_EXIT, true);
 }
-
-void klFunction_setInstructionCall(KLInstruction *instruction)
-{
+*/
+void klFunction_setInstructionCall(KLInstruction *instruction) {
 	switch (instruction->opcode) {
 		case noc:
-			instruction->call = opcode_noc;
 			break;
 		case go:
-			instruction->call = opcode_go;
 			break;
 		case goif:
-			instruction->call = opcode_goif;
 			break;
 		case goifn:
-			instruction->call = opcode_goifn;
 			break;
 		case push:
-			instruction->call = opcode_push;
 			break;
 		case pop:
 			break;
 		case dup:
 			break;
-		case clear:
+		case cp:
 			break;
-		case stackl:
+		case mv:
 			break;
-		case stvar:
-			instruction->call = opcode_stvar;
-			break;
-		case ldvar:
-			instruction->call = opcode_ldvar;
+		case lflag:
 			break;
 		case set:
 			break;
@@ -133,7 +122,6 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 		case xori:
 			break;
 		case oplt:
-			instruction->call = opcode_oplt;
 			break;
 		case ople:
 			break;
@@ -146,7 +134,6 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 		case opne:
 			break;
 		case add:
-			instruction->call = opcode_add;
 			break;
 		case sub:
 			break;
@@ -170,12 +157,15 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case jump:
 			break;
-		case ret:
-			instruction->call = opcode_ret;
+		case jumpa:
 			break;
 		case call:
 			break;
+		case calla:
+			break;
 		case argc:
+			break;
+		case ret:
 			break;
 		case aloc:
 			break;
@@ -203,7 +193,9 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case newi:
 			break;
-		case KOpcode::size:
+		case newa:
+			break;
+		case sizeofi:
 			break;
 		case stfld:
 			break;
@@ -215,7 +207,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction)
 			break;
 		case ins:
 			break;
-		case reserved_ext:
+		default:
 			break;
 	}
 }

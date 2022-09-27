@@ -19,6 +19,11 @@
 
 #define KLIBAPI EXTERN LIBEXPORT
 
+#define SWITCH_TYPE(x, y, z)	\
+y.inscount--;			\
+z.inscount++;			\
+x->type = &z;
+
 KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename);
 
 KLIBAPI KLPackage* klCreateProgramFromString(const char* code);

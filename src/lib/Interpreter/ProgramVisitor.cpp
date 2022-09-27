@@ -1,6 +1,10 @@
 ﻿#include "KokoLangLib.h"
 #include "ProgramVisitor.h"
 
+#define INTTOREG(x) SWITCH_TYPE(x, klBType_Int, klBType_Reg)
+
+#define SETOPERAND(x,y) operands[x] = y(values[x])
+
 using namespace std;
 
 any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
@@ -71,22 +75,25 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 		return instruction;
 	}
 	auto opcode = getOpcode(opcodectx);
-	KlObject* foperand = nullptr;
-	KlObject * soperand = nullptr;
 	auto values = opcodectx->value();
-	KokoLangParser::ValueContext* fval = nullptr;
-	KokoLangParser::ValueContext* sval = nullptr;
-	auto size = values.size();
-	if(size>0)
-		fval = values[0];
-	if(size>1)
-		sval = values[1];
+	int size = values.size(); // NOLINT(cppcoreguidelines-narrowing-conversions)
+	int optionalargs = 0;
+	auto requiredoperands = CheckOperandCount(size, opcode, &optionalargs);
 
-	getOperands(&opcode, &foperand, &soperand, fval, sval);
+	auto numargs = requiredoperands;
+	if(optionalargs != 0)
+	{
+		numargs = optionalargs == -1 ? size : requiredoperands + optionalargs;
+	}
+
+	auto operandv = new KlObject*[numargs]{};
+
+	if(requiredoperands > 0 || optionalargs != 0) getOperands(&opcode, operandv, values, size);
 
 	instruction->opcode = opcode;
-	instruction->foperand = foperand;
-	instruction->soperand = soperand;
+	instruction->operandc = numargs;
+	instruction->operands = operandv;
+
 	return instruction;
 }
 
@@ -177,19 +184,70 @@ KlObject* kliCheckInteger(KokoLangParser::ValueContext* ctx)
 	throw std::invalid_argument( "invalid operand in program" );
 }
 
-KlObject* kliCheckOptionalInteger(KokoLangParser::ValueContext* ctx, int value)
+KlObject * kliCheckRegOrInt(KokoLangParser::ValueContext *ctx)
 {
-	if(ctx)
-	{
-		auto val = ctx->Number();
-		if (val) {
-			auto number = stoi(val->getText());
-			return KLINT(number);
-		}
+	if(!ctx) throw std::invalid_argument("missing required operand");
+	auto id = ctx->register_();
+	if(id) {
+		auto base = KLINT(stoi(id->Number()->getText()));
+		INTTOREG(base)
+		KASINT(base) += CALL_REG_COUNT;
+		return base;
 	}
-	return KLINT(value);
+	auto val = ctx->Number();
+	if(val)
+	{
+		auto number = stoi(val->getText());
+		return KLINT(number);
+	}
+	throw std::invalid_argument( "invalid operand in program" );
 }
 
+KlObject* kliCheckOptionalReg(KokoLangParser::ValueContext *ctx)
+{
+	if(ctx) {
+		auto reg = ctx->register_();
+		if (reg) {
+			auto base = KLINT(stoi(reg->Number()->getText()));
+			INTTOREG(base)
+			KASINT(base) += CALL_REG_COUNT;
+			return base;
+		}
+	}
+	return nullptr;
+}
+
+KlObject* kliCheckReg(KokoLangParser::ValueContext *ctx)
+{
+	if(!ctx) throw std::invalid_argument("missing required operand");
+	auto reg = ctx->register_();
+	if(reg) {
+		auto text = reg->Number()->getText();
+		if(text == "-0") return nullptr;
+		auto base = KLINT(stoi(text));
+		INTTOREG(base)
+		KASINT(base) += CALL_REG_COUNT;
+		return base;
+	}
+	throw std::invalid_argument( "invalid operand in program" );
+}
+
+KlObject* kliCheckIdentifierOrReg(KokoLangParser::ValueContext *ctx)
+{
+	if(!ctx) throw std::invalid_argument("missing required operand");
+	auto id = ctx->Id();
+	if(id) {
+		return KLSTR(id->getText());
+	}
+	auto reg = ctx->register_();
+	if(reg) {
+		auto base = KLINT(stoi(reg->Number()->getText()));
+		INTTOREG(base)
+		KASINT(base) += CALL_REG_COUNT;
+		return base;
+	}
+	throw std::invalid_argument( "invalid operand in program" );
+}
 KlObject* kliCheckIdentifier(KokoLangParser::ValueContext *ctx)
 {
 	if(!ctx) throw std::invalid_argument("missing required operand");
@@ -200,18 +258,46 @@ KlObject* kliCheckIdentifier(KokoLangParser::ValueContext *ctx)
 	throw std::invalid_argument( "invalid operand in program" );
 }
 
-KlObject* kliCheckOptionalIdentifier(KokoLangParser::ValueContext *ctx)
+KlObject * kliCheckAnyNoId(KokoLangParser::ValueContext *ctx)
 {
-	if(ctx) {
-		auto id = ctx->Id();
-		if (id) {
-			return KLSTR(id->getText());
+	if(!ctx) throw std::invalid_argument("missing required operand");
+	auto idv = ctx->Id();
+	if(idv) {
+		throw invalid_argument("register is not a valid operand");
+	}
+	auto boolv = ctx->bool_();
+	if(boolv) {
+		return KLBOOL(boolv->True());
+	}
+	auto stringv = ctx->String();
+	if(stringv) {
+		auto str = stringv->getText();
+		auto size = str.size() - 2;
+		auto vals = str.substr(1, size);
+		return KLSTR(vals);
+	}
+	auto numberv = ctx->Number();
+	if(numberv) {
+		auto numt = numberv->getText();
+		auto isflt = numt.find('.') != string::npos;
+
+		if (isflt) {
+			return KLFLOAT(stod(numt));
+		} else {
+			return KLINT(stoi(numt));
 		}
+	}
+	auto reg = ctx->register_();
+	if(reg) {
+		auto base = KLINT(stoi(reg->Number()->getText()));
+		INTTOREG(base)
+		KASINT(base) += CALL_REG_COUNT;
+		return base;
 	}
 	return nullptr;
 }
 
-KlObject* kliCheckPush(KOpcode *pCodes, KokoLangParser::ValueContext *ctx)
+KlObject* kliCheckAny(KokoLangParser::ValueContext *ctx)
 {
 	if(!ctx) throw std::invalid_argument("missing required operand");
 	auto boolv = ctx->bool_();
@@ -236,23 +322,115 @@ KlObject* kliCheckPush(KOpcode *pCodes, KokoLangParser::ValueContext *ctx)
 			return KLINT(stoi(numt));
 		}
 	}
+	auto reg = ctx->register_();
+	if(reg) {
+		auto base = KLINT(stoi(reg->Number()->getText()));
+		INTTOREG(base)
+		KASINT(base) += CALL_REG_COUNT;
+		return base;
+	}
 	auto idv = ctx->Id();
-	if(idv)
-	{
-		*pCodes = KOpcode::get;
+	if(idv) {
 		return KLSTR(idv->getText());
 	}
 	return nullptr;
 }
+
+KlObject* kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx)
+{
+	if(!ctx) throw std::invalid_argument("missing required operand");
+	auto reg = ctx->register_();
+	if(reg) {
+		throw invalid_argument("register is not a valid operand");
+	}
+
+	auto boolv = ctx->bool_();
+	if(boolv) {
+		return KLBOOL(boolv->True());
+	}
+	auto stringv = ctx->String();
+	if(stringv) {
+		auto str = stringv->getText();
+		auto size = str.size() - 2;
+		auto vals = str.substr(1, size);
+		return KLSTR(vals);
+	}
+	auto numberv = ctx->Number();
+	if(numberv) {
+		auto numt = numberv->getText();
+		auto isflt = numt.find('.') != string::npos;
+
+		if (isflt) {
+			return KLFLOAT(stod(numt));
+		} else {
+			return KLINT(stoi(numt));
+		}
+	}
+	auto idv = ctx->Id();
+	if(idv) {
+		return KLSTR(idv->getText());
+	}
+	return nullptr;
+}
+
 #pragma endregion
 
-void ProgramVisitor::getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject **sOperand,
-								 KokoLangParser::ValueContext *fContext, KokoLangParser::ValueContext *sContext) {
-	switch (*pCodes) {
-#pragma region no operands
-		case noc:
+void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *>& values, size_t size) {
+	switch (*pOpcode) {
+#pragma region 1id
+		case go:
+		case goif:
+		case goifn:
+			SETOPERAND(0, kliCheckIdentifier);
+			break;
+#pragma endregion
+#pragma region 1any_no_reg 1reg
+		case push:
+			if(values[0]->Id()) *pOpcode = KOpcode::get;
+			SETOPERAND(0, kliCheckAnyNoReg);
+			SETOPERAND(1, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 1reg
 		case pop:
+		case argc:
+		case freei:
+		case ard:
+		case KOpcode::ref:
+		case deref:
+			SETOPERAND(0, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 2reg
 		case dup:
+		case cp:
+		case mv:
+		case typeofi:
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 1int 1reg
+		case lflag:
+		case starg:
+		case ldarg:
+		case aloc:
+			SETOPERAND(0, kliCheckInteger);
+			SETOPERAND(1, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 1id 1reg
+		case KOpcode::set:
+		case KOpcode::get:
+		case type:
+		case is:
+		case ins:
+			break;
+			SETOPERAND(0, kliCheckIdentifier);
+			SETOPERAND(1, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 2any_no_id
 		case andi:
 		case ori:
 		case xori:
@@ -262,87 +440,210 @@ void ProgramVisitor::getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject 
 		case opge:
 		case opeq:
 		case opne:
+			SETOPERAND(0, kliCheckAnyNoId);
+			SETOPERAND(1, kliCheckAnyNoId);
+			break;
+#pragma endregion
+#pragma region 2any_no_id 1reg
 		case add:
 		case sub:
 		case mul:
 		case divi:
 		case mod:
+			SETOPERAND(0, kliCheckAnyNoId);
+			SETOPERAND(1, kliCheckAnyNoId);
+			SETOPERAND(2, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 1any 1reg
 		case tstr:
 		case tint:
 		case tflt:
 		case tbit:
-		case ret:
-		case argc:
-		case freei:
-		case KOpcode::copy:
-		case KOpcode::fill:
-		case ard:
-		case typeofi:
-		case KOpcode::ref:
-		case deref:
-		case reserved_ext:
+			SETOPERAND(0, kliCheckAny);
+			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
-#pragma region one identifier
-		case go:
-		case goif:
-		case goifn:
-		case KOpcode::set:
-		case KOpcode::get:
+#pragma region 3reg
 		case tobj:
 		case cast:
-		case type:
-		case is:
-		case stfld:
-		case ldfld:
-		case ins:
-			*fOperand = kliCheckIdentifier(fContext);
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckReg);
+			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
-#pragma region push
-		case push:
-			*fOperand = kliCheckPush(pCodes, fContext);
-			break;
-#pragma endregion
-#pragma region one integer
-		case starg:
-		case ldarg:
-		case aloc:
-			*fOperand = kliCheckInteger(fContext);
-			break;
-#pragma endregion
-#pragma region one identifier and one optional integer
+#pragma region 1id 1reg Uany_no_id
 		case jump:
 		case call:
 		case newi:
-			*fOperand = kliCheckIdentifier(fContext);
-			*sOperand = kliCheckOptionalInteger(sContext, -1);
+		{
+			SETOPERAND(0, kliCheckIdentifier);
+			SETOPERAND(1, kliCheckReg);
+			for (int i = 2; i < size; ++i) {
+				operands[i] = kliCheckAnyNoId(values[i]);
+			}
+			break;
+		}
+#pragma endregion
+#pragma region 1id 2reg
+		case jumpa:
+		case calla:
+		case newa:
+		case stfld:
+		case ldfld:
+			SETOPERAND(0, kliCheckIdentifier);
+			SETOPERAND(1, kliCheckReg);
+			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
-#pragma region one optional integer
-		case arr:
+#pragma region 1opreg
+		case ret:
+			if(size > 0) {
+				SETOPERAND(0, kliCheckOptionalReg);
+			} else {
+				operands[0] = nullptr;
+			}
+			break;
+#pragma endregion
+#pragma region 2reg 1reg_or_int
+		case KOpcode::copy:
 		case arl:
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckReg);
+			SETOPERAND(2, kliCheckRegOrInt);
+			break;
+#pragma endregion
+#pragma region 1reg 2reg_or_int
+		case KOpcode::fill:
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckRegOrInt);
+			SETOPERAND(2, kliCheckRegOrInt);
+			break;
+#pragma endregion
+#pragma region 1reg 1reg_or_int Ureg_or_int
+		case arr:
+		{
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckRegOrInt);
+			for (int i = 2; i < size; ++i) {
+				operands[i] = kliCheckRegOrInt(values[i]);
+			}
+			break;
+		}
+#pragma endregion
+#pragma region 2reg 1reg_or_int Ureg_or_int
 		case lde:
 		case ste:
-			*fOperand = kliCheckOptionalInteger(fContext, 0);
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckReg);
+			SETOPERAND(2, kliCheckRegOrInt);
+			for (int i = 3; i < size; ++i) {
+				operands[i] = kliCheckRegOrInt(values[i]);
+			}
 			break;
 #pragma endregion
-#pragma region one optional identifier
+#pragma region 1id_or_reg 1reg
 		case sizeofi:
-			*fOperand = kliCheckOptionalIdentifier(fContext);
+			SETOPERAND(0, kliCheckIdentifierOrReg);
+			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
-		case cp:
-			break;
-		case mv:
-			break;
-		case lflag:
-			break;
-		case jumpa:
-			break;
-		case calla:
-			break;
-		case newa:
+		default:
 			break;
 	}
 }
+
+int inline ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optionals) {
+	int flag = 0;
+	switch (opcode) {
+#pragma region zero one
+		case ret:
+			*optionals = 1;
+			break;
+#pragma endregion
+#pragma region one
+		case go:
+		case goif:
+		case goifn:
+		case pop:
+		case argc:
+		case freei:
+		case ard:
+		case KOpcode::ref:
+		case deref:
+			flag = 1;
+			break;
+#pragma endregion
+#pragma region two unlimited
+		case jump:
+		case call:
+		case newi:
+		case arr:
+			*optionals = -1;
+#pragma endregion
+#pragma region two
+		case push:
+		case dup:
+		case cp:
+		case mv:
+		case lflag:
+		case KOpcode::set:
+		case KOpcode::get:
+		case starg:
+		case ldarg:
+		case andi:
+		case ori:
+		case xori:
+		case oplt:
+		case ople:
+		case opgt:
+		case opge:
+		case opeq:
+		case opne:
+		case tstr:
+		case tint:
+		case tflt:
+		case tbit:
+		case aloc:
+		case type:
+		case typeofi:
+		case is:
+		case sizeofi:
+		case ins:
+			flag = 2;
+			break;
+#pragma endregion
+#pragma region three unlimited
+		case lde:
+		case ste:
+			*optionals = -1;
+#pragma endregion
+#pragma region three
+		case add:
+		case sub:
+		case mul:
+		case divi:
+		case mod:
+		case tobj:
+		case cast:
+		case jumpa:
+		case calla:
+		case KOpcode::copy:
+		case KOpcode::fill:
+		case arl:
+		case newa:
+		case stfld:
+		case ldfld:
+			flag = 3;
+			break;
+#pragma endregion
+		default:
+			break;
+	}
+
+	if( size < flag) throw invalid_argument("invalid operand count in program");
+	return flag;
+}
+
+#undef INTTOREG
+#undef SETOPERAND

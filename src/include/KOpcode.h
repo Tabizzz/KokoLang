@@ -594,12 +594,12 @@ enum KOpcode : unsigned char
 	 * Save in the given register the length of the array.
 	 *
 	 * usage:
-	 * arl <reg> <dimension> <out>
+	 * arl <reg> <out> <dimension>
 	 *
 	 * operands:
 	 * -reg: the register with the array.
-	 * -dimension: the dimension of the array to get the size. Can be an int or a register.
 	 * -out: the register to save the length.
+	 * -dimension: the dimension of the array to get the size. Can be an int or a register.
 	 */
 	arl,
 	/*
@@ -655,7 +655,7 @@ enum KOpcode : unsigned char
 	 */
 	type,
 	/*
-	 * SAve in the given register the runtime pointer of the type from the
+	 * Save in the given register the runtime pointer of the type from the
 	 * object.
 	 *
 	 * usage:
@@ -723,11 +723,11 @@ enum KOpcode : unsigned char
 	 * Fields names depends on the type of the object.
 	 *
 	 * usage:
-	 * stfld <obj> <field> <reg>
+	 * stfld <field> <obj> <reg>
 	 *
 	 * operands:
-	 * -obj: the object to set the field.
 	 * -field: the name of the field to store.
+	 * -obj: the object to set the field.
 	 * -reg: the register with the value to set in the field.
 	 */
 	stfld,
@@ -736,11 +736,11 @@ enum KOpcode : unsigned char
 	 * Fields names depends on the type of the object.
 	 *
 	 * usage:
-	 * ldfld <obj> <field> <reg>
+	 * ldfld <field> <obj> <reg>
 	 *
 	 * operands:
-	 * -obj: the object to get the field.
 	 * -field: the name of the field to store.
+	 * -obj: the object to get the field.
 	 * -reg: the register to save the field.
 	 */
 	ldfld,
@@ -775,7 +775,7 @@ enum KOpcode : unsigned char
 	 * ins <type> <reg>
 	 *
 	 * operands:
-	 * -type: the type identifier to create or a register with the type pointer.
+	 * -type: the type identifier to create.
 	 * -reg: register to save the new object.
 	 */
 	ins,

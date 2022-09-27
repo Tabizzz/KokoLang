@@ -1,38 +1,30 @@
 ﻿.func main
 {
-	.locals 4
+	.locals 3
 	.stack  2
 	.marg   1
 	.args  -1
 
 	// iterations
-	push 1000000
-	stvar 0
+	push 1000000 %0
 	// total
-	push 0
-	stvar 1
+	push 0 %1
 	// i
-	push 0
-	stvar 2
+	push 0 %2
 
+	// i < iterations
 	:comp
-	ldvar 2
-	ldvar 0
-	oplt
+	oplt %2 %0
 	goifn end
 
-	ldvar 1
-	ldvar 2
-	add
+	// total += i
+	add %1 %2 %1
 
-	// i++;
-	ldvar 2
-	push 1
-	add
+	// i++
+	add %2 1 %2
 	go comp
 
 	:end
-	ldvar 1
-	call out
+	call out %-0 %1
 	ret
 }
