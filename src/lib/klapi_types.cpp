@@ -89,8 +89,6 @@ KlType klBType_Float =
 		0,
 		sizeof(kl_float),
 		kfloat_init,
-		nullptr,
-		nullptr
 };
 
 KlType klBType_Bool =
@@ -100,8 +98,6 @@ KlType klBType_Bool =
 		0,
 		sizeof(kl_bool),
 		kbool_init,
-		nullptr,
-		nullptr
 };
 
 KlType klBType_String =
@@ -122,8 +118,6 @@ KlType klBType_Ptr =
 		0,
 		sizeof (kl_ptr),
 		kptr_init,
-		nullptr,
-		nullptr
 };
 
 KlType klBType_OPtr =
@@ -133,8 +127,6 @@ KlType klBType_OPtr =
 		0,
 		sizeof (kl_optr),
 		koptr_init,
-		nullptr,
-		nullptr
 };
 
 KlType klBType_Arr =
@@ -144,8 +136,6 @@ KlType klBType_Arr =
 		0,
 		sizeof (kl_arr),
 		karr_init,
-		nullptr,
-		nullptr
 };
 
 KlType klBType_Type =
@@ -154,9 +144,15 @@ KlType klBType_Type =
 	"type",
 	0,
 	sizeof (KlType),
-	nullptr,
-	nullptr,
-	nullptr
+};
+
+KlType klBType_Reg =
+{
+		KlObject(),
+		"reg",
+		0,
+		sizeof (kl_int),
+		kint_init,
 };
 
 KlObject *klNewVar(KlType *type, KlObject *args, ...) {

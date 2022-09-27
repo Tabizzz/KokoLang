@@ -38,6 +38,7 @@ CAPI void klInit()
 	STDREGTYPE(klBType_Ptr)
 	STDREGTYPE(klBType_OPtr)
 	STDREGTYPE(klBType_Arr)
+	STDREGTYPE(klBType_Reg)
 
 	// define runtime specific types
 	STDREGTYPE(klBType_Instruction)

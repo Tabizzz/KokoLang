@@ -50,6 +50,11 @@ CAPI KlType klBType_Arr;
 CAPI KlType klBType_Type;
 
 /*
+ * Builtin type register.
+ */
+CAPI KlType klBType_Reg;
+
+/*
  * Create a new object calling the constructor of the type.
  */
 CAPI KlObject* klNew(KlType* type, KlObject** args, int argc);

@@ -27,11 +27,10 @@ enum KOpcode : unsigned char
 	 *  or not null, can be used with labels.
 	 *
 	 * usage:
-	 * goif <label> <reg>
+	 * goif <label>
 	 *
 	 * operators:
 	 * -label: the target label name or the index of the target instruction.
-	 * -reg: the index of the register to evaluate.
 	 */
 	goif,
 	/*
@@ -39,11 +38,10 @@ enum KOpcode : unsigned char
 	 *  or null, can be used with labels.
 	 *
 	 * usage:
-	 * goifn <label> <reg>
+	 * goifn <label>
 	 *
 	 * operators:
 	 * -label: the target label name or the index of the target instruction.
-	 * -reg: the index of the register to evaluate.
 	 */
 	goifn,
 
@@ -123,7 +121,7 @@ enum KOpcode : unsigned char
 	 * lflag <index> <reg>
 	 *
 	 * operators:
-	 * -index: the index of the flag (0 - 15).
+	 * -index: the index of the flag.
 	 * -reg: the register to save the value.
 	 */
 	lflag,
@@ -618,7 +616,7 @@ enum KOpcode : unsigned char
 	 * Load the element of the array at the specific index.
 	 *
 	 * usage:
-	 * lde <reg> <dest> <index>*
+	 * lde <reg> <dest> <index>+
 	 *
 	 * operators:
 	 * -reg: the array to get the element.
@@ -631,7 +629,7 @@ enum KOpcode : unsigned char
 	 * Store the element of the array at the specific index.
 	 *
 	 * usage:
-	 * ste <reg> <src> <index>*
+	 * ste <reg> <src> <index>+
 	 *
 	 * operators:
 	 * -reg: the array to get the element.

@@ -29,7 +29,9 @@ nlr: NL+;
 
 nlo: NL*;
 
-value: Null | bool | String | Number | Id;
+value: Null | bool | String | register | Number | Id;
+
+register: Sper Number;
 
 bool: True | False;
 
@@ -86,6 +88,8 @@ Number: '-'? DIGIT+ ('.' DIGIT+)?;
 // / lang operators / //
 
 // / lang simbols / //
+
+Sper: '%';
 
 Dp: ':';
 
