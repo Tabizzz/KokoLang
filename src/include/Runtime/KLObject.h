@@ -66,8 +66,9 @@ typedef struct KlType {
 	klbinaryop opDiv;			// division operation
 	klbinaryop opMod;			// modulo operation
 
+	klunaryop clone;			// clone operation
+	klbinaryop copy;			// copy operation
 } KlType;
-
 
 #ifdef __cplusplus
 };

@@ -10,11 +10,13 @@ void kint_init(KlObject* obj) {
 
 int kint_comparer(KlObject* x, KlObject* y) {
 	int first = KASINT(x);
-	int second;
-	if(y->type == &klBType_Int) {
-		second = KASINT(y);
-	} else {
-		second = KASINT(y->type->toInt(y));
+	int second = 0;
+	if(y) {
+		if (y->type == &klBType_Int) {
+			second = KASINT(y);
+		} else {
+			second = KASINT(y->type->toInt(y));
+		}
 	}
 
 	if(first < second) {
@@ -24,6 +26,15 @@ int kint_comparer(KlObject* x, KlObject* y) {
 		return -1;
 	}
 	return 0;
+}
+
+KlObject* kint_clone(KlObject* base) {
+	return KLINT(KASINT(base));
+}
+
+KlObject* kint_copy(KlObject* a, KlObject* b) {
+	KASINT(b) = KASINT(a);
+	return nullptr;
 }
 
 void kfloat_init(KlObject* obj) {
@@ -79,7 +90,15 @@ KlType klBType_Int =
 		nullptr,
 		nullptr,
 		nullptr,
-		kint_comparer
+		kint_comparer,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kint_clone,
+		kint_copy
 };
 
 KlType klBType_Float =
