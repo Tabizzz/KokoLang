@@ -7,18 +7,18 @@
 
 using namespace std;
 
-typedef void (*opcodecall)(KlObject* function, KLCall* call, KlObject* opf, KlObject* ops);
+typedef void (*opcodecall)(KlObject* function, KLCall* call, KlObject** opv, size_t opc);
 
 /*
- * A part of a function with operate on the stack.
+ * A part of a function which operate on the stack.
  */
 struct CPPAPI KLInstruction
 {
 	KLOBJECTHEAD
 	KlObject* label;	// the name of the label if this instruction is a label, null otherwise
 	KOpcode opcode;		// the opcode this instruction represent
-	KlObject* foperand;	// the first operand of the op code
-	KlObject* soperand;	// the second operand of the op code
+	KlObject** operands;// the operands of the op code
+	size_t operandc;	// the amount of operands passed to the opcode
 	opcodecall call;	// the function invoked with the opcode logic
 };
 

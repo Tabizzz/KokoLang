@@ -1,14 +1,12 @@
-﻿#include <utility>
-
-#include "KokoLangInternal.h"
+﻿#include "KokoLangInternal.h"
 
 void kins_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLInstruction, pack);
 	ins->label = nullptr;
 	ins->opcode = noc;
-	ins->foperand = nullptr;
-	ins->soperand = nullptr;
+	ins->operands = nullptr;
+	ins->operandc = 0;
 	ins->call = nullptr;
 }
 
@@ -16,8 +14,9 @@ void kins_end(KlObject* pack)
 {
 	auto ins = KLCAST(KLInstruction, pack);
 	klDeref(ins->label);
-	klDeref(ins->foperand);
-	klDeref(ins->soperand);
+	for (int i = 0; i < ins->operandc; ++i) {
+		klDeref(ins->operands[i]);
+	}
 }
 
 KlType klBType_Instruction =

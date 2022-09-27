@@ -94,64 +94,66 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	auto code = pContext->Id()->getText();
 	// https://stackoverflow.com/a/16388594
 	static const map<string, KOpcode> optionStrings {
-			{ "noc",    KOpcode::noc	},
-			{ "go",     KOpcode::go		},
-			{ "goif",   KOpcode::goif	},
-			{ "goifn",  KOpcode::goifn	},
-			{ "push",   KOpcode::push	},
-			{ "pop",    KOpcode::pop	},
-			{ "dup",    KOpcode::dup	},
-			{ "clear",  KOpcode::clear	},
-			{ "stackl", KOpcode::stackl	},
-			{ "stvar",  KOpcode::stvar	},
-			{ "ldvar",  KOpcode::ldvar	},
-			{ "set",    KOpcode::set	},
-			{ "get",    KOpcode::get	},
-			{ "starg",  KOpcode::starg	},
-			{ "ldarg",  KOpcode::ldarg	},
-			{ "and",    KOpcode::andi	},
-			{ "or",     KOpcode::ori	},
-			{ "xor",    KOpcode::xori	},
-			{ "oplt",   KOpcode::oplt	},
-			{ "ople",   KOpcode::ople	},
-			{ "opgt",   KOpcode::opgt	},
-			{ "opge",   KOpcode::opge	},
-			{ "opeq",   KOpcode::opeq	},
-			{ "opne",   KOpcode::opne	},
-			{ "add",    KOpcode::add	},
-			{ "sub",    KOpcode::sub	},
-			{ "mul",    KOpcode::mul	},
-			{ "div",    KOpcode::divi	},
-			{ "mod",    KOpcode::mod	},
-			{ "tstr",   KOpcode::tstr	},
-			{ "tint",   KOpcode::tint	},
-			{ "tflt",   KOpcode::tflt	},
-			{ "tbit",   KOpcode::tbit	},
-			{ "tobj",   KOpcode::tobj	},
-			{ "cast",   KOpcode::cast	},
-			{ "jump",   KOpcode::jump	},
-			{ "ret",    KOpcode::ret	},
-			{ "call",   KOpcode::call	},
-			{ "argc",   KOpcode::argc	},
-			{ "aloc",   KOpcode::aloc	},
-			{ "free",   KOpcode::freei	},
-			{ "copy",   KOpcode::copy	},
-			{ "fill",   KOpcode::fill	},
-			{ "arr",    KOpcode::arr	},
-			{ "arl",    KOpcode::arl	},
-			{ "ard",    KOpcode::ard	},
-			{ "lde",    KOpcode::lde	},
-			{ "ste",    KOpcode::ste	},
-			{ "type",   KOpcode::type	},
-			{ "typeof", KOpcode::typeofi},
-			{ "is",     KOpcode::is		},
-			{ "new",    KOpcode::newi	},
-			{ "size",   KOpcode::size	},
-			{ "stfld",  KOpcode::stfld	},
-			{ "ldfld",  KOpcode::ldfld	},
-			{ "ref",    KOpcode::ref	},
-			{ "deref",  KOpcode::deref	},
-			{ "ins",    KOpcode::ins	},
+			{"noc",		KOpcode::noc	},
+			{"go",		KOpcode::go		},
+			{"goif",	KOpcode::goif	},
+			{"goifn",	KOpcode::goifn	},
+			{"push",	KOpcode::push	},
+			{"pop",		KOpcode::pop	},
+			{"dup",		KOpcode::dup	},
+			{"cp",		KOpcode::cp		},
+			{"mv",		KOpcode::mv		},
+			{"lflag",	KOpcode::lflag	},
+			{"set",		KOpcode::set	},
+			{"get",		KOpcode::get	},
+			{"starg",	KOpcode::starg	},
+			{"ldarg",	KOpcode::ldarg	},
+			{"and",		KOpcode::andi	},
+			{"or",		KOpcode::ori	},
+			{"xor",		KOpcode::xori	},
+			{"oplt",	KOpcode::oplt	},
+			{"ople",	KOpcode::ople	},
+			{"opgt",	KOpcode::opgt	},
+			{"opge",	KOpcode::opge	},
+			{"opeq",	KOpcode::opeq	},
+			{"opne",	KOpcode::opne	},
+			{"add",		KOpcode::add	},
+			{"sub",		KOpcode::sub	},
+			{"mul",		KOpcode::mul	},
+			{"div",		KOpcode::divi	},
+			{"mod",		KOpcode::mod	},
+			{"tstr",	KOpcode::tstr	},
+			{"tint",	KOpcode::tint	},
+			{"tflt",	KOpcode::tflt	},
+			{"tbit",	KOpcode::tbit	},
+			{"tobj",	KOpcode::tobj	},
+			{"cast",	KOpcode::cast	},
+			{"jump",	KOpcode::jump	},
+			{"jumpa",	KOpcode::jumpa	},
+			{"call",	KOpcode::call	},
+			{"calla",	KOpcode::calla	},
+			{"argc",	KOpcode::argc	},
+			{"ret",		KOpcode::ret	},
+			{"aloc",	KOpcode::aloc	},
+			{"free",	KOpcode::freei	},
+			{"copy",	KOpcode::copy	},
+			{"fill",	KOpcode::fill	},
+			{"arr",		KOpcode::arr	},
+			{"arl",		KOpcode::arl	},
+			{"ard",		KOpcode::ard	},
+			{"lde",		KOpcode::lde	},
+			{"ste",		KOpcode::ste	},
+			{"type",	KOpcode::type	},
+			{"typeof",	KOpcode::typeofi},
+			{"is",		KOpcode::is		},
+			{"new",		KOpcode::newi	},
+			{"newa",	KOpcode::newa	},
+			{"sizeof",	KOpcode::sizeofi},
+			{"stfld",	KOpcode::stfld	},
+			{"ldfld",	KOpcode::ldfld	},
+			{"ref",		KOpcode::ref	},
+			{"deref",	KOpcode::deref	},
+			{"ins",		KOpcode::ins	},
 	};
 
 	auto itr = optionStrings.find(code);
@@ -251,8 +253,6 @@ void ProgramVisitor::getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject 
 		case noc:
 		case pop:
 		case dup:
-		case clear:
-		case stackl:
 		case andi:
 		case ori:
 		case xori:
@@ -305,8 +305,6 @@ void ProgramVisitor::getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject 
 			break;
 #pragma endregion
 #pragma region one integer
-		case stvar:
-		case ldvar:
 		case starg:
 		case ldarg:
 		case aloc:
@@ -330,9 +328,21 @@ void ProgramVisitor::getOperands(KOpcode *pCodes, KlObject **fOperand, KlObject 
 			break;
 #pragma endregion
 #pragma region one optional identifier
-		case KOpcode::size:
+		case sizeofi:
 			*fOperand = kliCheckOptionalIdentifier(fContext);
 			break;
 #pragma endregion
+		case cp:
+			break;
+		case mv:
+			break;
+		case lflag:
+			break;
+		case jumpa:
+			break;
+		case calla:
+			break;
+		case newa:
+			break;
 	}
 }
