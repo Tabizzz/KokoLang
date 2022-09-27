@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef void (*opcodecall)(KlObject* function, KLCall* call, KlObject** opv, size_t opc);
+typedef void (*opcodecall)(const KlObject& caller, const KLCall& call, KlObject* operands[], size_t operandc);
 
 /*
  * A part of a function which operate on the stack.

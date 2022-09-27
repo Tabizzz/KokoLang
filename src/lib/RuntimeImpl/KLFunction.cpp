@@ -8,12 +8,6 @@
 
 using namespace std::chrono;
 
-void initToNull(KlObject *pObject[], int count) {
-	for (int i = 0; i < count; ++i) {
-		pObject[i] = nullptr;
-	}
-}
-
 KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 {
 	auto func = KLCAST(KLFunction, caller);
@@ -57,7 +51,7 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 	{
 		auto ins = (*func->body)[call.next++];
 
-		ins->call(caller, &call, ins->operands, ins->operandc);
+		ins->call(*caller, call, ins->operands, ins->operandc);
 	}
 	// final cleanup
 

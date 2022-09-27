@@ -3,31 +3,7 @@
 #include "KLFunctionImpl.h"
 
 
-KlObject* utilPopTop(KLCall* call)
-{
-	if(call->stackc == 0){
-		cout << "Error trying to pop a value on a empty stack" << endl;
-		exit(1);
-	}
-	auto value = call->evaluationStack.top();
-	call->evaluationStack.pop();
-	call->stackc--;
-	return value;
-}
-
-void utilPushTop(KlObject * caller, KLCall* call, KlObject* obj)
-{
-	auto func = KLCAST(KLFunction, caller);
-	if(call->stackc < func->stack) {
-		call->evaluationStack.push(obj);
-		call->stackc++;
-	} else {
-		cout << "Error trying to push a value on a full stack" << endl;
-		exit(1);
-	}
-}
-
-void opcode_noc(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand){}
+void opcode_noc(const KlObject& caller,const KLCall& call,const KlObject** foperand, size_t operandc){}
 
 void opcode_goifn(KlObject * caller, KLCall *call, KlObject *foperand, KlObject *soperand)
 {
