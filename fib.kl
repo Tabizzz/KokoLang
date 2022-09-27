@@ -1,0 +1,38 @@
+﻿.func main
+{
+	.locals 4
+	.stack  2
+	.marg   1
+	.args  -1
+
+	// n - fibonacci of 92 is the max in a int 64
+	push 92 %0
+
+	// a
+	push 0 %1
+	//b
+	push 1 %2
+
+	// i
+	push 0 %3
+
+	:comp // i < n
+	oplt %3 %0
+	goifn end
+
+	// temp = a + b
+	add %1 %2 %-2
+	// a = b
+	cp %2 %1
+	// b = temp
+	cp %-2 %2
+
+	// i++
+	add %3 1 %3
+	go comp
+
+	:end
+	// print a
+	call out %-0 %1
+	ret
+}
