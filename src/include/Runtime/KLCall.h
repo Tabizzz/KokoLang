@@ -12,7 +12,7 @@ using namespace std;
 #define CALL_FLAG_EXIT 		0
 #define CALL_FLAG_RETURN 	1
 #define CALL_FLAG_CHECK 	5
-#define CALL_FLAG_DUP	 	6
+#define CALL_FLAG_CLONE	 	6
 #define CALL_FLAG_COUNT		7
 
 #define CALL_HAS_FLAG(x, y) (x.flags.test(y))
@@ -41,7 +41,7 @@ struct CPPAPI KLCall
 	 * 1: return flag, if set to true the method return something.
 	 * 2-4: the index of the register that contains the return value, can be up to index 7.
 	 * 5: check flag, set to true when an operation result in true, like an and.
-	 * 6: dup flag, is set to true operations will set values by duplication and not by copy.
+	 * 6: clone flag, is set to true operations will set values by clone and not by copy.
 	 */
 	bitset<CALL_FLAG_COUNT> flags;
 	/*

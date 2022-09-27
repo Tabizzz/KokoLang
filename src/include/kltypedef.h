@@ -10,9 +10,10 @@
 extern "C" {
 #endif
 
+
 typedef struct kl_int {
 	KLOBJECTHEAD
-	long value;
+	int64_t value;
 } kl_int;
 
 typedef struct kl_float {
