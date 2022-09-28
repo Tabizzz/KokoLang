@@ -1,12 +1,8 @@
-﻿#include <utility>
-#include <cstring>
+﻿#include <cstring>
 #include <iostream>
 #include "KokoLangInternal.h"
 #include "Runtime/KLFunction.h"
 #include "KLFunctionImpl.h"
-#include <chrono>
-
-using namespace std::chrono;
 
 KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 {
@@ -54,6 +50,9 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 		ins->call(*caller, call, ins->operands, ins->operandc);
 	}
 	// final cleanup
+	for (auto reg: call.st) {
+		klDeref(reg);
+	}
 
 	return nullptr;
 }
@@ -112,7 +111,9 @@ void klFunction_reallocateLabels(KLFunction* function) {
 					}
 				}
 			}
+			auto removed = function->body->at(i);
 			function->body->erase(next(function->body->begin(), i--));
+			klDeref(KLWRAP(removed));
 		}
 		else
 		{

@@ -53,7 +53,7 @@ CAPI void klPackage_Build(KLPackage *klPackage)
 
 }
 
-KlObject **argstoobject(const char **pString, int i)
+inline KlObject** argstoobject(const char **pString, int i)
 {
 	auto ret = new KlObject* [i];
 
@@ -73,8 +73,15 @@ CAPI int klPackage_Run(KLPackage* program, int argc, const char* argv[]) {
 		{
 			main = KLCAST(KLFunction, find->second);
 			auto args = argstoobject(argv, argc);
+			auto kargc = KLINT(argc);
+			main->invokable(find->second, args, kargc);
+			// release allocated args
+			klDeref(kargc);
+			for (int i = 0; i < argc; ++i) {
+				klDeref(args[i]);
+			}
+			delete[] args;
 
-			main->invokable(find->second, args, KLINT(argc));
 			return 0;
 		}
 		cout<<"Error: unable to find entry point 'main'" << endl;
