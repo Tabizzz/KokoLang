@@ -2,8 +2,10 @@
 #include "KokoLangInternal.h"
 #include "klapi.h"
 #include <stdexcept>
+#include <iostream>
 
 #define  STDREGTYPE(x) klDefType(&x); klPackageRegType(stdPackage, &x);
+#define STDCHECKTYPE(x) if(x.inscount) cout << "type "<< x.name << " still has " << x.inscount << " instances in memory" << endl;
 
 static KLPackage* stdPackage = nullptr;
 static map<string, KLPackage*>* packages;
@@ -12,7 +14,7 @@ void kliBuildStdLib()
 {
 	stdPackage = klCreatePackage();
 	klDeref(stdPackage->name);
-	stdPackage->name = KLSTR("klstd");
+	stdPackage->name = KLSTR("lang");
 }
 
 CAPI void klInit()
@@ -51,7 +53,25 @@ CAPI void klInit()
 }
 
 CAPI void klEnd() {
+	for (const auto& pack: *packages) {
+		klDestroyPackage(pack.second);
+	}
+	delete packages;
 
+	// check instance counts
+	STDCHECKTYPE(klBType_Int)
+	STDCHECKTYPE(klBType_Float)
+	STDCHECKTYPE(klBType_Bool)
+	STDCHECKTYPE(klBType_String)
+	STDCHECKTYPE(klBType_Ptr)
+	STDCHECKTYPE(klBType_OPtr)
+	STDCHECKTYPE(klBType_Arr)
+	STDCHECKTYPE(klBType_Reg)
+
+	// define runtime specific types
+	STDCHECKTYPE(klBType_Instruction)
+	STDCHECKTYPE(klBType_Func)
+	STDCHECKTYPE(klBType_Package)
 }
 
 CAPI const KLPackage *klStdPackage() {

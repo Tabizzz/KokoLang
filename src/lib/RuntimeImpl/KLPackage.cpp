@@ -27,8 +27,9 @@ void kpack_end(KlObject* pack)
 	klDeref(ins->name);
 	uDerefAndDelete(ins->functions);
 	uDerefAndDelete(ins->variables);
-	uDerefAndDelete(ins->types);
 	uDerefAndDelete(ins->subpacks);
+	//types are no destroyed
+	delete ins->types;
 }
 
 CAPI KLPackage* klCreatePackage()
