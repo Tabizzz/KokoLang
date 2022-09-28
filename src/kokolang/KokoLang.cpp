@@ -1,5 +1,6 @@
 ﻿#include "KokoLang.h"
 #include "KokoLangLib.h"
+#include "termcolor/termcolor.hpp"
 
 #include <chrono>
 #include <cstring>
@@ -59,6 +60,6 @@ int main(int argc, const char* argv[])
 
 		return exit;
 	}
-
+	cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << endl;
 	return EXIT_FAILURE;
 }

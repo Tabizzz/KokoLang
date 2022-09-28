@@ -1,0 +1,5 @@
+
+
+set(HEADER_ONLY_LIBS
+${CMAKE_CURRENT_SOURCE_DIR}/termcolor/include
+PARENT_SCOPE)

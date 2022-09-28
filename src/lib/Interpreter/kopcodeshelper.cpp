@@ -17,7 +17,7 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{"goifn",	KOpcode::goifn	},
 			{"push",	KOpcode::push	},
 			{"pop",		KOpcode::pop	},
-			{"dup",		KOpcode::dup	},
+			{"cl",		KOpcode::cl	},
 			{"cp",		KOpcode::cp		},
 			{"mv",		KOpcode::mv		},
 			{"lflag",	KOpcode::lflag	},
@@ -235,7 +235,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 			break;
 #pragma endregion
 #pragma region 2reg
-		case dup:
+		case cl:
 		case cp:
 		case mv:
 		case typeofi:
@@ -415,7 +415,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 #pragma endregion
 #pragma region two
 		case push:
-		case dup:
+		case cl:
 		case cp:
 		case mv:
 		case lflag:

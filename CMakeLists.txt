@@ -19,6 +19,10 @@ include(ExternalAntlr4Cpp)
 # add antrl4cpp artifacts to project environment
 include_directories(${ANTLR4_INCLUDE_DIRS})
 
+#include deps header only libs
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps)
+include_directories(${HEADER_ONLY_LIBS})
+
 # set variable pointing to the antlr tool that supports C++
 # this is not required if the jar file can be found under PATH environment
 set(ANTLR_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/tools/antlr-4.10.1-complete.jar)

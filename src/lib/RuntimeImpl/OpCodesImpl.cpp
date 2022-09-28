@@ -101,7 +101,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			break;
 		case pop:
 			break;
-		case dup:
+		case cl:
 			break;
 		case cp:
 			instruction->call = opcode_cp;

@@ -76,21 +76,21 @@ enum KOpcode : unsigned char
 	 * are copy as reference so cant be optimal with primitives.
 	 *
 	 * usage:
-	 * dup <src> <dest>
+	 * cl <src> <dest>
 	 *
 	 * operators:
 	 * -src: the source register to duplicate.
 	 * -dest: the destination register, any current content will be
 	 * overwritten.
 	 */
-	dup,
+	cl,
 	/*
 	 * Copy the value from one register to another.
 	 * this operation is a value copy, if the source and destination
 	 * objects are of the same type the value is copied based on the
 	 * type, if the types are different the source type can define an
 	 * operation to copy between types, if not operation is defined
-	 * then this code act like dup code.
+	 * then this code act like cl code.
 	 *
 	 * usage:
 	 * cp <src> <dest>
