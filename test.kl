@@ -1,7 +1,6 @@
 ﻿.func main
 {
 	.locals 3
-	.stack  2
 	.marg   1
 	.args  -1
 

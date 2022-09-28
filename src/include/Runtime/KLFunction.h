@@ -22,7 +22,6 @@ struct CPPAPI KLFunction {
 	bool external;					// if true the function is not defined in kokolang
 
 	kbyte locals;					// how many locals the function have
-	kbyte stack;					// the max size of elements in the stack of the function.
 	unsigned short size;			// the amount of instructions on the function body.
 	vector<KLInstruction *>* body;	// the body of the function.
 };

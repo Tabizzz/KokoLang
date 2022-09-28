@@ -28,14 +28,13 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 #define FUNCATTR(x) auto x##c = attr->x(); \
 					if(x##c) *x = stoi(x##c->Number()->getText());
 
-void parseFunctionAttributes(KokoLangParser::FuncattrsContext *pContext, unsigned char* local, unsigned char *stack, char *args,
+void parseFunctionAttributes(KokoLangParser::FuncattrsContext *pContext, unsigned char* local, char *args,
 							 unsigned char *margs)
 {
 	auto vect = pContext->funcattr();
 
 	for (auto attr : vect) {
 		FUNCATTR(local)
-		FUNCATTR(stack)
 		FUNCATTR(args)
 		FUNCATTR(margs)
 	}
@@ -49,7 +48,7 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 	function->name = KLSTR(name);
 	function->body = new vector<KLInstruction*>();
 
-	parseFunctionAttributes(ctx->funcblock()->funcattrs(), &function->locals, &function->stack, &function->args, &function->margs);
+	parseFunctionAttributes(ctx->funcblock()->funcattrs(), &function->locals, &function->args, &function->margs);
 	auto sentences = body->sentence();
 	auto sentencecount = sentences.size();
 	for (int i = 0; i < sentencecount; ++i) {

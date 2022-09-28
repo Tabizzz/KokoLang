@@ -64,7 +64,6 @@ void kfunc_instantiator(KlObject * obj)
 	func->name = nullptr;
 	func->invokable = nullptr;
 	func->locals = 0;
-	func->stack = 10;
 	func->args = 0;
 	func->margs = 0;
 	func->size = 0;

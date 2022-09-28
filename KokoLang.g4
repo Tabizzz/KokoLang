@@ -9,9 +9,7 @@ funcblock: Bopen nlo funcattrs sentence+ Bclose;
 
 funcattrs: funcattr*;
 
-funcattr : local | stack | margs | args;
-
-stack: Sdot STACK Number nlr;
+funcattr : local | margs | args;
 
 local: Sdot LOCALS Number nlr;
 
@@ -52,8 +50,6 @@ fragment DIGIT: [0-9];
 fragment ANY: ~[\r\n];
 
 // / lang keywords / //
-
-STACK: 'stack';
 
 ARGS: 'args';
 
