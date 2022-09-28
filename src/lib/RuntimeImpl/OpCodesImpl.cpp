@@ -31,7 +31,7 @@ void opcode_call(const KlObject& caller, KLCall& call, KlObject* operands[], siz
 }
 
 void opcode_go(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc) {
-	call.next = KASINT(operands);
+	call.next = KASINT(operands[0]);
 }
 
 void opcode_add(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc) {

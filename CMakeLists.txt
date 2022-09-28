@@ -75,7 +75,7 @@ add_library(KokoLangRuntimeStatic STATIC
 
 set_target_properties(KokoLangRuntime PROPERTIES OUTPUT_NAME "klruntime")
 set_target_properties(KokoLangRuntimeStatic PROPERTIES OUTPUT_NAME "klruntime-static")
-target_compile_definitions(KokoLangRuntimeStatic PRIVATE KOKOLANGLIB_STATIC)
+target_compile_definitions(KokoLangRuntimeStatic PRIVATE KOKOLANG_STATIC)
 
 
 add_library(KokoLangLib SHARED
