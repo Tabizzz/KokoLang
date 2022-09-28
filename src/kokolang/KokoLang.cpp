@@ -52,7 +52,7 @@ int main(int argc, const char* argv[])
 			MEASURE("Program build: ", klPackage_Build(program))
 			MEASURE("Program run: ", exit = klPackage_Run(program, argc, argv))
 		} else {
-			exit = -1;
+			exit = EXIT_FAILURE;
 		}
 
 		klEnd();
@@ -60,5 +60,5 @@ int main(int argc, const char* argv[])
 		return exit;
 	}
 
-	return 1;
+	return EXIT_FAILURE;
 }

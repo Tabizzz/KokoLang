@@ -62,7 +62,8 @@ set(lib_files
 	"src/lib/Interpreter/KLInterpreter.h"
 	"src/lib/Interpreter/ProgramVisitor.h"
 	"src/lib/Interpreter/ProgramVisitor.cpp" 
-	"src/lib/KokoLangLib.cpp")
+	"src/lib/KokoLangLib.cpp" 
+	"src/lib/Interpreter/kopcodeshelper.cpp")
 
 add_compile_definitions(KOKOLANGLIB_STATIC)
 

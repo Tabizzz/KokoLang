@@ -14,5 +14,5 @@ public:
 
 	static void getOperands(KOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext*>& vector, size_t size);
 
-	static int inline CheckOperandCount(size_t size, KOpcode opcode, int* optionals);
+	static int CheckOperandCount(size_t size, KOpcode opcode, int* optionals);
 };
