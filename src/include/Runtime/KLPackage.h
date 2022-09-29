@@ -21,10 +21,10 @@ struct CPPAPI KLPackage
 	* same name.
 	*/
 	KlObject* name;
-	map<string, KlObject *>* functions;		// the functions defined in the package
-	map<string, KlObject *>* variables;		// the globals var of the package.
-	map<string, KlObject *>* types;			// the types defined in the package.
-	map<string, KlObject *>* subpacks;
+	std::map<std::string, KlObject *>* functions;		// the functions defined in the package
+	std::map<std::string, KlObject *>* variables;		// the globals var of the package.
+	std::map<std::string, KlObject *>* types;			// the types defined in the package.
+	std::map<std::string, KlObject *>* subpacks;
 };
 
 /*

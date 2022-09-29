@@ -6,7 +6,6 @@
 #include <cstring>
 #include <iostream>
 
-using namespace std;
 using namespace std::chrono;
 
 #define MEASURE(x, y)if(time) start = high_resolution_clock::now(); 	\
@@ -15,16 +14,15 @@ if (time)  {															\
 sub = high_resolution_clock::now() - start;								\
 duration = duration_cast<microseconds>(sub);                         	\
 if(duration.count() < 1000)    {                                      	\
-cout << x << duration.count() << "μs" << endl; 							\
+std::cout << (x) << duration.count() << u8"μs" << std::endl; 			\
 }else {                                                              	\
 durationms = duration_cast<milliseconds>(sub);                      	\
 if(durationms.count() < 1000)    {                                      \
-cout << x << durationms.count() << "ms" << endl; 						\
+std::cout << (x) << durationms.count() << "ms" << std::endl;			\
 }else {  																\
-durations = duration_cast<seconds>(sub);                   		 		\
-cout << x << durations.count() << "s" << endl;                          \
+durations = duration_cast<seconds>(sub);								\
+std::cout << (x) << durations.count() << "s" << std::endl;				\
 }}}
-
 
 int main(int argc, const char* argv[])
 {
@@ -35,7 +33,6 @@ int main(int argc, const char* argv[])
 				time = true;
 			}
 		}
-
 		auto start = high_resolution_clock::now();
 		auto sub = high_resolution_clock::now() - start;
 		auto duration = duration_cast<microseconds>(sub);
@@ -55,11 +52,9 @@ int main(int argc, const char* argv[])
 		} else {
 			exit = EXIT_FAILURE;
 		}
-
 		klEnd();
-
 		return exit;
 	}
-	cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << endl;
+	std::cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
 	return EXIT_FAILURE;
 }

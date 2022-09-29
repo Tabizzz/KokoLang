@@ -8,7 +8,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-using namespace std;
 
 /**
  * A function object, functions define the argument count it expects, the name and an invokable.
@@ -23,7 +22,8 @@ struct CPPAPI KLFunction {
 
 	kbyte locals;					// how many locals the function have
 	unsigned short size;			// the amount of instructions on the function body.
-	vector<KLInstruction *>* body;	// the body of the function.
+	std::vector<KLInstruction *>*
+	body;							// the body of the function.
 };
 
 /*

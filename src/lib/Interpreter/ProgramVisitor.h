@@ -12,7 +12,7 @@ public:
 
 	static KOpcode getOpcode(KokoLangParser::OpcodeContext *pContext);
 
-	static void getOperands(KOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext*>& vector, size_t size);
+	static void getOperands(KOpcode *pOpcode, KlObject **operands, const std::vector<KokoLangParser::ValueContext*>& vector, size_t size);
 
 	static int CheckOperandCount(size_t size, KOpcode opcode, int* optionals);
 };

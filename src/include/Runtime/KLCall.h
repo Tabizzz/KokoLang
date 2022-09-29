@@ -4,7 +4,6 @@
 #include <bitset>
 #include "klimports.h"
 #include "Runtime/KLObject.h"
-using namespace std;
 
 // two regs, first one for int operations and second for float operations.
 #define CALL_REG_COUNT 2
@@ -43,7 +42,7 @@ struct CPPAPI KLCall
 	 * 5: check flag, set to true when an operation result in true, like an and.
 	 * 6: clone flag, is set to true operations will set values by clone and not by copy.
 	 */
-	bitset<CALL_FLAG_COUNT> flags;
+	std::bitset<CALL_FLAG_COUNT> flags;
 	/*
 	 * The local storage on the call.
 	 *
@@ -54,5 +53,5 @@ struct CPPAPI KLCall
 	 * The next objects are the locals.
 	 * Finally, at the end are the passed args.
 	 */
-	vector<KlObject*> st;
+	std::vector<KlObject*> st;
 };

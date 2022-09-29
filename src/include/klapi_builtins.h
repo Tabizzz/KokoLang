@@ -29,7 +29,7 @@
 /*
  * Creates new int instance
  */
-CAPI KlObject* klBuiltinInt(long val);
+CAPI KlObject* klBuiltinInt(int64_t val);
 
 /*
  * Creates new float instance
@@ -49,7 +49,7 @@ CAPI KlObject* klBuiltinString_c(const char* val);
 /*
  * Creates new string instance from a c++ string
  */
-CPPAPI KlObject* klBuiltinString(const string& val);
+CPPAPI KlObject* klBuiltinString(const std::string& val);
 
 /*
  * Creates new ptr instance

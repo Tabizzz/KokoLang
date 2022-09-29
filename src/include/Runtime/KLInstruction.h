@@ -5,8 +5,6 @@
 #include "Runtime/KLObject.h"
 #include "Runtime/KLCall.h"
 
-using namespace std;
-
 typedef void (*opcodecall)(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc);
 
 /*
