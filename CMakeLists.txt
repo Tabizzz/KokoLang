@@ -101,6 +101,6 @@ find_package(Threads REQUIRED)
 target_link_libraries(KokoLangLib antlr4_static KokoLangRuntime Threads::Threads)
 target_link_libraries(KokoLangLibStatic antlr4_static KokoLangRuntime Threads::Threads)
 
-target_link_libraries(KokoLangExe KokoLangLibStatic KokoLangRuntime Threads::Threads)
+target_link_libraries(KokoLangExe KokoLangLibStatic KokoLangRuntime Threads::Threads nowide)
 
 

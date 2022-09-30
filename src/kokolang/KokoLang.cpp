@@ -1,6 +1,7 @@
 ﻿#include "KokoLang.h"
 #include "KokoLangLib.h"
 #include "termcolor/termcolor.hpp"
+#include "nowide/iostream.hpp"
 
 #include <chrono>
 #include <cstring>
@@ -55,6 +56,6 @@ int main(int argc, const char* argv[])
 		klEnd();
 		return exit;
 	}
-	std::cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
+	nowide::cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
 	return EXIT_FAILURE;
 }
