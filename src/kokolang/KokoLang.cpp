@@ -1,5 +1,6 @@
 ﻿#include "KokoLang.h"
 #include "KokoLangLib.h"
+#define TERMCOLOR_USE_ANSI_ESCAPE_SEQUENCES
 #include "termcolor/termcolor.hpp"
 #include "nowide/iostream.hpp"
 
@@ -15,18 +16,23 @@ if (time)  {															\
 sub = high_resolution_clock::now() - start;								\
 duration = duration_cast<microseconds>(sub);                         	\
 if(duration.count() < 1000)    {                                      	\
-nowide::cout << (x) << duration.count() << u8"μs" << std::endl; 		\
+nowide::cout << termcolor::yellow <<                                 \
+(x) << termcolor::reset << duration.count() << u8"μs" << std::endl; 		\
 }else {                                                              	\
 durationms = duration_cast<milliseconds>(sub);                      	\
 if(durationms.count() < 1000)    {                                      \
-nowide::cout << (x) << durationms.count() << "ms" << std::endl;			\
+nowide::cout << termcolor::yellow <<                                 \
+(x) << termcolor::reset << durationms.count() << "ms" << std::endl;			\
 }else {  																\
 durations = duration_cast<seconds>(sub);								\
-nowide::cout << (x) << durations.count() << "s" << std::endl;			\
+nowide::cout << termcolor::yellow <<                                 \
+(x) << termcolor::reset << durations.count() << "s" << std::endl;			\
 }}}
 
 int main(int argc, const char* argv[])
 {
+	if(termcolor::_internal::is_atty(std::cout))
+		nowide::cout << termcolor::colorize;
 	if (argc > 1) {
 		bool time = false;
 		if (argc > 2) {
@@ -56,6 +62,7 @@ int main(int argc, const char* argv[])
 		klEnd();
 		return exit;
 	}
-	nowide::cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
+
+	nowide::cout <<  termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
 	return EXIT_FAILURE;
 }

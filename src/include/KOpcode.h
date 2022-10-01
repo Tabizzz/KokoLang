@@ -71,7 +71,7 @@ enum KOpcode : unsigned char
 	 */
 	pop,
 	/*
-	 * duplicate the element in one register to other register.
+	 * clone the element in one register to other register.
 	 * this operation is a reference copy, even primitive types
 	 * are copy as reference so cant be optimal with primitives.
 	 *
