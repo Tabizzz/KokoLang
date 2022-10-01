@@ -13,7 +13,6 @@ using namespace std::chrono;
 using namespace antlr4;
 using namespace std;
 
-
 KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename)
 {
 	std::ifstream stream;
@@ -29,7 +28,7 @@ KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename)
 	auto tree = parser.program();
 #ifdef MEASURETIME
 	auto duration = duration_cast<microseconds>(high_resolution_clock::now() - start);
-	cout << "antlr parser: " << duration.count() << "μs" << endl;
+	cout << "antlr parser: " << duration.count() << u8"μs" << endl;
 #endif
 	if (parser.getNumberOfSyntaxErrors() > 0) return nullptr;
 

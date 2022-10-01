@@ -15,14 +15,14 @@ if (time)  {															\
 sub = high_resolution_clock::now() - start;								\
 duration = duration_cast<microseconds>(sub);                         	\
 if(duration.count() < 1000)    {                                      	\
-std::cout << (x) << duration.count() << u8"μs" << std::endl; 			\
+nowide::cout << (x) << duration.count() << u8"μs" << std::endl; 		\
 }else {                                                              	\
 durationms = duration_cast<milliseconds>(sub);                      	\
 if(durationms.count() < 1000)    {                                      \
-std::cout << (x) << durationms.count() << "ms" << std::endl;			\
+nowide::cout << (x) << durationms.count() << "ms" << std::endl;			\
 }else {  																\
 durations = duration_cast<seconds>(sub);								\
-std::cout << (x) << durations.count() << "s" << std::endl;				\
+nowide::cout << (x) << durations.count() << "s" << std::endl;			\
 }}}
 
 int main(int argc, const char* argv[])

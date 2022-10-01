@@ -9,6 +9,24 @@ y = x.st.at(KASINT(y));\
 
 void opcode_noc(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc) {}
 
+void opcode_cl(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc) {
+	auto reg = KASINT(operands[1]);
+	auto obj = operands[0];
+	GETREG(call, obj);
+	vector<KlObject*>::reference current = call.st.at(reg);
+
+	klClone(obj, &current);
+}
+
+void opcode_mv(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc) {
+	auto reg = KASINT(operands[1]);
+	auto obj = operands[0];
+	GETREG(call, obj);
+	vector<KlObject*>::reference current = call.st.at(reg);
+
+	klMove(obj, &current);
+}
+
 void opcode_cp(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc) {
 	auto reg = KASINT(operands[1]);
 	auto obj = operands[0];
@@ -102,11 +120,13 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 		case pop:
 			break;
 		case cl:
+			instruction->call = opcode_cl;
 			break;
 		case cp:
 			instruction->call = opcode_cp;
 			break;
 		case mv:
+			instruction->call = opcode_mv;
 			break;
 		case lflag:
 			break;
