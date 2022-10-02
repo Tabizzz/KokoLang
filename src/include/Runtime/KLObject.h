@@ -21,22 +21,7 @@ typedef struct KlObject {
 	size_t refs;			// how many objects are referencing this
 } KlObject;
 
-typedef void (*klinitializer)(KlObject*);   // the initializer is the responsible for example set ints to 0
-typedef void (*klfinalizer)(KlObject*);     // the finalizer is the responsible for example free memory allocation/ deref other object
-typedef KlObject* (*klinvokable)			// a delegate for invokable objects like constructors or functions
-	   (KlObject *func,						// the function object itself
-		KlObject **args,					// the args passed to the function
-		KlObject *argc);					// the number of arguments passed to the function
-
-typedef int (*klcomparer)					// comparator signature
-		(KlObject* first,
-		 KlObject* second);
-
-typedef KlObject* (*klbinaryop)				// a binary operator, receive two objects and returns a new one
-	   (KlObject* first,
-		KlObject* second);
-typedef KlObject* (*klunaryop)				// a unary operation, receive one object and returns a new one
-	   (KlObject* obj);
+#include "kldelegates.h"
 
 typedef struct KlType {
 	KLOBJECTHEAD
@@ -58,7 +43,7 @@ typedef struct KlType {
 	 * The comparer must return 1 if second is bigger and -1 is first is bigger.
 	 */
 	klcomparer comparer;		// the comparer of the type
-	klbinaryop equal;			// the equality checker of the type
+	klcomparer equal;			// the equality checker of the type
 
 	klbinaryop opAdd;			// addition operation
 	klbinaryop opSub;			// subtraction operation
@@ -67,10 +52,10 @@ typedef struct KlType {
 	klbinaryop opMod;			// modulo operation
 
 	klunaryop clone;			// clone operation
-	klbinaryop copy;			// copy operation
+	klcopy copy;				// copy operation
 } KlType;
 
 #ifdef __cplusplus
-};
+}
 #endif
 

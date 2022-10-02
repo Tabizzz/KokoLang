@@ -10,6 +10,7 @@
 #define KASINT(x) KLCAST(kl_int, x)->value
 #define KLFLOAT(x) klBuiltinFloat(x)
 #define KFLOAT(x) KLCAST(kl_float , KLFLOAT(x))
+#define KASFLOAT(x) KLCAST(kl_float, x)->value
 #define KLBOOL(x) klBuiltinBool(x)
 #define KBOOL(x) KLCAST(kl_bool, KLBOOL(x))
 #define KASBOOL(x) KLCAST(kl_bool, x)->value

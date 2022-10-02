@@ -1,20 +1,27 @@
 ﻿#include "KokoLangInternal.h"
 #include "klapi_types.h"
 #include <cassert>
-#include <iostream>
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnreachableCode"
+
+KlObject* klself_return(KlObject* base) { return base; }
+
+#pragma region int
 void kint_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_int, obj);
 	ptr->value = 0;
 }
 
-int kint_comparer(KlObject* x, KlObject* y) {
-	int first = KASINT(x);
-	int second = 0;
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ConstantFunctionResult"
+int8_t kint_comparer(KlObject* x, KlObject* y) {
+	int64_t first = KASINT(x);
+	int64_t second = 0;
 	if(y) {
 		if (y->type == &klBType_Int) {
 			second = KASINT(y);
-		} else {
+		} else if (y->type->toInt) {
 			second = KASINT(y->type->toInt(y));
 		}
 	}
@@ -27,20 +34,152 @@ int kint_comparer(KlObject* x, KlObject* y) {
 	}
 	return 0;
 }
+#pragma clang diagnostic pop
+
+int8_t kint_equal(KlObject* x, KlObject* y) {
+	return KASINT(x) == KASINT(y);
+}
 
 KlObject* kint_clone(KlObject* base) {
 	return KLINT(KASINT(base));
 }
 
-KlObject* kint_copy(KlObject* a, KlObject* b) {
+void kint_copy(KlObject* a, KlObject* b) {
 	KASINT(b) = KASINT(a);
-	return nullptr;
 }
+
+KlObject* klint_tostr(KlObject* base)
+{
+	auto val = KASINT(base);
+	return KLSTR(to_string(val));
+}
+
+KlObject* klint_toflt(KlObject* base)
+{
+	auto val = KASINT(base);
+	return KLFLOAT(val);
+}
+
+KlObject* klint_tobit(KlObject* base)
+{
+	auto val = KASINT(base);
+	return KLBOOL(val);
+}
+
+KlType klBType_Int =
+{
+		KlObject(),
+		"int",
+		0,
+		sizeof(kl_int),
+		kint_init,
+		nullptr,
+		nullptr,
+		klint_tostr,
+		klself_return,
+		klint_toflt,
+		klint_tobit,
+		nullptr,
+		nullptr,
+		kint_comparer,
+		kint_equal,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kint_clone,
+		kint_copy
+};
+#pragma endregion
+
+#pragma region float
 
 void kfloat_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_float, obj);
 	ptr->value = 0;
 }
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ConstantFunctionResult"
+int8_t kfloat_comparer(KlObject* x, KlObject* y) {
+	double first = KASFLOAT(x);
+	double second = 0;
+	if(y) {
+		if (y->type == &klBType_Float) {
+			second = KASFLOAT(y);
+		} else if (y->type->toFloat) {
+			second = KASFLOAT(y->type->toFloat(y));
+		}
+	}
+
+	if(first < second) {
+		return 1;
+	}
+	else if(second < first) {
+		return -1;
+	}
+	return 0;
+}
+#pragma clang diagnostic pop
+
+int8_t kfloat_equal(KlObject* x, KlObject* y) {
+	return KASFLOAT(x) == KASFLOAT(y);
+}
+
+KlObject* kfloat_clone(KlObject* base) {
+	return KLFLOAT(KASFLOAT(base));
+}
+
+void kfloat_copy(KlObject* a, KlObject* b) {
+	KASFLOAT(b) = KASFLOAT(a);
+}
+
+KlObject* kfloat_tostr(KlObject* base)
+{
+	auto val = KASFLOAT(base);
+	return KLSTR(to_string(val));
+}
+
+KlObject* kfloat_toint(KlObject* base)
+{
+	auto val = KASFLOAT(base);
+	return KLINT((int64_t)val);
+}
+
+KlObject* kfloat_tobit(KlObject* base)
+{
+	auto val = KASFLOAT(base);
+	return KLBOOL(val);
+}
+
+KlType klBType_Float =
+{
+		KlObject(),
+		"flt",
+		0,
+		sizeof(kl_float),
+		kfloat_init,
+		nullptr,
+		nullptr,
+		kfloat_tostr,
+		kfloat_toint,
+		klself_return,
+		kfloat_tobit,
+		nullptr,
+		nullptr,
+		kfloat_comparer,
+		kfloat_equal,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kfloat_clone,
+		kfloat_copy
+};
+
+#pragma endregion
 
 void kbool_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_bool, obj);
@@ -74,41 +213,6 @@ void karr_init(KlObject* obj) {
 	ptr->size = 0;
 	ptr->content = nullptr;
 }
-
-KlType klBType_Int =
-{
-		KlObject(),
-		"int",
-		0,
-		sizeof(kl_int),
-		kint_init,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		kint_comparer,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		kint_clone,
-		kint_copy
-};
-
-KlType klBType_Float =
-{
-		KlObject(),
-		"fltt",
-		0,
-		sizeof(kl_float),
-		kfloat_init,
-};
 
 KlType klBType_Bool =
 {
@@ -174,11 +278,11 @@ KlType klBType_Reg =
 		kint_init,
 };
 
-KlObject *klNewVar(KlType *type, KlObject *args, ...) {
+CAPI KlObject *klNewVar(KlType *type, KlObject *args, ...) {
 	return nullptr;
 }
 
-KlObject *klNew(KlType *type, KlObject **args, int argc) {
+CAPI KlObject *klNew(KlType *type, KlObject **args, int argc) {
 	return nullptr;
 }
 
@@ -214,3 +318,5 @@ CAPI void klDestroy(KlObject *object) {
 	KLINVOKE(object->type->finalizer)(object);
 	free(object);
 }
+
+#pragma clang diagnostic pop
