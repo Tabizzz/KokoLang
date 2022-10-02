@@ -42,9 +42,9 @@ int main(int argc, const char* argv[])
 		}
 		auto start = high_resolution_clock::now();
 		auto sub = high_resolution_clock::now() - start;
-		auto duration = duration_cast<microseconds>(sub);
-		auto durationms = duration_cast<milliseconds>(sub);
-		auto durations = duration_cast<seconds>(sub);
+		microseconds duration;
+		milliseconds durationms ;
+		seconds durations;
 
 		klInit();
 

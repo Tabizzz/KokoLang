@@ -98,11 +98,6 @@ CAPI inline void klDefType(KlType *type) {
 	type->klbase.refs = 1;
 }
 
-/*
- * Represent an operation to move objects between registers and to pass to functions.
- */
-typedef void (*klObjectMover)(KlObject*, KlObject**);
-
 void inline kliCopyA(KlObject *pObject, KlObject **pObject1) {
 	klDeref(*pObject1);
 	*pObject1 = nullptr;

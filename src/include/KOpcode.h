@@ -61,7 +61,7 @@ enum KOpcode : unsigned char
 	 */
 	push,
 	/*
-	 * pop a value from the .
+	 * pop a value from the specific register.
 	 *
 	 * usage:
 	 * pop <reg>
