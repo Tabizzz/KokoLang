@@ -66,6 +66,28 @@ KlObject* klint_tobit(KlObject* base)
 	return KLBOOL(val);
 }
 
+void kint_add(KlObject* first, KlObject* second, KlObject** target, klRegOp regop)
+{
+	if(second) {
+		if(second->type == &klBType_Float) {
+			klBType_Float.opAdd(second, first, target, regop);
+			return;
+		}
+		static KlObject* temp = KLINT(0);
+		auto x = KASINT(first);
+		int64_t y = 0;
+		if (second->type == &klBType_Int) {
+			y = KASINT(second);
+		} else if (second->type->toInt) {
+			y = KASINT(second->type->toInt(second));
+		}
+		KASINT(temp) = x + y;
+		regop(temp, target);
+	} else {
+		regop(first, target);
+	}
+}
+
 KlType klBType_Int =
 {
 		KlObject(),
@@ -83,7 +105,7 @@ KlType klBType_Int =
 		nullptr,
 		kint_comparer,
 		kint_equal,
-		nullptr,
+		kint_add,
 		nullptr,
 		nullptr,
 		nullptr,

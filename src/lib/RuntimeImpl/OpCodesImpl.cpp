@@ -82,23 +82,18 @@ void opcode_go(const KlObject& caller, KLCall& call, KlObject* operands[], [[may
 }
 
 void opcode_add(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
+	USEREGOP
 	REGORRET(operands[2])
 	auto first = operands[0];
 	GETREG(call, first)
 	auto second = operands[1];
 	GETREG(call, second)
-
-	// todo change this
-	auto f = KLCAST(kl_int, first);
-	auto s = KLCAST(kl_int, second);
-
-	auto res = f->value + s->value;
-
 	vecref regis = call.st.at(reg);
-	if(regis) {
-		KASINT(regis) = res;
+
+	if(first->type->opAdd) {
+		first->type->opAdd(first, second, &regis, regop);
 	} else {
-		regis = KLINT(res);
+		throw invalid_argument("Invalid object to operation add");
 	}
 }
 

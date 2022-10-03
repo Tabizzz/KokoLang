@@ -42,11 +42,6 @@ CAPI
  */
 void klDefType(KlType* type);
 
-/*
- * Represent an operation to move objects between registers and to pass to functions.
- */
-typedef void (*klRegOp)(KlObject* src, KlObject** dest);
-
 CAPI
 /*
  * Main object copy operation. This function will try to copy objects

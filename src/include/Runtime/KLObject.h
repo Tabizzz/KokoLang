@@ -45,11 +45,11 @@ typedef struct KlType {
 	klcomparer comparer;		// the comparer of the type
 	klcomparer equal;			// the equality checker of the type
 
-	klbinaryop opAdd;			// addition operation
-	klbinaryop opSub;			// subtraction operation
-	klbinaryop opMul;			// multiplication operation
-	klbinaryop opDiv;			// division operation
-	klbinaryop opMod;			// modulo operation
+	klregoperation opAdd;		// addition operation
+	klregoperation opSub;		// subtraction operation
+	klregoperation opMul;		// multiplication operation
+	klregoperation opDiv;		// division operation
+	klregoperation opMod;		// modulo operation
 
 	klunaryop clone;			// clone operation
 	klcopy copy;				// copy operation
