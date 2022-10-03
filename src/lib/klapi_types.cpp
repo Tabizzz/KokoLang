@@ -73,7 +73,13 @@ void kint_add(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 			klBType_Float.opAdd(second, first, target, regop);
 			return;
 		}
-		static KlObject* temp = KLINT(0);
+		static kl_int temp = {
+				KlObject{
+						&klBType_Int,
+						1
+				},
+				0
+		};
 		auto x = KASINT(first);
 		int64_t y = 0;
 		if (second->type == &klBType_Int) {
@@ -81,8 +87,8 @@ void kint_add(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 		} else if (second->type->toInt) {
 			y = KASINT(second->type->toInt(second));
 		}
-		KASINT(temp) = x + y;
-		regop(temp, target);
+		temp.value = x + y;
+		regop(KLWRAP(&temp), target);
 	} else {
 		regop(first, target);
 	}
