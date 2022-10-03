@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /*
  * Represent an operation to move objects between registers and to pass to functions.

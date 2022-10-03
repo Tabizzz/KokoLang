@@ -1,4 +1,4 @@
-#include "KokoLangLib.h"
+﻿#include "KokoLangLib.h"
 #include "ProgramVisitor.h"
 
 #define INTTOREG(x) SWITCH_TYPE(x, klBType_Int, klBType_Reg)
