@@ -42,7 +42,9 @@ int8_t kint_comparer(KlObject* x, KlObject* y) {
 		if (y->type == &klBType_Int) {
 			second = KASINT(y);
 		} else if (y->type->toInt) {
-			second = KASINT(y->type->toInt(y));
+			auto frees = y->type->toInt(y);
+			second = KASINT(frees);
+			klDeref(frees);
 		}
 	}
 
@@ -98,7 +100,9 @@ void kint_add(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 		if (second->type == &klBType_Int) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
-			y = KASINT(second->type->toInt(second));
+			auto frees = second->type->toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
 		}
 		temp_int.value = x + y;
 		regop(KLWRAP(&temp_int), target);
@@ -120,7 +124,9 @@ void kint_sub(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 		if (second->type == &klBType_Int) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
-			y = KASINT(second->type->toInt(second));
+			auto frees = second->type->toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
 		}
 		temp_int.value = x + y;
 		regop(KLWRAP(&temp_int), target);
@@ -141,12 +147,14 @@ void kint_mul(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 		if (second->type == &klBType_Int) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
-			y = KASINT(second->type->toInt(second));
+			auto frees = second->type->toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
 		}
 		temp_int.value = x * y;
 		regop(KLWRAP(&temp_int), target);
 	} else {
-		regop(first, target);
+		regop(nullptr, target);
 	}
 }
 
@@ -163,12 +171,14 @@ void kint_div(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 		if (second->type == &klBType_Int) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
-			y = KASINT(second->type->toInt(second));
+			auto frees = second->type->toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
 		}
 		temp_int.value = x / y;
 		regop(KLWRAP(&temp_int), target);
 	} else {
-		regop(first, target);
+		regop(nullptr, target);
 	}
 }
 
@@ -180,12 +190,14 @@ void kint_mod(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 		if (second->type == &klBType_Int) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
-			y = KASINT(second->type->toInt(second));
+			auto frees = second->type->toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
 		}
 		temp_int.value = x % y;
 		regop(KLWRAP(&temp_int), target);
 	} else {
-		regop(first, target);
+		regop(nullptr, target);
 	}
 }
 
@@ -276,6 +288,90 @@ KlObject* kfloat_tobit(KlObject* base)
 	return KLBOOL(val);
 }
 
+void kfloat_add(KlObject* first, KlObject* second, KlObject** target, klRegOp regop)
+{
+	if(second) {
+		auto x = KASFLOAT(first);
+		double y = 0;
+		if (second->type == &klBType_Float) {
+			y = KASFLOAT(second);
+		} else if (second->type == &klBType_Int) {
+			y = KASINT(second);
+		}  else if (second->type->toFloat) {
+			auto frees = second->type->toFloat(second);
+			y = KASFLOAT(frees);
+			klDeref(frees);
+		}
+		temp_float.value = x + y;
+		regop(KLWRAP(&temp_float), target);
+	} else {
+		regop(first, target);
+	}
+}
+
+void kfloat_sub(KlObject* first, KlObject* second, KlObject** target, klRegOp regop)
+{
+	if(second) {
+		auto x = KASFLOAT(first);
+		double y = 0;
+		if (second->type == &klBType_Float) {
+			y = KASFLOAT(second);
+		} else if (second->type == &klBType_Int) {
+			y = KASINT(second);
+		}  else if (second->type->toFloat) {
+			auto frees = second->type->toFloat(second);
+			y = KASFLOAT(frees);
+			klDeref(frees);
+		}
+		temp_float.value = x - y;
+		regop(KLWRAP(&temp_float), target);
+	} else {
+		regop(first, target);
+	}
+}
+
+void kfloat_mul(KlObject* first, KlObject* second, KlObject** target, klRegOp regop)
+{
+	if(second) {
+		auto x = KASFLOAT(first);
+		double y = 0;
+		if (second->type == &klBType_Float) {
+			y = KASFLOAT(second);
+		} else if (second->type == &klBType_Int) {
+			y = KASINT(second);
+		}  else if (second->type->toFloat) {
+			auto frees = second->type->toFloat(second);
+			y = KASFLOAT(frees);
+			klDeref(frees);
+		}
+		temp_float.value = x * y;
+		regop(KLWRAP(&temp_float), target);
+	} else {
+		regop(nullptr, target);
+	}
+}
+
+void kfloat_div(KlObject* first, KlObject* second, KlObject** target, klRegOp regop)
+{
+	if(second) {
+		auto x = KASFLOAT(first);
+		double y = 0;
+		if (second->type == &klBType_Float) {
+			y = KASFLOAT(second);
+		} else if (second->type == &klBType_Int) {
+			y = KASINT(second);
+		}  else if (second->type->toFloat) {
+			auto frees = second->type->toFloat(second);
+			y = KASFLOAT(frees);
+			klDeref(frees);
+		}
+		temp_float.value = x / y;
+		regop(KLWRAP(&temp_float), target);
+	} else {
+		regop(nullptr, target);
+	}
+}
+
 KlType klBType_Float =
 {
 		KlObject(),
@@ -293,10 +389,10 @@ KlType klBType_Float =
 		nullptr,
 		kfloat_comparer,
 		kfloat_equal,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
+		kfloat_add,
+		kfloat_sub,
+		kfloat_mul,
+		kfloat_div,
 		nullptr,
 		kfloat_clone,
 		kfloat_copy
