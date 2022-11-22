@@ -244,7 +244,9 @@ int8_t kfloat_comparer(KlObject* x, KlObject* y) {
 		if (y->type == &klBType_Float) {
 			second = KASFLOAT(y);
 		} else if (y->type->toFloat) {
-			second = KASFLOAT(y->type->toFloat(y));
+			auto frees = y->type->toFloat(y);
+			second = KASFLOAT(frees);
+			klDeref(frees);
 		}
 	}
 

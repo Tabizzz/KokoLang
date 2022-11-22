@@ -73,8 +73,10 @@ void opcode_ret(const KlObject& caller, KLCall& call, [[maybe_unused]] KlObject*
 void opcode_call(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
 	auto reg = operands[2];
 	GETREG(call, reg)
-
-	cout << KASINT(reg) << endl;
+	if(reg->type == &klBType_Int)
+		cout << KASINT(reg) << endl;
+	else if (reg->type == &klBType_Float)
+		cout << KASFLOAT(reg) << endl;
 }
 
 void opcode_go(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
