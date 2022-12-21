@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "KokoLangLib.h"
-#include "gen/KokoLangBaseVisitor.h"
+#include "KokoLangBaseVisitor.h"
 
 class ProgramVisitor : KokoLangBaseVisitor
 {

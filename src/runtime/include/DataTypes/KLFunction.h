@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "klimports.h"
-#include "Runtime/KLObject.h"
-#include "Runtime/KLInstruction.h"
+#include "DataTypes/KLObject.h"
+#include "DataTypes/KLInstruction.h"
 #include "kltypedef.h"
 
 #ifdef __cplusplus

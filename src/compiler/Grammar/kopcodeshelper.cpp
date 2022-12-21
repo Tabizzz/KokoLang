@@ -1,4 +1,5 @@
-﻿#include "KokoLangLib.h"
+﻿#include <stdexcept>
+#include "KokoLangLib.h"
 #include "ProgramVisitor.h"
 
 #define INTTOREG(x) SWITCH_TYPE(x, klBType_Int, klBType_Reg)
@@ -17,7 +18,7 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{"goifn",	KOpcode::goifn	},
 			{"push",	KOpcode::push	},
 			{"pop",		KOpcode::pop	},
-			{"cl",		KOpcode::cl	},
+			{"cl",		KOpcode::cl	    },
 			{"cp",		KOpcode::cp		},
 			{"mv",		KOpcode::mv		},
 			{"lflag",	KOpcode::lflag	},

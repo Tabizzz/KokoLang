@@ -2,8 +2,8 @@
 
 #include <map>
 #include "klimports.h"
-#include "Runtime/KLFunction.h"
-#include "Runtime/KLInstruction.h"
+#include "DataTypes/KLFunction.h"
+#include "DataTypes/KLInstruction.h"
 
 /*
  * A package is an object that contains definitions of functions, types and variables.

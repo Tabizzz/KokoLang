@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Runtime/KLObject.h"
+#include "DataTypes/KLObject.h"
 
 /*
  * builtin kl types

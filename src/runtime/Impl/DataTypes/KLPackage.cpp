@@ -1,6 +1,6 @@
 ﻿#include <iostream>
-#include "KokoLangInternal.h"
-#include "Runtime/KLPackage.h"
+#include "../KokoLangInternal.h"
+#include "DataTypes/KLPackage.h"
 
 void kpack_init(KlObject* pack)
 {

@@ -1,7 +1,7 @@
 ﻿#include <cstring>
 #include <iostream>
-#include "KokoLangInternal.h"
-#include "Runtime/KLFunction.h"
+#include "../KokoLangInternal.h"
+#include "DataTypes/KLFunction.h"
 #include "KLFunctionImpl.h"
 
 KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)

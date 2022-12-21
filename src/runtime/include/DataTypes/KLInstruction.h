@@ -2,8 +2,8 @@
 
 #include "klimports.h"
 #include "KOpcode.h"
-#include "Runtime/KLObject.h"
-#include "Runtime/KLCall.h"
+#include "DataTypes/KLObject.h"
+#include "DataTypes/KLCall.h"
 
 typedef void (*opcodecall)(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc);
 

@@ -1,4 +1,4 @@
-﻿#include "KokoLangInternal.h"
+﻿#include "../KokoLangInternal.h"
 
 void kins_init(KlObject* pack)
 {

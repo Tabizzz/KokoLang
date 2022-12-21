@@ -2,8 +2,8 @@
 
 #include "KokoLang.h"
 #include "antlr4-runtime.h"
-#include "gen/KokoLangLexer.h"
-#include "gen/KokoLangParser.h"
+#include "KokoLangLexer.h"
+#include "KokoLangParser.h"
 
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef KokoLangLib_EXPORTS

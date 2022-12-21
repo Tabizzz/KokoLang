@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Runtime/KLFunction.h"
+#include "DataTypes/KLFunction.h"
 
 void klFunction_reallocateLabels(KLFunction *function);
 

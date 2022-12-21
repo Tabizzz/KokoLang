@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include "KokoLangInternal.h"
+#include "../KokoLangInternal.h"
 #include "KLFunctionImpl.h"
 
 #define GETREG(x, y) \

@@ -4,7 +4,7 @@
  */
 
 #include "klimports.h"
-#include "Runtime/KLRuntime.h"
+#include "DataTypes/KLRuntime.h"
 
 #ifndef CAPI_H
 #define CAPI_H

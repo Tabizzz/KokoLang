@@ -1,5 +1,5 @@
 ﻿#include "antlr4-runtime.h"
-#include "Interpreter/KLInterpreter.h"
+#include "Grammar/KLInterpreter.h"
 #include "gen/KokoLangLexer.h"
 #include "gen/KokoLangParser.h"
 #include "KokoLangLib.h"

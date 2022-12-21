@@ -3,7 +3,7 @@
 #include <stack>
 #include <bitset>
 #include "klimports.h"
-#include "Runtime/KLObject.h"
+#include "DataTypes/KLObject.h"
 
 // two regs, first one for int operations and second for float operations.
 #define CALL_REG_COUNT 2
