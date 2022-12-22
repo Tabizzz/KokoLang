@@ -25,10 +25,10 @@ void klEnd();
 
 CAPI
 /*
- *  Get the standard package.
+ *  Get the global package.
  *  This package contains the standard types and functions.
  */
-const KLPackage* klStdPackage();
+const KLPackage* klGlobalPackage();
 
 CAPI
 /*

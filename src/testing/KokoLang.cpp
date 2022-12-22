@@ -8,6 +8,11 @@
 #include <cstring>
 #include <iostream>
 
+#if _WIN32
+#include <cstdio>
+#include <windows.h>
+#endif
+
 using namespace std::chrono;
 
 #define MEASURE(x, y)if(time) start = high_resolution_clock::now(); 	\
@@ -33,6 +38,9 @@ int main(int argc, const char* argv[])
 {
 	if(termcolor::_internal::is_atty(std::cout))
 		nowide::cout << termcolor::colorize;
+#if _WIN32
+	SetConsoleOutputCP( 65001 );
+#endif
 	if (argc > 1) {
 		bool time = false;
 		if (argc > 2) {

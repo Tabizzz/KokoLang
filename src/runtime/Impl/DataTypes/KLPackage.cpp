@@ -35,8 +35,6 @@ void kpack_end(KlObject* pack)
 CAPI KLPackage* klCreatePackage()
 {
 	auto ins = KLCAST(KLPackage, klIns(&klBType_Package));
-	// temporal name
-	ins->name = KLSTR("+program");
 	return ins;
 }
 

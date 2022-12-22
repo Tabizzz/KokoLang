@@ -4,24 +4,23 @@
 #include <stdexcept>
 #include <iostream>
 
-#define  STDREGTYPE(x) klDefType(&x); klPackageRegType(stdPackage, &x);
+#define  STDREGTYPE(x) klDefType(&x); klPackageRegType(globalPackage, &x);
 #define STDCHECKTYPE(x) if(x.inscount) cout << "type "<< x.name << " still has " << x.inscount << " instances in memory" << endl;
 
-static KLPackage* stdPackage = nullptr;
+static KLPackage* globalPackage = nullptr;
 static map<string, KLPackage*>* packages;
 
-void kliBuildStdLib()
+void kliBuildGlobalPackage()
 {
-	stdPackage = klCreatePackage();
-	klDeref(stdPackage->name);
-	stdPackage->name = KLSTR("lang");
+	globalPackage = klCreatePackage();
+	globalPackage->name = KLSTR("global");
 }
 
 CAPI void klInit()
 {
 	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value), "kl_int and kl_float dont have the same size.");
 
-	kliBuildStdLib();
+	kliBuildGlobalPackage();
 
 	// the ref count of types is always 1, and you should never call
 	// deref with a type as this will try to destroy it but types are
@@ -49,7 +48,7 @@ CAPI void klInit()
 
 	packages = new map<string, KLPackage*>();
 
-	klRegisterPackage(stdPackage);
+	klRegisterPackage(globalPackage);
 }
 
 CAPI void klEnd() {
@@ -74,8 +73,8 @@ CAPI void klEnd() {
 	STDCHECKTYPE(klBType_Package)
 }
 
-CAPI const KLPackage *klStdPackage() {
-	return stdPackage;
+CAPI const KLPackage *klGlobalPackage() {
+	return globalPackage;
 }
 
 CAPI void klRegisterPackage(KLPackage *klPackage) {
