@@ -8,4 +8,5 @@
 #include "klapi_builtins.h"
 #include "kltypedef.h"
 #include "KOpcode.h"
+#include "klbinary.h"
 #include "DataTypes/KLRuntime.h"
