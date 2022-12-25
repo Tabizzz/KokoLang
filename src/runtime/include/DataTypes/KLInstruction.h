@@ -24,4 +24,4 @@ struct CPPAPI KLInstruction
  * Type definition for KLInstruction.
  * This type is defined when call klInit.
  */
-CAPI KlType klBType_Instruction;
+CAPI KLType klBType_Instruction;

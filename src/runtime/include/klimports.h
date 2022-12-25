@@ -7,6 +7,7 @@
 #include <string>
 #include <any>
 #include <vector>
+#include <cstdint>
 
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef KokoLangRuntime_EXPORTS
@@ -35,4 +36,5 @@
 #define CAPI EXTERN EXPORT
 #define CPPAPI EXPORT
 
-typedef unsigned char kbyte;
+typedef uint8_t kbyte;
+typedef uint16_t kshort;

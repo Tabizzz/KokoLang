@@ -28,7 +28,7 @@ CAPI
  *  Get the global package.
  *  This package contains the standard types and functions.
  */
-const KLPackage* klGlobalPackage();
+KLPackage* klGlobalPackage();
 
 CAPI
 /*
@@ -40,7 +40,7 @@ CAPI
 /*
  * Define a type, use this to initialize the header of any type.
  */
-void klDefType(KlType* type);
+void klDefType(KLType* type);
 
 CAPI
 /*

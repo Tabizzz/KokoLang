@@ -12,63 +12,63 @@
 /*
  * Builtin type int.
  */
-CAPI KlType klBType_Int;
+CAPI KLType klBType_Int;
 
 /*
  * Builtin type flt.
  */
-CAPI KlType klBType_Float;
+CAPI KLType klBType_Float;
 
 /*
  * Builtin type bit.
  */
-CAPI KlType klBType_Bool;
+CAPI KLType klBType_Bool;
 
 /*
  * Builtin type str.
  */
-CAPI KlType klBType_String;
+CAPI KLType klBType_String;
 
 /*
  * Builtin type ptr.
  */
-CAPI KlType klBType_Ptr;
+CAPI KLType klBType_Ptr;
 
 /*
  * Builtin type object ptr.
  */
-CAPI KlType klBType_OPtr;
+CAPI KLType klBType_OPtr;
 
 /*
  * Builtin type arr.
  */
-CAPI KlType klBType_Arr;
+CAPI KLType klBType_Arr;
 
 /*
  * Builtin type type.
  */
-CAPI KlType klBType_Type;
+CAPI KLType klBType_Type;
 
 /*
  * Builtin type register.
  */
-CAPI KlType klBType_Reg;
+CAPI KLType klBType_Reg;
 
 /*
  * Create a new object calling the constructor of the type.
  */
-CAPI KlObject* klNew(KlType* type, KlObject** args, int argc);
+CAPI KlObject* klNew(KLType* type, KlObject** args, int argc);
 
 /*
  * Create a new object calling the constructor of the type.
  */
-CAPI KlObject* klNewVar(KlType* type, KlObject* args...);
+CAPI KlObject* klNewVar(KLType* type, KlObject* args...);
 
 /*
  * Create a new instance of an object only calling the initializer but not the
  * constructor.
  */
-CAPI KlObject* klIns(KlType* type);
+CAPI KlObject* klIns(KLType* type);
 
 /*
  * Increase the ref count of an object.

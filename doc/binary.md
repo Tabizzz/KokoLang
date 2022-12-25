@@ -24,11 +24,11 @@ The file start header, contains general info about the package:
 metadatablocks are used to store custom info inside definitions, metadata works on key-value pairs where the keys are 
 strings, but the values can be ints, doubles, bools, strings or null.
 
-| Offset | Bytes    | Description               |
-|--------|----------|---------------------------|
-| 0      | 2        | size of block, min 3      |
-| 2      | 1        | number of metadata values |
-| 3      | variable | key value pairs           |
+| Offset | Bytes | Description               |
+|--------|-------|---------------------------|
+| 0      | 2     | size of block, min 3  (n) |
+| 2      | 1     | number of metadata values |
+| 3      | n-3   | key value pairs           |
 
 every entry in the metadata is a string followed by a value.
 

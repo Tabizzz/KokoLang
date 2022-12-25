@@ -10,22 +10,22 @@ extern "C"
 
 #define KLINVOKE(x) if(x) x
 
-struct KlType;
+struct KLType;
 
 /*
  * The global dynamic object representation in kokolang.
  * Any type can be used a pointer to this class to be a valid kokolang object.
  */
 typedef struct KlObject {
-	struct KlType* type; 	// the type of this object
+	struct KLType* type; 	// the type of this object
 	size_t refs;			// how many objects are referencing this
 } KlObject;
 
 #include "kldelegates.h"
 
-typedef struct KlType {
+typedef struct KLType {
 	KLOBJECTHEAD
-	const char *name;			// the name of the type
+	const char *name;			// the name of the types
 	size_t inscount;			// the number of instances
 	size_t size;				// the size to allocate this an object of this type
 	klinitializer initializer;	// the initializer to this type

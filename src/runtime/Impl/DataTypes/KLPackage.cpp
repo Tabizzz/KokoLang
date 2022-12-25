@@ -10,6 +10,7 @@ void kpack_init(KlObject* pack)
 	ins->variables 	= new map<string, KlObject *>();
 	ins->types 		= new map<string, KlObject *>();
 	ins->subpacks	= new map<string, KlObject *>();
+	ins->metadata	= new map<string, KlObject *>();
 }
 
 void uDerefAndDelete(map<std::string, KlObject *>* pMap)
@@ -28,6 +29,7 @@ void kpack_end(KlObject* pack)
 	uDerefAndDelete(ins->functions);
 	uDerefAndDelete(ins->variables);
 	uDerefAndDelete(ins->subpacks);
+	uDerefAndDelete(ins->metadata);
 	//types are no destroyed
 	delete ins->types;
 }
@@ -88,7 +90,7 @@ CAPI int klPackage_Run(KLPackage* program, int argc, const char* argv[]) {
 	return 1;
 }
 
-KlType klBType_Package =
+KLType klBType_Package =
 {
 		KlObject(),
 		"pack",
@@ -99,7 +101,7 @@ KlType klBType_Package =
 		kpack_end
 };
 
-void klPackageRegType(KLPackage *klPackage, KlType *type) {
+void klPackageRegType(KLPackage *klPackage, KLType *type) {
 	string name = type->name;
 
 	auto find = klPackage->types->find(name);

@@ -20,7 +20,7 @@ void kins_end(KlObject* pack)
 	delete[] ins->operands;
 }
 
-KlType klBType_Instruction =
+KLType klBType_Instruction =
 {
 		KlObject(),
 		"instruction",

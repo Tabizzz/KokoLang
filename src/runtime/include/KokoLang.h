@@ -10,3 +10,5 @@
 #include "KOpcode.h"
 #include "klbinary.h"
 #include "DataTypes/KLRuntime.h"
+#include "Binary/KMetaType.h"
+#include "Binary/KDefinitionType.h"

@@ -24,13 +24,14 @@ struct CPPAPI KLPackage
 	std::map<std::string, KlObject *>* functions;		// the functions defined in the package
 	std::map<std::string, KlObject *>* variables;		// the globals var of the package.
 	std::map<std::string, KlObject *>* types;			// the types defined in the package.
-	std::map<std::string, KlObject *>* subpacks;
+	std::map<std::string, KlObject *>* subpacks;        // subpacks of the package
+	std::map<std::string, KlObject *>* metadata;        // metadata of the package
 };
 
 /*
  * Register a type in the package.
  */
-CAPI void klPackageRegType(KLPackage* klPackage, KlType* type);
+CAPI void klPackageRegType(KLPackage* klPackage, KLType* type);
 
 /*
  * Create a new empty package, name must be changed.
@@ -52,4 +53,4 @@ CAPI void klPackage_Build(KLPackage* klPackage);
  */
 CAPI int klPackage_Run(KLPackage* klPackage, int argc, const char* argv[]);
 
-CAPI KlType klBType_Package;
+CAPI KLType klBType_Package;

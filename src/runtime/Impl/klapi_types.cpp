@@ -201,7 +201,7 @@ void kint_mod(KlObject* first, KlObject* second, KlObject** target, klRegOp rego
 	}
 }
 
-KlType klBType_Int =
+KLType klBType_Int =
 {
 		KlObject(),
 		"int",
@@ -374,7 +374,7 @@ void kfloat_div(KlObject* first, KlObject* second, KlObject** target, klRegOp re
 	}
 }
 
-KlType klBType_Float =
+KLType klBType_Float =
 {
 		KlObject(),
 		"flt",
@@ -435,7 +435,7 @@ void karr_init(KlObject* obj) {
 	ptr->content = nullptr;
 }
 
-KlType klBType_Bool =
+KLType klBType_Bool =
 {
 		KlObject(),
 		"bit",
@@ -444,7 +444,7 @@ KlType klBType_Bool =
 		kbool_init,
 };
 
-KlType klBType_String =
+KLType klBType_String =
 {
 		KlObject(),
 		"str",
@@ -455,7 +455,7 @@ KlType klBType_String =
 		kstring_end
 };
 
-KlType klBType_Ptr =
+KLType klBType_Ptr =
 {
 		KlObject(),
 		"ptr",
@@ -464,7 +464,7 @@ KlType klBType_Ptr =
 		kptr_init,
 };
 
-KlType klBType_OPtr =
+KLType klBType_OPtr =
 {
 		KlObject(),
 		"optr",
@@ -473,7 +473,7 @@ KlType klBType_OPtr =
 		koptr_init,
 };
 
-KlType klBType_Arr =
+KLType klBType_Arr =
 {
 		KlObject(),
 		"arr",
@@ -482,15 +482,15 @@ KlType klBType_Arr =
 		karr_init,
 };
 
-KlType klBType_Type =
+KLType klBType_Type =
 {
 	KlObject(),
 	"type",
 	0,
-	sizeof (KlType),
+	sizeof (KLType),
 };
 
-KlType klBType_Reg =
+KLType klBType_Reg =
 {
 		KlObject(),
 		"reg",
@@ -499,15 +499,15 @@ KlType klBType_Reg =
 		kint_init,
 };
 
-CAPI KlObject *klNewVar(KlType *type, KlObject *args, ...) {
+CAPI KlObject *klNewVar(KLType *type, KlObject *args, ...) {
 	return nullptr;
 }
 
-CAPI KlObject *klNew(KlType *type, KlObject **args, int argc) {
+CAPI KlObject *klNew(KLType *type, KlObject **args, int argc) {
 	return nullptr;
 }
 
-CAPI KlObject *klIns(KlType *type) {
+CAPI KlObject *klIns(KLType *type) {
 	auto size = type->size;
 	auto space = (KlObject*)malloc(size);
 	space->type = type;

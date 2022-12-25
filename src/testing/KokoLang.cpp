@@ -56,7 +56,7 @@ int main(int argc, const char* argv[])
 
 		klInit();
 
-		MEASURE("Program parse: ", KLPackage *program = klCreateProgramFromFile(argv[1]))
+		MEASURE("Program parse: ", KLPackage *program = klCreatePackageFromFile(argv[1]))
 
 		int exit;
 		if(program) {

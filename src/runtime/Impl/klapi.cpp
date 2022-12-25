@@ -73,7 +73,7 @@ CAPI void klEnd() {
 	STDCHECKTYPE(klBType_Package)
 }
 
-CAPI const KLPackage *klGlobalPackage() {
+CAPI KLPackage* klGlobalPackage() {
 	return globalPackage;
 }
 
@@ -88,7 +88,7 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 	throw invalid_argument("trying to load a package but another package with the same name already exists");
 }
 
-CAPI inline void klDefType(KlType *type) {
+CAPI inline void klDefType(KLType *type) {
 	// set the type
 	type->klbase.type = &klBType_Type;
 	// increase the instance count of type

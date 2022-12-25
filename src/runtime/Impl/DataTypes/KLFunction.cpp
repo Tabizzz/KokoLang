@@ -126,7 +126,7 @@ void klFunction_reallocateLabels(KLFunction* function) {
 	function->invokable = kliFunctionImpl;
 }
 
-KlType klBType_Func =
+KLType klBType_Func =
 {
 		KlObject(),
 		"func",
