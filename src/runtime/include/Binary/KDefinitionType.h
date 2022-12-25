@@ -1,6 +1,6 @@
 #pragma once
 
-enum KDefinitionType : unsigned char
+enum class KDefinitionType : unsigned char
 {
 	close,
 	variable,

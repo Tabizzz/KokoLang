@@ -1,6 +1,6 @@
 #pragma once
 
-enum KMetaType : unsigned char
+enum class KMetaType : unsigned char
 {
 	null,
 	bfalse,

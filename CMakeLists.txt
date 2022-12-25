@@ -54,7 +54,7 @@ set(include_files
 	"src/runtime/include/klapi_builtins.h"
 	"src/runtime/Impl/DataTypes/KLFunctionImpl.h"
 	"src/runtime/include/kldelegates.h"
-	"src/runtime/include/klbinary.h" src/runtime/include/Binary/KMetaType.h src/runtime/include/Binary/KDefinitionType.h)
+	"src/runtime/include/klbinary.h" src/runtime/include/Binary/KMetaType.h src/runtime/include/Binary/KDefinitionType.h src/runtime/include/DataTypes/KLType.h)
 
 set(source_files 
 	"src/runtime/Impl/klapi.cpp"

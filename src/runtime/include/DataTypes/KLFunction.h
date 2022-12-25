@@ -2,6 +2,7 @@
 
 #include "klimports.h"
 #include "DataTypes/KLObject.h"
+#include "DataTypes/KLType.h"
 #include "DataTypes/KLInstruction.h"
 #include "kltypedef.h"
 
