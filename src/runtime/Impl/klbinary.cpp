@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-no-recursion"
 #include "KokoLangInternal.h"
 #include "klbinary.h"
 
@@ -6,11 +8,13 @@
 
 #define CHECKSTREAM(x,y) if(stream.fail() || stream.eof() || stream.bad()) { y return x; }
 
+inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream);
+
 using namespace std;
 
 KLPackage *klCreatePackageFromFile(const char *filename) {
 	std::ifstream stream;
-	stream.open(R"(D:\Onedrive\Escritorio\ss)");
+	stream.open(filename);
 	auto pack = klCreatePackageFromStream(&stream);
 	stream.close();
 	return pack;
@@ -243,7 +247,7 @@ inline void readFunctionDefinition(map<string, KlObject *> *target, istream &str
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "DanglingPointer"
-inline void readTypeDefinition(map<string, KlObject *> *target, istream &stream, KLPackage* parent) {
+inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 	kbyte namesize;
 	stream.read((char*)&namesize, 1);
 	CHECKSTREAM(,)
@@ -281,6 +285,7 @@ inline void readTypeDefinition(map<string, KlObject *> *target, istream &stream,
 	} while (def == KDefinitionType::variable || def == KDefinitionType::function);
 	type->size += type->variables.size() * sizeof(KlObject*);
 	// todo: convert functions in the type to builtin operations
+	klDefType(type);
 	klPackageRegType(parent, type);
 }
 #pragma clang diagnostic pop
@@ -304,16 +309,42 @@ KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 				readFunctionDefinition(pPackage->functions, stream, true);
 				break;
 			case KDefinitionType::type:
-				readTypeDefinition(pPackage->types, stream, pPackage);
+				readTypeDefinition(stream, pPackage);
 				break;
 			case KDefinitionType::subpackage:
-				
+				readPackageDefinition(pPackage->subpacks, stream);
 				break;
 		}
 		CHECKSTREAM(nullptr, klDeref(KLWRAP(pPackage));)
 	} while (def != KDefinitionType::close);
 
 	return pPackage;
+}
+
+inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream) {
+	kbyte namesize;
+	stream.read((char*)&namesize, 1);
+	CHECKSTREAM(,)
+	auto namebuff = new char[namesize + 1];
+	namebuff[namesize] = 0;
+	stream.read(namebuff, namesize);
+	CHECKSTREAM(, delete [] namebuff;)
+	auto package = KLCAST(KLPackage, klIns(&klBType_Package));
+	package->name = klIns(&klBType_String);
+	KLCAST(kl_string, package->name)->value = namebuff;
+	KLCAST(kl_string, package->name)->size = namesize;
+	readMeatadata(stream, package->metadata);
+	CHECKSTREAM(, klDeref(KLWRAP(package));)
+	package = readDefinitions(package, stream);
+	CHECKSTREAM(,) // don't deref the package, readDefinitions already deref it.
+
+	auto find = target->find(namebuff);
+	if(find == target->end()) {
+		target->insert(std::pair<std::string, KlObject*>(namebuff, KLWRAP(package)));
+	} else {
+		klDeref(KLWRAP(package));
+	}
+
 }
 
 KLPackage* createBasePackage(std::istream &stream)
@@ -390,3 +421,5 @@ KLPackage *klCreatePackageFromMemory(const void *ptr, size_t size) {
 	return nullptr;
 }
 
+
+#pragma clang diagnostic pop

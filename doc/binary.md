@@ -127,7 +127,7 @@ A sub-package y a package inside another package and can contain any type of def
 
 | Offset | Bytes    | Description           |
 |--------|----------|-----------------------|
-| 0      | 1        | definition code = 0x3 |
+| 0      | 1        | definition code = 0x4 |
 | 1      | 1        | package name size (n) |
 | 2      | n        | package name          |
 | 2 + n  | variable | metadata block        |
