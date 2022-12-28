@@ -17,18 +17,24 @@ KlObject *klBuiltinFloat(double val) {
 	return base;
 }
 
-KlObject* baseBools( bool val)
-{
-	auto base = klIns(&klBType_Bool);
-	auto obj = KLCAST(kl_bool, base);
-	obj->value = val;
-	return base;
-}
+static kl_bool kl_bool_true = {
+		KlObject{
+				&klBType_Bool,
+				1
+		},
+		true
+};
+
+static kl_bool kl_bool_false = {
+		KlObject{
+				&klBType_Bool,
+				1
+		},
+		false
+};
 
 KlObject *klBuiltinBool(bool val) {
-	static KlObject* True = baseBools(true);
-	static KlObject* False = baseBools(false);
-	return val ? True : False;
+	return KLWRAP(val ? &kl_bool_true : &kl_bool_false);
 }
 
 CPPAPI KlObject *klBuiltinString(const string &val) {

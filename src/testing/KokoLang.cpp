@@ -1,5 +1,4 @@
-﻿#include "KokoLang.h"
-#include "KokoLangLib.h"
+﻿#include "KokoLangLib.h"
 #define TERMCOLOR_USE_ANSI_ESCAPE_SEQUENCES
 #include "termcolor/termcolor.hpp"
 #include "nowide/iostream.hpp"
@@ -55,10 +54,9 @@ int main(int argc, const char* argv[])
 		seconds durations;
 
 		klInit();
-
+		
 		MEASURE("Program parse: ", KLPackage *program = klCreatePackageFromFile(argv[1]))
-
-		int exit;
+		int exit = EXIT_SUCCESS;
 		if(program) {
 			klRegisterPackage(program);
 
@@ -67,7 +65,9 @@ int main(int argc, const char* argv[])
 		} else {
 			exit = EXIT_FAILURE;
 		}
+
 		klEnd();
+
 		return exit;
 	}
 

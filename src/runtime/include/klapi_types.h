@@ -6,8 +6,8 @@
  * and deleting instances to types.
  */
 
-#define KLCAST(x, y) ((x*)y)
-#define KLWRAP(x) ((KlObject*)x)
+#define KLCAST(x, y) ((x*)(y))
+#define KLWRAP(x) ((KlObject*)(x))
 
 /*
  * Builtin type int.
