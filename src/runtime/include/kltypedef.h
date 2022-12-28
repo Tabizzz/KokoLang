@@ -18,7 +18,7 @@ typedef struct kl_int {
 
 typedef struct kl_float {
 	KLOBJECTHEAD
-	double value;
+	double_t value;
 } kl_float;
 
 typedef struct kl_string {

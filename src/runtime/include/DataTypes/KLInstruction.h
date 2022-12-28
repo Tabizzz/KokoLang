@@ -5,6 +5,10 @@
 #include "DataTypes/KLObject.h"
 #include "DataTypes/KLCall.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void (*opcodecall)(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc);
 
 /*
@@ -19,6 +23,10 @@ struct CPPAPI KLInstruction
 	size_t operandc;	// the amount of operands passed to the opcode
 	opcodecall call;	// the function invoked with the opcode logic
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 /*
  * Type definition for KLInstruction.

@@ -4,7 +4,7 @@ void kins_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLInstruction, pack);
 	ins->label = nullptr;
-	ins->opcode = noc;
+	ins->opcode = KOpcode::noc;
 	ins->operands = nullptr;
 	ins->operandc = 0;
 	ins->call = nullptr;

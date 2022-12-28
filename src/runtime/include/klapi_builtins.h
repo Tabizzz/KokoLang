@@ -35,7 +35,7 @@ CAPI KlObject* klBuiltinInt(int64_t val);
 /*
  * Creates new float instance
  */
-CAPI KlObject* klBuiltinFloat(double val);
+CAPI KlObject* klBuiltinFloat(double_t val);
 
 /*
  * Creates bool int instance

@@ -45,6 +45,7 @@ CAPI void klInit()
 	STDREGTYPE(klBType_Instruction)
 	STDREGTYPE(klBType_Func)
 	STDREGTYPE(klBType_Package)
+	STDCHECKTYPE(klBType_Variable)
 
 	packages = new map<string, KLPackage*>();
 
@@ -71,6 +72,7 @@ CAPI void klEnd() {
 	STDCHECKTYPE(klBType_Instruction)
 	STDCHECKTYPE(klBType_Func)
 	STDCHECKTYPE(klBType_Package)
+	STDCHECKTYPE(klBType_Variable)
 }
 
 CAPI KLPackage* klGlobalPackage() {

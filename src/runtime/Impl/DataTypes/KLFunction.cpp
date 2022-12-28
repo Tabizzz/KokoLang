@@ -68,6 +68,8 @@ void kfunc_instantiator(KlObject * obj)
 	func->margs = 0;
 	func->size = 0;
 	func->body = nullptr;
+	func->metadata = new std::map<std::string, KlObject*>();
+
 }
 
 void kfunc_destructor(KlObject* obj)
@@ -80,6 +82,7 @@ void kfunc_destructor(KlObject* obj)
 		}
 		delete func->body;
 	}
+	kliDerefAndDeleteMap(func->metadata);
 }
 
 void klFunction_reallocateLabels(KLFunction* function) {
@@ -87,14 +90,14 @@ void klFunction_reallocateLabels(KLFunction* function) {
 	for (int i = 0; i < function->body->size(); i++)
 	{
 		auto instruction = (*function->body)[i];
-		if(instruction->opcode == noc)
+		if(instruction->opcode == KOpcode::noc)
 		{
 			for (auto ref: *function->body) {
 				auto reflabel = false;
 				switch (ref->opcode) {
-					case go:
-					case goif:
-					case goifn:
+					case KOpcode::go:
+					case KOpcode::goif:
+					case KOpcode::goifn:
 						reflabel = true;
 						break;
 					default:

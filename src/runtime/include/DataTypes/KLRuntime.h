@@ -7,3 +7,4 @@
 #include <DataTypes/KLObject.h>
 #include <DataTypes/KLType.h>
 #include <DataTypes/KLCall.h>
+#include <DataTypes/KLVariable.h>

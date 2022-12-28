@@ -40,7 +40,7 @@ struct CPPAPI KLCall
 	 * 1: return flag, if set to true the method return something.
 	 * 2-4: the index of the register that contains the return value, can be up to index 7.
 	 * 5: check flag, set to true when an operation result in true, like an and.
-	 * 6: clone flag, is set to true operations will set values by clone and not by copy.
+	 * 6: clone flag, if set to true operations will set values by clone and not by copy.
 	 */
 	std::bitset<CALL_FLAG_COUNT> flags;
 	/*

@@ -5,6 +5,10 @@
 #include "DataTypes/KLFunction.h"
 #include "DataTypes/KLInstruction.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * A package is an object that contains definitions of functions, types and variables.
  * Is possible to have sub packages in a package.
@@ -27,6 +31,10 @@ struct CPPAPI KLPackage
 	std::map<std::string, KlObject *>* subpacks;        // subpacks of the package
 	std::map<std::string, KlObject *>* metadata;        // metadata of the package
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 /*
  * Register a type in the package.

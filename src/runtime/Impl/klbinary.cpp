@@ -41,19 +41,21 @@ void readMeatadata(std::istream &stream, std::map<std::string, KlObject*>* metad
 
 		KlObject* value = nullptr;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wswitch"
 		switch (type) {
-			case bfalse:
+			case KMetaType::bfalse:
 				value = KLBOOL(false);
 				break;
-			case btrue:
+			case KMetaType::btrue:
 				value = KLBOOL(true);
 				break;
-			case integer:
+			case KMetaType::integer:
 				int64_t rvalue;
 				stream.read((char*)&rvalue, sizeof(int64_t));
 				value = KLINT(rvalue);
 				break;
-			case number:
+			case KMetaType::number:
 				double_t dvalue;
 				stream.read((char*)&dvalue, sizeof(double_t));
 				value = KLFLOAT(dvalue);
@@ -71,15 +73,245 @@ void readMeatadata(std::istream &stream, std::map<std::string, KlObject*>* metad
 				delete[] valuebuff;
 				break;
 		}
+#pragma clang diagnostic pop
+
 		CHECKSTREAM(, klDeref(value);)
 
 		metadata->insert(pair<std::string, KlObject*>(key, value));
 	}
 }
 
+KlObject* readObject(std::istream &stream)
+{
+	KlObject* value = nullptr;
+	KMetaType type;
+	stream.read((char*)&type, 1);
+	CHECKSTREAM(nullptr,)
 
-KLPackage* readDefinitions(KLPackage *pPackage, istream &istream) {
+	switch (type) {
+		case KMetaType::null:
+			value = nullptr;
+			break;
+		case KMetaType::bfalse:
+			value = KLBOOL(false);
+			break;
+		case KMetaType::btrue:
+			value = KLBOOL(true);
+			break;
+		case KMetaType::integer:
+			int64_t rvalue;
+			stream.read((char*)&rvalue, sizeof(int64_t));
+			value = KLINT(rvalue);
+			break;
+		case KMetaType::reg:
+			int16_t ivalue;
+			stream.read((char*)&ivalue, sizeof(int16_t));
+			value = klIns(&klBType_Reg);
+			KLCAST(kl_int, value)->value = ivalue;
+			break;
+		case KMetaType::number:
+			double_t dvalue;
+			stream.read((char*)&dvalue, sizeof(double_t));
+			value = KLFLOAT(dvalue);
+			break;
+		case KMetaType::string:
+			kbyte keyl;
+			stream.read((char*)&keyl, 1);
+			CHECKSTREAM(nullptr,)
+			value = klIns(&klBType_String);
+			KLCAST(kl_string, value)->size = keyl;
+			auto valuebuff = new char[keyl + 1];
+			valuebuff[keyl] = 0;
+			stream.read(valuebuff, keyl);
+			CHECKSTREAM(nullptr, delete[] valuebuff;)
+			KLCAST(kl_string, value)->value = valuebuff;
+			delete[] valuebuff;
+			break;
+	}
+	CHECKSTREAM(nullptr,)
+	return value;
+}
 
+inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type, KlObject* source) {
+	auto var = KLCAST(KLVariable, klIns(&klBType_Variable));
+	kbyte namesize;
+	bool hasdefaultvalue;
+	kbyte offset;
+
+	stream.read((char*)&namesize, 1);
+	stream.read((char*)&hasdefaultvalue, 1);
+	stream.read((char*)&offset, 1);
+	CHECKSTREAM(, klDeref(KLWRAP(var));)
+	auto namebuff = new char[namesize + 1];
+	namebuff[namesize] = 0;
+	stream.read(namebuff, namesize);
+	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
+	KlObject* defaultValue = nullptr;
+	if(hasdefaultvalue)
+		defaultValue = readObject(stream);
+	readMeatadata(stream, var->metadata);
+	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
+	var->defaultValue = defaultValue;
+	var->source = source;
+	if(type) {
+		klMove(var->defaultValue, &var->data.value);
+	} else {
+		var->data.offset = offset * sizeof(KlObject*);
+	}
+	auto find = target->find(namebuff);
+	if(find == target->end()) {
+		target->insert(std::pair<std::string, KlObject*>(namebuff, KLWRAP(var)));
+	} else {
+		klDeref(KLWRAP(var));
+	}
+	delete [] namebuff;
+}
+
+vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
+	auto dev = new vector<KLInstruction*>();
+	while (size--) {
+		KOpcode opcode;
+		kshort count;
+		kbyte labelsize;
+		stream.read((char*)&opcode, 1);
+		stream.read((char*)&count, 2);
+		stream.read((char*)&labelsize, 1);
+		CHECKSTREAM(dev, )
+		auto ins = KLCAST(KLInstruction, klIns(&klBType_Instruction));
+		if(labelsize) {
+			auto namebuff = new char[labelsize + 1];
+			namebuff[labelsize] = 0;
+			stream.read(namebuff, labelsize);
+			CHECKSTREAM(dev, delete[] namebuff;klDeref(KLWRAP(ins));)
+			ins->label = klIns(&klBType_String);
+			KLCAST(kl_string, ins->label)->value = namebuff;
+			KLCAST(kl_string, ins->label)->size = labelsize;
+		}
+		ins->operands = new KlObject*[count]{};
+		for (int i = 0; i < count; ++i) {
+			ins->operands[i] = readObject(stream);
+		}
+		CHECKSTREAM(dev, klDeref(KLWRAP(ins));)
+		ins->opcode = opcode;
+		ins->operandc = count;
+		dev->push_back(ins);
+	}
+
+	return dev;
+}
+
+inline void readFunctionDefinition(map<string, KlObject *> *target, istream &stream, bool type) {
+	kbyte read[4];
+	kshort size;
+	stream.read((char*)&read, 4);
+	stream.read((char*)&size, 2);
+	CHECKSTREAM(,)
+
+	auto namebuff = new char[read[0] +1];
+	namebuff[read[0]] = 0;
+	stream.read(namebuff, read[0]);
+	CHECKSTREAM(, delete [] namebuff;)
+
+	auto func = KLCAST(KLFunction, klIns(&klBType_Func));
+	func->name = klIns(&klBType_String);
+	KLCAST(kl_string, func->name)->value = namebuff;
+	KLCAST(kl_string, func->name)->size = read[0];
+	func->body = readFuntionBody(stream, size);
+	CHECKSTREAM(, klDeref(KLWRAP(func));)
+	readMeatadata(stream, func->metadata);
+	CHECKSTREAM(, klDeref(KLWRAP(func));)
+
+	func->size = size;
+	func->locals = read[3];
+	char* args = (char*)&read[2];
+	func->margs = read[1];
+	func->args = *args;
+	if(!type && !func->args) {
+		//invalid function args count
+		klDeref(KLWRAP(func));
+		return;
+	}
+
+	auto find = target->find(namebuff);
+	if(find == target->end()) {
+		target->insert(std::pair<std::string, KlObject*>(namebuff, KLWRAP(func)));
+	} else {
+		klDeref(KLWRAP(func));
+	}
+
+}
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "DanglingPointer"
+inline void readTypeDefinition(map<string, KlObject *> *target, istream &stream, KLPackage* parent) {
+	kbyte namesize;
+	stream.read((char*)&namesize, 1);
+	CHECKSTREAM(,)
+	auto namebuff = new char[namesize + 1];
+	namebuff[namesize] = 0;
+	stream.read(namebuff, namesize);
+	CHECKSTREAM(, delete [] namebuff;)
+	auto type = new KLType{
+			KlObject (),
+			namebuff,
+			0,
+			sizeof(KlObject)
+	};
+	readMeatadata(stream, &type->metadata);
+	KDefinitionType def;
+	do
+	{
+		stream.read((char*)&def, 1);
+		CHECKSTREAM(, delete type;)
+
+		switch (def) {
+
+			case KDefinitionType::variable:
+				readVariableDefinition(&type->variables, stream, false, KLWRAP(type));
+				break;
+			case KDefinitionType::function:
+				readFunctionDefinition(&type->functions, stream, false);
+				break;
+			case KDefinitionType::close:
+			case KDefinitionType::type:
+			case KDefinitionType::subpackage:
+				break;
+		}
+		CHECKSTREAM(, delete type;)
+	} while (def == KDefinitionType::variable || def == KDefinitionType::function);
+	type->size += type->variables.size() * sizeof(KlObject*);
+	// todo: convert functions in the type to builtin operations
+	klPackageRegType(parent, type);
+}
+#pragma clang diagnostic pop
+
+KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
+	KDefinitionType def;
+
+	do
+	{
+		stream.read((char*)&def, 1);
+		CHECKSTREAM(nullptr, klDeref(KLWRAP(pPackage));)
+
+		switch (def) {
+
+			case KDefinitionType::close:
+				break;
+			case KDefinitionType::variable:
+				readVariableDefinition(pPackage->variables, stream, true, KLWRAP(pPackage));
+				break;
+			case KDefinitionType::function:
+				readFunctionDefinition(pPackage->functions, stream, true);
+				break;
+			case KDefinitionType::type:
+				readTypeDefinition(pPackage->types, stream, pPackage);
+				break;
+			case KDefinitionType::subpackage:
+				
+				break;
+		}
+		CHECKSTREAM(nullptr, klDeref(KLWRAP(pPackage));)
+	} while (def != KDefinitionType::close);
 
 	return pPackage;
 }
@@ -137,6 +369,7 @@ KLPackage* createBasePackage(std::istream &stream)
 		CHECKSTREAM(nullptr,)
 		stream.seekg(size - 2, ios_base::cur);
 		CHECKSTREAM(nullptr,)
+		klRef(KLWRAP(dev));
 	}
 
 	return readDefinitions(dev, stream);
@@ -150,10 +383,6 @@ KLPackage *klCreatePackageFromStream(std::istream* stream) {
 	catch (...) {
 		return nullptr;
 	}
-
-	if(!package) return nullptr;
-
-
 	return package;
 }
 

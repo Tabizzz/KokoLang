@@ -25,14 +25,17 @@ struct CPPAPI KLFunction {
 	unsigned short size;			// the amount of instructions on the function body.
 	std::vector<KLInstruction *>*
 	body;							// the body of the function.
+
+	std::map<std::string, KlObject *>*
+			metadata;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 /*
  * Type definition for KLFunction.
  * This type is defined when call klInit.
  */
 CAPI KLType klBType_Func;
-
-#ifdef __cplusplus
-}
-#endif

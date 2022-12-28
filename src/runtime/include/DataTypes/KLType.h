@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "klimports.h"
 #include "DataTypes/KLObject.h"
 
@@ -35,4 +36,9 @@ struct CPPAPI KLType {
 
 	klunaryop clone;			// clone operation
 	klcopy copy;				// copy operation
+
+	std::map<std::string, KlObject *> functions;		// the functions defined in the type
+	std::map<std::string, KlObject *> variables;		// the globals var of the type.
+	std::map<std::string, KlObject *> metadata;        // metadata of the type
+
 };

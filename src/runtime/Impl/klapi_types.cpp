@@ -397,7 +397,7 @@ KLType klBType_Float =
 		kfloat_div,
 		nullptr,
 		kfloat_clone,
-		kfloat_copy
+		kfloat_copy,
 };
 
 #pragma endregion

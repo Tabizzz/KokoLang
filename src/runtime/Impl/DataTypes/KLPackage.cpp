@@ -13,7 +13,7 @@ void kpack_init(KlObject* pack)
 	ins->metadata	= new map<string, KlObject *>();
 }
 
-void uDerefAndDelete(map<std::string, KlObject *>* pMap)
+void kliDerefAndDeleteMap(map<std::string, KlObject *>* pMap)
 {
 	for (const auto& item: *pMap) {
 		klDeref(item.second);
@@ -26,10 +26,10 @@ void kpack_end(KlObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
 	klDeref(ins->name);
-	uDerefAndDelete(ins->functions);
-	uDerefAndDelete(ins->variables);
-	uDerefAndDelete(ins->subpacks);
-	uDerefAndDelete(ins->metadata);
+	kliDerefAndDeleteMap(ins->functions);
+	kliDerefAndDeleteMap(ins->variables);
+	kliDerefAndDeleteMap(ins->subpacks);
+	kliDerefAndDeleteMap(ins->metadata);
 	//types are no destroyed
 	delete ins->types;
 }

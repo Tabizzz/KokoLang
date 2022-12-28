@@ -69,9 +69,10 @@ adds a variable to the package with an optional default value
 | 0           | 1        | definition code = 0x1    |
 | 1           | 1        | name size (n)            |
 | 2           | 1        | has default value        |
-| 3           | n        | name of the variable     |
-| 3 + n       | var      | default value if present |
-| 3 + n + var | variable | metadata block           |
+| 3           | 1        | offset                   |
+| 4           | n        | name of the variable     |
+| 4 + n       | var      | default value if present |
+| 4 + n + var | variable | metadata block           |
 
 ### Function definition
 
@@ -102,7 +103,7 @@ the function body is a list of instructions that are executed in order when the 
 | 4 + n  | var   | operands       |
 
 operands are like metadata values but strings use a 4 bytes integer to determine the size and there is an extra 
-code 0x06 that works like ints and is used for registers.
+code 0x06 that works like ints but its 2 bytes wide and is used for registers.
 
 ### Type Definition
 
@@ -116,7 +117,7 @@ instantiated to access them.
 | 2      | n        | type name             |
 | 2 + n  | variable | metadata block        |
 
-then the type is followed by variable or function definitions and wnd with a close definition.
+then the type is followed by variable or function definitions and end with a close definition.
 
 function defined inside types must have at least 1 min arg, this args is the instance itself calling the method.
 
