@@ -4,10 +4,10 @@ Pending things to implement:
 - [ ] ffi to C
 - [ ] ffi to C#
 - [ ] all opcode operations
-- [ ] custom type creation
+- [x] custom type creation
 - [ ] custom opcodes
 - [ ] dynamic variables
-- [ ] bynary format
+- [x] bynary format
 - [ ] include instruction
 - [ ] import instruction
 - [ ] standard library

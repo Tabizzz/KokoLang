@@ -212,43 +212,43 @@ KlObject* kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx)
 void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *>& values, size_t size) {
 	switch (*pOpcode) {
 #pragma region 1id
-		case go:
-		case goif:
-		case goifn:
+		case KOpcode::go:
+		case KOpcode::goif:
+		case KOpcode::goifn:
 			SETOPERAND(0, kliCheckIdentifier);
 			break;
 #pragma endregion
 #pragma region 1any_no_reg 1reg
-		case push:
+		case KOpcode::push:
 			if(values[0]->Id()) *pOpcode = KOpcode::get;
 			SETOPERAND(0, kliCheckAnyNoReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1reg
-		case pop:
-		case argc:
-		case freei:
-		case ard:
+		case KOpcode::pop:
+		case KOpcode::argc:
+		case KOpcode::freei:
+		case KOpcode::ard:
 		case KOpcode::ref:
-		case deref:
+		case KOpcode::deref:
 			SETOPERAND(0, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 2reg
-		case cl:
-		case cp:
-		case mv:
-		case typeofi:
+		case KOpcode::cl:
+		case KOpcode::cp:
+		case KOpcode::mv:
+		case KOpcode::typeofi:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1int 1reg
-		case lflag:
-		case starg:
-		case ldarg:
-		case aloc:
+		case KOpcode::lflag:
+		case KOpcode::starg:
+		case KOpcode::ldarg:
+		case KOpcode::aloc:
 			SETOPERAND(0, kliCheckInteger);
 			SETOPERAND(1, kliCheckReg);
 			break;
@@ -256,59 +256,59 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 #pragma region 1id 1reg
 		case KOpcode::set:
 		case KOpcode::get:
-		case type:
-		case is:
-		case ins:
+		case KOpcode::type:
+		case KOpcode::is:
+		case KOpcode::ins:
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 2any_no_id
-		case andi:
-		case ori:
-		case xori:
-		case oplt:
-		case ople:
-		case opgt:
-		case opge:
-		case opeq:
-		case opne:
+		case KOpcode::andi:
+		case KOpcode::ori:
+		case KOpcode::xori:
+		case KOpcode::oplt:
+		case KOpcode::ople:
+		case KOpcode::opgt:
+		case KOpcode::opge:
+		case KOpcode::opeq:
+		case KOpcode::opne:
 			SETOPERAND(0, kliCheckAnyNoId);
 			SETOPERAND(1, kliCheckAnyNoId);
 			break;
 #pragma endregion
 #pragma region 2any_no_id 1reg
-		case add:
-		case sub:
-		case mul:
-		case divi:
-		case mod:
+		case KOpcode::add:
+		case KOpcode::sub:
+		case KOpcode::mul:
+		case KOpcode::divi:
+		case KOpcode::mod:
 			SETOPERAND(0, kliCheckAnyNoId);
 			SETOPERAND(1, kliCheckAnyNoId);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1any 1reg
-		case tstr:
-		case tint:
-		case tflt:
-		case tbit:
+		case KOpcode::tstr:
+		case KOpcode::tint:
+		case KOpcode::tflt:
+		case KOpcode::tbit:
 			SETOPERAND(0, kliCheckAny);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 3reg
-		case tobj:
-		case cast:
+		case KOpcode::tobj:
+		case KOpcode::cast:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1id 1reg Uany_no_id
-		case jump:
-		case call:
-		case newi:
+		case KOpcode::jump:
+		case KOpcode::call:
+		case KOpcode::newi:
 		{
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
@@ -319,18 +319,18 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		}
 #pragma endregion
 #pragma region 1id 2reg
-		case jumpa:
-		case calla:
-		case newa:
-		case stfld:
-		case ldfld:
+		case KOpcode::jumpa:
+		case KOpcode::calla:
+		case KOpcode::newa:
+		case KOpcode::stfld:
+		case KOpcode::ldfld:
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1opany_no_id
-		case ret:
+		case KOpcode::ret:
 			if(size > 0) {
 				SETOPERAND(0, kliCheckOptionalAnyNoId);
 			} else {
@@ -340,7 +340,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 #pragma endregion
 #pragma region 2reg 1reg_or_int
 		case KOpcode::copy:
-		case arl:
+		case KOpcode::arl:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckRegOrInt);
@@ -354,7 +354,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 			break;
 #pragma endregion
 #pragma region 1reg 1reg_or_int Ureg_or_int
-		case arr:
+		case KOpcode::arr:
 		{
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckRegOrInt);
@@ -365,8 +365,8 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		}
 #pragma endregion
 #pragma region 2reg 1reg_or_int Ureg_or_int
-		case lde:
-		case ste:
+		case KOpcode::lde:
+		case KOpcode::ste:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckRegOrInt);
@@ -376,7 +376,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 			break;
 #pragma endregion
 #pragma region 1id_or_reg 1reg
-		case sizeofi:
+		case KOpcode::sizeofi:
 			SETOPERAND(0, kliCheckIdentifierOrReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
@@ -390,83 +390,83 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 	int flag = 0;
 	switch (opcode) {
 #pragma region zero one
-		case ret:
+		case KOpcode::ret:
 			*optionals = 1;
 			break;
 #pragma endregion
 #pragma region one
-		case go:
-		case goif:
-		case goifn:
-		case pop:
-		case argc:
-		case freei:
-		case ard:
+		case KOpcode::go:
+		case KOpcode::goif:
+		case KOpcode::goifn:
+		case KOpcode::pop:
+		case KOpcode::argc:
+		case KOpcode::freei:
+		case KOpcode::ard:
 		case KOpcode::ref:
-		case deref:
+		case KOpcode::deref:
 			flag = 1;
 			break;
 #pragma endregion
 #pragma region two unlimited
-		case jump:
-		case call:
-		case newi:
-		case arr:
+		case KOpcode::jump:
+		case KOpcode::call:
+		case KOpcode::newi:
+		case KOpcode::arr:
 			*optionals = -1;
 #pragma endregion
 #pragma region two
-		case push:
-		case cl:
-		case cp:
-		case mv:
-		case lflag:
+		case KOpcode::push:
+		case KOpcode::cl:
+		case KOpcode::cp:
+		case KOpcode::mv:
+		case KOpcode::lflag:
 		case KOpcode::set:
 		case KOpcode::get:
-		case starg:
-		case ldarg:
-		case andi:
-		case ori:
-		case xori:
-		case oplt:
-		case ople:
-		case opgt:
-		case opge:
-		case opeq:
-		case opne:
-		case tstr:
-		case tint:
-		case tflt:
-		case tbit:
-		case aloc:
-		case type:
-		case typeofi:
-		case is:
-		case sizeofi:
-		case ins:
+		case KOpcode::starg:
+		case KOpcode::ldarg:
+		case KOpcode::andi:
+		case KOpcode::ori:
+		case KOpcode::xori:
+		case KOpcode::oplt:
+		case KOpcode::ople:
+		case KOpcode::opgt:
+		case KOpcode::opge:
+		case KOpcode::opeq:
+		case KOpcode::opne:
+		case KOpcode::tstr:
+		case KOpcode::tint:
+		case KOpcode::tflt:
+		case KOpcode::tbit:
+		case KOpcode::aloc:
+		case KOpcode::type:
+		case KOpcode::typeofi:
+		case KOpcode::is:
+		case KOpcode::sizeofi:
+		case KOpcode::ins:
 			flag = 2;
 			break;
 #pragma endregion
 #pragma region three unlimited
-		case lde:
-		case ste:
+		case KOpcode::lde:
+		case KOpcode::ste:
 			*optionals = -1;
 #pragma endregion
 #pragma region three
-		case add:
-		case sub:
-		case mul:
-		case divi:
-		case mod:
-		case tobj:
-		case cast:
-		case jumpa:
-		case calla:
+		case KOpcode::add:
+		case KOpcode::sub:
+		case KOpcode::mul:
+		case KOpcode::divi:
+		case KOpcode::mod:
+		case KOpcode::tobj:
+		case KOpcode::cast:
+		case KOpcode::jumpa:
+		case KOpcode::calla:
 		case KOpcode::copy:
 		case KOpcode::fill:
-		case arl:
-		case newa:
-		case stfld:
-		case ldfld:
+		case KOpcode::arl:
+		case KOpcode::newa:
+		case KOpcode::stfld:
+		case KOpcode::ldfld:
 			flag = 3;
 			break;
 #pragma endregion

@@ -54,7 +54,12 @@ set(include_files
 	"src/runtime/include/klapi_builtins.h"
 	"src/runtime/Impl/DataTypes/KLFunctionImpl.h"
 	"src/runtime/include/kldelegates.h"
-	"src/runtime/include/klbinary.h" src/runtime/include/Binary/KMetaType.h src/runtime/include/Binary/KDefinitionType.h src/runtime/include/DataTypes/KLType.h src/runtime/include/DataTypes/KLVariable.h src/runtime/Impl/fnptr.h)
+	"src/runtime/include/klbinary.h"
+	"src/runtime/include/Binary/KMetaType.h"
+	"src/runtime/include/Binary/KDefinitionType.h"
+	"src/runtime/include/DataTypes/KLType.h"
+	"src/runtime/include/DataTypes/KLVariable.h"
+	"src/runtime/Impl/fnptr.h")
 
 set(source_files 
 	"src/runtime/Impl/klapi.cpp"
@@ -64,7 +69,8 @@ set(source_files
 	"src/runtime/Impl/klapi_types.cpp"
 	"src/runtime/Impl/klapi_builtins.cpp"
 	"src/runtime/Impl/DataTypes/OpCodesImpl.cpp"
-	"src/runtime/Impl/klbinary.cpp" src/runtime/Impl/DataTypes/KLVariable.cpp)
+	"src/runtime/Impl/klbinary.cpp"
+	"src/runtime/Impl/DataTypes/KLVariable.cpp")
 
 set(lib_files
 	"src/runtime/include/KokoLangLib.h"

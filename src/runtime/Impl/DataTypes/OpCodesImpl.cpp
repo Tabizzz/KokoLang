@@ -130,139 +130,139 @@ void opcode_push(const KlObject& caller, KLCall& call, KlObject* operands[], [[m
 
 void klFunction_setInstructionCall(KLInstruction *instruction) {
 	switch (instruction->opcode) {
-		case noc:
+		case KOpcode::noc:
 			instruction->call = opcode_noc;
 			break;
-		case go:
+		case KOpcode::go:
 			instruction->call = opcode_go;
 			break;
-		case goif:
+		case KOpcode::goif:
 			instruction->call= opcode_goif;
 			break;
-		case goifn:
+		case KOpcode::goifn:
 			instruction->call = opcode_goifn;
 			break;
-		case push:
+		case KOpcode::push:
 			instruction->call = opcode_push;
 			break;
-		case pop:
+		case KOpcode::pop:
 			instruction->call = opcode_pop;
 			break;
-		case cl:
+		case KOpcode::cl:
 			instruction->call = opcode_cl;
 			break;
-		case cp:
+		case KOpcode::cp:
 			instruction->call = opcode_cp;
 			break;
-		case mv:
+		case KOpcode::mv:
 			instruction->call = opcode_mv;
 			break;
-		case lflag:
+		case KOpcode::lflag:
 			instruction->call = opcode_lflag;
 			break;
-		case set:
+		case KOpcode::set:
 			break;
 		case KOpcode::get:
 			break;
-		case starg:
+		case KOpcode::starg:
 			break;
-		case ldarg:
+		case KOpcode::ldarg:
 			break;
-		case andi:
+		case KOpcode::andi:
 			break;
-		case ori:
+		case KOpcode::ori:
 			break;
-		case xori:
+		case KOpcode::xori:
 			break;
-		case oplt:
+		case KOpcode::oplt:
 			instruction->call = opcode_oplt;
 			break;
-		case ople:
+		case KOpcode::ople:
 			break;
-		case opgt:
+		case KOpcode::opgt:
 			break;
-		case opge:
+		case KOpcode::opge:
 			break;
-		case opeq:
+		case KOpcode::opeq:
 			break;
-		case opne:
+		case KOpcode::opne:
 			break;
-		case add:
+		case KOpcode::add:
 			instruction->call = opcode_add;
 			break;
-		case sub:
+		case KOpcode::sub:
 			break;
-		case mul:
+		case KOpcode::mul:
 			break;
-		case divi:
+		case KOpcode::divi:
 			break;
-		case mod:
+		case KOpcode::mod:
 			break;
-		case tstr:
+		case KOpcode::tstr:
 			break;
-		case tint:
+		case KOpcode::tint:
 			break;
-		case tflt:
+		case KOpcode::tflt:
 			break;
-		case tbit:
+		case KOpcode::tbit:
 			break;
-		case tobj:
+		case KOpcode::tobj:
 			break;
-		case cast:
+		case KOpcode::cast:
 			break;
-		case jump:
+		case KOpcode::jump:
 			break;
-		case jumpa:
+		case KOpcode::jumpa:
 			break;
-		case call:
+		case KOpcode::call:
 			instruction->call = opcode_call;
 			break;
-		case calla:
+		case KOpcode::calla:
 			break;
-		case argc:
+		case KOpcode::argc:
 			break;
-		case ret:
+		case KOpcode::ret:
 			instruction->call = opcode_ret;
 			break;
-		case aloc:
+		case KOpcode::aloc:
 			break;
-		case freei:
+		case KOpcode::freei:
 			break;
 		case KOpcode::copy:
 			break;
 		case KOpcode::fill:
 			break;
-		case arr:
+		case KOpcode::arr:
 			break;
-		case arl:
+		case KOpcode::arl:
 			break;
-		case ard:
+		case KOpcode::ard:
 			break;
-		case lde:
+		case KOpcode::lde:
 			break;
-		case ste:
+		case KOpcode::ste:
 			break;
-		case type:
+		case KOpcode::type:
 			break;
-		case typeofi:
+		case KOpcode::typeofi:
 			break;
-		case is:
+		case KOpcode::is:
 			break;
-		case newi:
+		case KOpcode::newi:
 			break;
-		case newa:
+		case KOpcode::newa:
 			break;
-		case sizeofi:
+		case KOpcode::sizeofi:
 			break;
-		case stfld:
+		case KOpcode::stfld:
 			break;
-		case ldfld:
+		case KOpcode::ldfld:
 			break;
 		case KOpcode::ref:
 			break;
-		case deref:
+		case KOpcode::deref:
 			break;
-		case ins:
+		case KOpcode::ins:
 			break;
 		default:
 			break;

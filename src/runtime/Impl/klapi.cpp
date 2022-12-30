@@ -90,7 +90,7 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 	throw invalid_argument("trying to load a package but another package with the same name already exists");
 }
 
-CAPI inline void klDefType(KLType *type) {
+CAPI void klDefType(KLType *type) {
 	// set the type
 	type->klbase.type = &klBType_Type;
 	// increase the instance count of type
