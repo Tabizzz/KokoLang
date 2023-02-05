@@ -5,7 +5,6 @@
 #define GETREG(x, y) \
 if(y && y->type == &klBType_Reg) { \
 y = x.st.at(KASINT(y));}
-#define USEREGOP klRegOp regop = CALL_HAS_FLAG(call, CALL_FLAG_CLONE) ? klClone : klCopy;
 #define REGORRET(x) if(!x) return; auto reg = KASINT(x);
 
 typedef vector<KlObject*>::reference vecref;
@@ -16,13 +15,12 @@ void opcode_noc(const KlObject& caller, KLCall& call, KlObject* operands[], [[ma
 #pragma clang diagnostic pop
 
 void opcode_lflag(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
-	USEREGOP
 	REGORRET(operands[1])
 	auto index = KASINT(operands[0]);
 	auto val = CALL_HAS_FLAG(call, index);
 	vecref current = call.st.at(reg);
 
-	regop(KLBOOL(val), &current);
+	klCopy(KLBOOL(val), &current);
 }
 
 void opcode_pop(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
@@ -84,7 +82,6 @@ void opcode_go(const KlObject& caller, KLCall& call, KlObject* operands[], [[may
 }
 
 void opcode_add(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
-	USEREGOP
 	REGORRET(operands[2])
 	auto first = operands[0];
 	GETREG(call, first)
@@ -93,7 +90,7 @@ void opcode_add(const KlObject& caller, KLCall& call, KlObject* operands[], [[ma
 	vecref regis = call.st.at(reg);
 
 	if(first->type->opAdd) {
-		first->type->opAdd(first, second, &regis, regop);
+		first->type->opAdd(first, second, &regis, klCopy);
 	} else {
 		throw invalid_argument("Invalid object to operation add");
 	}
@@ -121,11 +118,10 @@ void opcode_oplt(const KlObject& caller, KLCall& call, KlObject* operands[], [[m
 }
 
 void opcode_push(const KlObject& caller, KLCall& call, KlObject* operands[], [[maybe_unused]] size_t operandc) {
-	USEREGOP
 	REGORRET(operands[1])
 	auto obj = operands[0];
 	vecref current = call.st.at(reg);
-	regop(obj, &current);
+	klCopy(obj, &current);
 }
 
 void klFunction_setInstructionCall(KLInstruction *instruction) {

@@ -20,7 +20,7 @@ KLPackage *klCreatePackageFromFile(const char *filename) {
 	return pack;
 }
 
-void readMeatadata(std::istream &stream, std::map<std::string, KlObject*>* metadata)
+void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metadata)
 {
 	kshort size;
 	kbyte count;
@@ -153,7 +153,7 @@ inline void readVariableDefinition(std::map<std::string, KlObject*>* target, ist
 	KlObject* defaultValue = nullptr;
 	if(hasdefaultvalue)
 		defaultValue = readObject(stream);
-	readMeatadata(stream, var->metadata);
+	readMetadata(stream, var->metadata);
 	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
 	var->defaultValue = defaultValue;
 	var->source = source;
@@ -222,7 +222,7 @@ inline void readFunctionDefinition(map<string, KlObject *> *target, istream &str
 	KLCAST(kl_string, func->name)->size = read[0];
 	func->body = readFuntionBody(stream, size);
 	CHECKSTREAM(, klDeref(KLWRAP(func));)
-	readMeatadata(stream, func->metadata);
+	readMetadata(stream, func->metadata);
 	CHECKSTREAM(, klDeref(KLWRAP(func));)
 
 	func->size = size;
@@ -261,7 +261,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 			0,
 			sizeof(KlObject)
 	};
-	readMeatadata(stream, &type->metadata);
+	readMetadata(stream, &type->metadata);
 	KDefinitionType def;
 	do
 	{
@@ -333,7 +333,7 @@ inline void readPackageDefinition(map<string, KlObject *> *target, istream &stre
 	package->name = klIns(&klBType_String);
 	KLCAST(kl_string, package->name)->value = namebuff;
 	KLCAST(kl_string, package->name)->size = namesize;
-	readMeatadata(stream, package->metadata);
+	readMetadata(stream, package->metadata);
 	CHECKSTREAM(, klDeref(KLWRAP(package));)
 	package = readDefinitions(package, stream);
 	CHECKSTREAM(,) // don't deref the package, readDefinitions already deref it.
@@ -380,7 +380,7 @@ KLPackage* createBasePackage(std::istream &stream)
 			KLCAST(kl_string, authorname)->value = namebuff;
 		}
 
-		readMeatadata(stream, dev->metadata);
+		readMetadata(stream, dev->metadata);
 		CHECKSTREAM(nullptr, klDeref(KLWRAP(dev));)
 
 		dev->metadata->insert(pair<std::string, KlObject*>("version_major", KLINT(read[2])));
