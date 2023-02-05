@@ -59,7 +59,8 @@ set(include_files
 	"src/runtime/include/Binary/KDefinitionType.h"
 	"src/runtime/include/DataTypes/KLType.h"
 	"src/runtime/include/DataTypes/KLVariable.h"
-	"src/runtime/Impl/fnptr.h")
+	"src/runtime/Impl/fnptr.h"
+	"src/runtime/include/klresolver.h" src/runtime/Impl/klresolverImpl.h)
 
 set(source_files 
 	"src/runtime/Impl/klapi.cpp"
@@ -70,10 +71,10 @@ set(source_files
 	"src/runtime/Impl/klapi_builtins.cpp"
 	"src/runtime/Impl/DataTypes/OpCodesImpl.cpp"
 	"src/runtime/Impl/klbinary.cpp"
-	"src/runtime/Impl/DataTypes/KLVariable.cpp")
+	"src/runtime/Impl/DataTypes/KLVariable.cpp" src/runtime/Impl/klresolver.cpp)
 
 set(lib_files
-	"src/runtime/include/KokoLangLib.h"
+	"src/compiler/include/KokoLangLib.h"
 	"src/runtime/Impl/KokoLangInternal.h"
 	"src/compiler/Grammar/KLInterpreter.h"
 	"src/compiler/Grammar/ProgramVisitor.h"
@@ -115,4 +116,7 @@ target_link_libraries(KokoLangLibStatic antlr4_static KokoLangRuntime Threads::T
 
 target_link_libraries(KokoLangExe KokoLangLibStatic KokoLangRuntime Threads::Threads nowide)
 
-
+#set environment variable to ON if you want to enable testing
+if (BUILD_TESTING)
+	add_subdirectory(test)
+endif()

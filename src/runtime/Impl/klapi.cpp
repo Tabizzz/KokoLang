@@ -5,7 +5,13 @@
 #include <iostream>
 
 #define  STDREGTYPE(x) klDefType(&x); klPackageRegType(globalPackage, &x);
+
+
+#if _NDEGUG
+STDCHECKTYPE(x)
+#else
 #define STDCHECKTYPE(x) if(x.inscount) cout << "type "<< x.name << " still has " << x.inscount << " instances in memory" << endl;
+#endif
 
 static KLPackage* globalPackage = nullptr;
 static map<string, KLPackage*>* packages;
@@ -47,7 +53,7 @@ CAPI void klInit()
 	STDREGTYPE(klBType_Instruction)
 	STDREGTYPE(klBType_Func)
 	STDREGTYPE(klBType_Package)
-	STDCHECKTYPE(klBType_Variable)
+	STDREGTYPE(klBType_Variable)
 
 	packages = new map<string, KLPackage*>();
 
@@ -59,6 +65,7 @@ CAPI void klEnd() {
 		klDestroyPackage(pack.second);
 	}
 	delete packages;
+	globalPackage = nullptr;
 
 	// check instance counts
 	STDCHECKTYPE(klBType_Int)
