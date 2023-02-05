@@ -50,13 +50,13 @@ enum class KOpcode : unsigned char
 #pragma region register operations
 
 	/*
-	 * push a value into a register, can push variables.
+	 * push an inline value into a register.
 	 *
 	 * usage:
 	 * push <obj> <reg>
 	 *
 	 * operators:
-	 * -obj: any primitive value to push in the stack, if an identifier is used.
+	 * -obj: any primitive value to push in the stack.
 	 * -reg: the register to save the value.
 	 */
 	push,
@@ -72,8 +72,8 @@ enum class KOpcode : unsigned char
 	pop,
 	/*
 	 * clone the element in one register to other register.
-	 * this operation is a reference copy, even primitive types
-	 * are copy as reference so cant be optimal with primitives.
+	 * this operation clone the object only if the type support the clone
+	 * operation, if is not supported then a move operation is used.
 	 *
 	 * usage:
 	 * cl <src> <dest>
@@ -102,8 +102,7 @@ enum class KOpcode : unsigned char
 	 */
 	cp,
 	/*
-	 * This code operate exactly like cp but the source register is
-	 * set to null.
+	 * Move an object by reference, the current value in dest is deref.
 	 *
 	 * usage:
 	 * mv <src> <dest>

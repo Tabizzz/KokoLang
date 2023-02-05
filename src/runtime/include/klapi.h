@@ -61,7 +61,7 @@ CAPI
  *
  *  Case D, both src and dest are not null:
  * this is the more complex case, first of all if src and dest are
- * from different types and the types src don't support clone then
+ * from different types and the type of src don't support clone then
  * dest is deref, and src is ref and copied by reference. if src
  * and dest are from the same type but the type don't support copy
  * operation then dest is deref, and src is ref and copied by reference.

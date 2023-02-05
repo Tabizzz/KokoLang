@@ -101,32 +101,40 @@ CAPI void klDefType(KLType *type) {
 	type->klbase.refs = 1;
 }
 
-void inline kliCopyA(KlObject *pObject, KlObject **pObject1) {
-	klDeref(*pObject1);
-	*pObject1 = nullptr;
+/*
+ * src is null, dest is not null.
+ */
+void inline kliCopyA(KlObject *src, KlObject **dest) {
+	klDeref(*dest);
+	*dest = nullptr;
 }
 
-void inline kliCopyB(KlObject *pObject, KlObject **pObject1) {
-	if(pObject->type->clone) {
-		*pObject1 = pObject->type->clone(pObject);
+/*
+ * src is not null, dest is null
+ */
+void inline kliCopyB(KlObject *src, KlObject **dest) {
+	if(src->type->clone) {
+		// no need to deref dest because is null
+		*dest = src->type->clone(src);
 	} else {
-		klRef(pObject);
-		*pObject1 = pObject;
+		// no need to deref dest because is null
+		klRef(src);
+		*dest = src;
 	}
 }
 
-void inline kliCopyD(KlObject *pObject, KlObject **pObject1) {
-	if((pObject->type == (*pObject1)->type) && pObject->type->copy) {
-		pObject->type->copy(pObject, *pObject1);
+void inline kliCopyD(KlObject *src, KlObject **dest) {
+	if((src->type == (*dest)->type) && src->type->copy) {
+		src->type->copy(src, *dest);
 		return;
-	} else if((pObject->type != (*pObject1)->type) && pObject->type->clone) {
-		klDeref(*pObject1);
-		*pObject1 = pObject->type->clone(pObject);
+	} else if(src->type->clone) {
+		klDeref(*dest);
+		*dest = src->type->clone(src);
 		return;
 	}
-	klRef(pObject);
-	klDeref(*pObject1);
-	*pObject1 = pObject;
+	klRef(src);
+	klDeref(*dest);
+	*dest = src;
 }
 
 CAPI void klCopy(KlObject *src, KlObject **dest) {
@@ -145,9 +153,17 @@ CAPI void klClone(KlObject *src, KlObject **dest) {
 	} else if (src && !*dest) {
 		kliCopyB(src, dest);
 	} else if(src && *dest) {
-		klRef(src);
 		klDeref(*dest);
-		*dest = src;
+		if(src->type->clone)
+		{
+			// no need to ref src, we are creating a new instance on clone.
+			*dest = src->type->clone(src);
+		}
+		else
+		{
+			klRef(src);
+			*dest = src;
+		}
 	}
 }
 
