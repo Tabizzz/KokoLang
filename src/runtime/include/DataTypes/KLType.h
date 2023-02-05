@@ -28,11 +28,11 @@ struct CPPAPI KLType {
 	klcomparer comparer;		// the comparer of the type
 	klcomparer equal;			// the equality checker of the type
 
-	klregoperation opAdd;		// addition operation
-	klregoperation opSub;		// subtraction operation
-	klregoperation opMul;		// multiplication operation
-	klregoperation opDiv;		// division operation
-	klregoperation opMod;		// modulo operation
+	klresoperation opAdd;		// addition operation
+	klresoperation opSub;		// subtraction operation
+	klresoperation opMul;		// multiplication operation
+	klresoperation opDiv;		// division operation
+	klresoperation opMod;		// modulo operation
 
 	klunaryop clone;			// clone operation
 	klcopy copy;				// copy operation

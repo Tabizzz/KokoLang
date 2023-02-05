@@ -1,9 +1,4 @@
-﻿#pragma once
-
-/*
- * Represent an operation to move objects between registers and to pass to functions.
- */
-typedef void (*klRegOp)(KlObject* src, KlObject** dest);
+﻿#pragma onces
 
 typedef void (*klinitializer)(KlObject*);   // the initializer is the responsible for example set ints to 0
 
@@ -26,11 +21,10 @@ typedef KlObject* (*klbinaryop)				// a binary operator, receive two objects and
 		(KlObject* first,
 		 KlObject* second);
 
-typedef void (* klregoperation)             // binary operation with a result in a reg.
+typedef void (* klresoperation)             // binary operation with a result
 		(KlObject* first,
 		 KlObject* second,
-		 KlObject** target,
-		 klRegOp regop);
+		 KlObject** target);
 
 typedef KlObject* (*klunaryop)				// a unary operation, receive one object and returns a new one
 		(KlObject* obj);
