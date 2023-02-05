@@ -9,6 +9,7 @@
 #include "kltypedef.h"
 #include "KOpcode.h"
 #include "klbinary.h"
+#include "klresolver.h"
 #include "DataTypes/KLRuntime.h"
 #include "Binary/KMetaType.h"
 #include "Binary/KDefinitionType.h"

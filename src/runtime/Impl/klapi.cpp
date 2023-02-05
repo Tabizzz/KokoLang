@@ -20,6 +20,8 @@ CAPI void klInit()
 {
 	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value), "kl_int and kl_float dont have the same size.");
 
+	kliSetDefaultResolvers();
+
 	kliBuildGlobalPackage();
 
 	// the ref count of types is always 1, and you should never call
