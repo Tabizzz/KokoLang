@@ -497,6 +497,23 @@ KLType klBType_Reg =
 		0,
 		sizeof (kl_int),
 		kint_init,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kint_copy,
 };
 
 CAPI KlObject *klNewVar(KLType *type, KlObject *args, ...) {
