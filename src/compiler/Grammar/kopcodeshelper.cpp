@@ -38,7 +38,7 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{"add",		KOpcode::add	},
 			{"sub",		KOpcode::sub	},
 			{"mul",		KOpcode::mul	},
-			{"div",		KOpcode::divi	},
+			{"div",		KOpcode::div	},
 			{"mod",		KOpcode::mod	},
 			{"tstr",	KOpcode::tstr	},
 			{"tint",	KOpcode::tint	},
@@ -281,7 +281,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		case KOpcode::add:
 		case KOpcode::sub:
 		case KOpcode::mul:
-		case KOpcode::divi:
+		case KOpcode::div:
 		case KOpcode::mod:
 			SETOPERAND(0, kliCheckAnyNoId);
 			SETOPERAND(1, kliCheckAnyNoId);
@@ -455,7 +455,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 		case KOpcode::add:
 		case KOpcode::sub:
 		case KOpcode::mul:
-		case KOpcode::divi:
+		case KOpcode::div:
 		case KOpcode::mod:
 		case KOpcode::tobj:
 		case KOpcode::cast:

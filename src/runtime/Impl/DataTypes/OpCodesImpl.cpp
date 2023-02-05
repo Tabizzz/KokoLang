@@ -190,7 +190,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			break;
 		case KOpcode::mul:
 			break;
-		case KOpcode::divi:
+		case KOpcode::div:
 			break;
 		case KOpcode::mod:
 			break;

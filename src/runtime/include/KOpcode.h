@@ -351,7 +351,7 @@ enum class KOpcode : unsigned char
 	 * -b: the second register to operate.
 	 * -res: the register to save the result.
 	 */
-	divi,
+	div,
 	/*
 	 * Compute the modulo of the first value by the second value and
 	 * save the result in the given register.
@@ -425,7 +425,7 @@ enum class KOpcode : unsigned char
 	 * usage:
 	 * tobj <type> <src> <dest>
 	 *
-	 * -type: the target type to convert.
+	 * -type: the target type identifier to convert.
 	 * -src: the object to convert.
 	 * -dest: the register to save the conversion.
 	 */
@@ -437,7 +437,7 @@ enum class KOpcode : unsigned char
 	 * usage:
 	 * cast <type> <src> <dest>
 	 *
-	 * -type: the target type to convert.
+	 * -type: the target type identifier to convert.
 	 * -src: the object to convert.
 	 * -dest: the register to save the conversion.
 	 */
@@ -586,7 +586,7 @@ enum class KOpcode : unsigned char
 	 * operands:
 	 * -reg: the register to save the new array.
 	 * -sizes: this can be a register to an array of sizes, or you can pass a
-	 * list of sizes or register to sizes.
+	 * list of sizes or registers to sizes.
 	 */
 	arr,
 	/*
@@ -621,7 +621,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the array to get the element.
 	 * -dest: the register to save the element.
 	 * -index: this can be a register to an array of indices, or you can pass a
-	 * list of indices or register to indices.
+	 * list of indices or registers to indices.
 	 */
 	lde,
 	/*
@@ -673,7 +673,7 @@ enum class KOpcode : unsigned char
 	 *
 	 * operands:
 	 * -typename: the name of the type.
-	 * -obj: the object to check.
+	 * -obj: the register with the object to check.
 	 */
 	is,
 
@@ -690,7 +690,7 @@ enum class KOpcode : unsigned char
 	 * operands:
 	 * -typename: the type identifier to create.
 	 * -reg: a register to save the created object.
-	 * -params: a list of registers used as params of the called function.
+	 * -params: a list of registers or values used as params of the constructor.
 	 */
 	newi,
 	/*
@@ -707,13 +707,14 @@ enum class KOpcode : unsigned char
 	newa,
 	/*
 	 * Push onto the stack the size in bytes of memory required by the type.
+	 * This value don't include the header size.
 	 *
 	 * usage:
 	 * sizeof (typename|register) <out>
 	 *
 	 * operands:
 	 * -typename: if defined, is the type identifier to get the size.
-	 * -register: if defined, is a register to the object to get the type.
+	 * -register: if defined, is a register to the object to get the size.
 	 * -out: the register to save the size.
 	 */
 	sizeofi,
