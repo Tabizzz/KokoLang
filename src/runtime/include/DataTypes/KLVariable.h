@@ -16,8 +16,7 @@ struct CPPAPI KLVariable
 	} data;
 	KlObject* source;
 	KlObject* defaultValue;
-	std::map<std::string, KlObject *>*
-	metadata;
+	MetaMap* metadata;
 
 };
 

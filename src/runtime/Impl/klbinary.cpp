@@ -312,7 +312,7 @@ KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 				readTypeDefinition(stream, pPackage);
 				break;
 			case KDefinitionType::subpackage:
-				readPackageDefinition(pPackage->subpacks, stream);
+				readPackageDefinition(pPackage->packs, stream);
 				break;
 		}
 		CHECKSTREAM(nullptr, klDeref(KLWRAP(pPackage));)

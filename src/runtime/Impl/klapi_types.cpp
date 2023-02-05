@@ -238,7 +238,7 @@ KLType klBType_Int =
 		kint_clone,
 		kint_copy
 };
-#pragma endregion
+#pragma endregion int
 
 #pragma region float
 
@@ -424,12 +424,53 @@ KLType klBType_Float =
 		kfloat_copy,
 };
 
-#pragma endregion
+#pragma endregion float
 
-void kbool_init(KlObject* obj) {
-	auto ptr = KLCAST(kl_bool, obj);
-	ptr->value = false;
+#pragma region bool
+
+KlObject* kbool_tostr(KlObject* obj)
+{
+	if(KASBOOL(obj))
+	{
+		return KLSTR("true");
+	}
+	else
+	{
+		return KLSTR("false");
+	}
 }
+
+KLType klBType_Bool =
+{
+		KlObject(),
+		"bit",
+		0,
+		sizeof(kl_bool),
+		nullptr,
+		nullptr,
+		nullptr,
+		kbool_tostr,
+		nullptr,
+		nullptr,
+		klself_return,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		MetaMap(),
+		MetaMap(),
+		MetaMap(),
+		1				// cannot instance
+};
+
+#pragma endregion bool
 
 void kstring_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_string, obj);
@@ -459,15 +500,6 @@ void karr_init(KlObject* obj) {
 	ptr->content = nullptr;
 }
 
-KLType klBType_Bool =
-{
-		KlObject(),
-		"bit",
-		0,
-		sizeof(kl_bool),
-		kbool_init,
-};
-
 KLType klBType_String =
 {
 		KlObject(),
@@ -491,7 +523,7 @@ KLType klBType_Ptr =
 KLType klBType_OPtr =
 {
 		KlObject(),
-		"optr",
+		"weak",
 		0,
 		sizeof (kl_optr),
 		koptr_init,

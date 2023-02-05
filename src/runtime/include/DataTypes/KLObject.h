@@ -1,4 +1,6 @@
 ﻿#pragma once
+
+#include <map>
 #include "klimports.h"
 
 #ifdef __cplusplus
@@ -24,3 +26,4 @@ typedef struct KlObject {
 }
 #endif
 
+typedef std::map<std::string, KlObject *> MetaMap;

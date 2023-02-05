@@ -9,7 +9,7 @@ void kpack_init(KlObject* pack)
 	ins->functions 	= new map<string, KlObject *>();
 	ins->variables 	= new map<string, KlObject *>();
 	ins->types 		= new map<string, KlObject *>();
-	ins->subpacks	= new map<string, KlObject *>();
+	ins->packs	= new map<string, KlObject *>();
 	ins->metadata	= new map<string, KlObject *>();
 }
 
@@ -28,7 +28,7 @@ void kpack_end(KlObject* pack)
 	klDeref(ins->name);
 	kliDerefAndDeleteMap(ins->functions);
 	kliDerefAndDeleteMap(ins->variables);
-	kliDerefAndDeleteMap(ins->subpacks);
+	kliDerefAndDeleteMap(ins->packs);
 	kliDerefAndDeleteMap(ins->metadata);
 	//types are no destroyed
 	delete ins->types;

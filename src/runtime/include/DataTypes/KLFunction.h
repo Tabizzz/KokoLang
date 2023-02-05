@@ -26,8 +26,7 @@ struct CPPAPI KLFunction {
 	std::vector<KLInstruction *>*
 	body;							// the body of the function.
 
-	std::map<std::string, KlObject *>*
-			metadata;
+	MetaMap* metadata;				// metadata of the function
 };
 
 #ifdef __cplusplus

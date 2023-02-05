@@ -37,8 +37,16 @@ struct CPPAPI KLType {
 	klunaryop clone;			// clone operation
 	klcopy copy;				// copy operation
 
-	std::map<std::string, KlObject *> functions;		// the functions defined in the type
-	std::map<std::string, KlObject *> variables;		// the globals var of the type.
-	std::map<std::string, KlObject *> metadata;        // metadata of the type
+	MetaMap functions;			// the functions defined in the type
+	MetaMap variables;			// the globals var of the type.
+	MetaMap metadata;       	// metadata of the type
 
+	/*
+	 * flags of this type:
+	 * 0: if the first flag is set, then the type cannot be instanced, this is for types that you will manually
+	 * instance and cannot be instanced by klruntime.
+	 *
+	 * other flags are currently unused.
+	 */
+	kbyte boolFlags;
 };
