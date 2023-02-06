@@ -1,7 +1,6 @@
 ﻿#include "KokoLangInternal.h"
 #include "klapi_builtins.h"
 
-
 CAPI KlObject* klBuiltinInt(int64_t val)
 {
 	auto base = klIns(&klBType_Int);
@@ -41,7 +40,7 @@ CPPAPI KlObject *klBuiltinString(const string &val) {
 	auto base = klIns(&klBType_String);
 	auto obj = KLCAST(kl_string , base);
 	obj->size = val.size();
-	obj->value = new char[obj->size + 1]{};
+	obj->value = new char[obj->size];
 	val.copy(obj->value, obj->size);
 	return base;
 }

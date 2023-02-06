@@ -90,7 +90,7 @@ void opcode_add(const KlObject& caller, KLCall& call, KlObject* operands[], [[ma
 	vecref regis = call.st.at(reg);
 
 	if(first->type->opAdd) {
-		first->type->opAdd(first, second, &regis, klCopy);
+		first->type->opAdd(first, second, &regis);
 	} else {
 		throw invalid_argument("Invalid object to operation add");
 	}

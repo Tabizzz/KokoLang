@@ -1,15 +1,19 @@
 ﻿#include "KokoLangInternal.h"
 #include "klapi_types.h"
 #include <cassert>
+#include <cstring>
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnreachableCode"
 
-KlObject* klself_return(KlObject* base) { return base; }
+KlObject* klself_return(KlObject* base) {
+	klRef(base);
+	return base;
+}
 
 #pragma region temps
 
-// static object used to temporary store the value of the int operations
+// static object used to temporary store the value of the operations
 static kl_int temp_int = {
 	KlObject{
 			&klBType_Int,
@@ -472,6 +476,8 @@ KLType klBType_Bool =
 
 #pragma endregion bool
 
+#pragma region string
+
 void kstring_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	ptr->value = nullptr;
@@ -482,6 +488,168 @@ void kstring_end(KlObject* obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	delete[] ptr->value;
 }
+
+int8_t kstring_compare(KlObject* x, KlObject* y)
+{
+	auto first = KLCAST(kl_string, x);
+	kl_string* second = nullptr;
+	bool flag = false;
+	if(y->type == &klBType_String)
+	{
+		second = KLCAST(kl_string, y);
+	}
+	else if(y->type->toString)
+	{
+		flag = true;
+		second = KLCAST(kl_string, y->type->toString(y));
+	}
+	if(!second) {
+		if (first->size == 0) {
+			// first is empty and second is null, we consider that case equal.
+			return 0;
+		} else {
+			// first is not empty so is bigger than null.
+			return 1;
+		}
+	}
+
+	int8_t dev = strncmp(first->value, second->value, min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
+
+	if(dev == 0 && first->size != second->size)
+	{
+		if(first->size < second->size)
+			dev = -1;
+		else
+			dev = 1;
+	}
+
+	if(flag)
+	{
+		klDeref(KLWRAP(second));
+	}
+	return dev;
+}
+
+int8_t kstring_equals(KlObject* x, KlObject* y)
+{
+	auto first = KLCAST(kl_string, x);
+	kl_string* second = nullptr;
+	bool flag = false;
+	if(y->type == &klBType_String)
+	{
+		second = KLCAST(kl_string, y);
+	}
+	else if(y->type->toString)
+	{
+		flag = true;
+		second = KLCAST(kl_string, y->type->toString(y));
+	}
+	if(!second) {
+		if (first->size == 0) {
+			// first is empty and second is null, we consider that case equal.
+			return 1;
+		} else {
+			// first is not empty so is different from second.
+			return 0;
+		}
+	}
+	int8_t dev = false;
+
+	if(first->size == second->size)
+	{
+		dev = strncmp(first->value, second->value, min(first->size, second->size)) == 0 ? 1 : 0;
+	}
+
+	if(flag)
+	{
+		klDeref(KLWRAP(second));
+	}
+	return dev;
+}
+
+void kstring_add(KlObject* x, KlObject* y, KlObject** target)
+{
+	auto first = KLCAST(kl_string, x);
+	kl_string* second = nullptr;
+	bool flag = false;
+	if(y->type == &klBType_String)
+	{
+		second = KLCAST(kl_string, y);
+	}
+	else if(y->type->toString)
+	{
+		flag = true;
+		second = KLCAST(kl_string, y->type->toString(y));
+	}
+	if(!second || second->size == 0) {
+		// second is null, so the resulting string is equals to first
+		klClone(x, target);
+		return;
+	}
+
+	if(first->size == 0)
+	{
+		// second is null, so the resulting string is equals to first
+		klClone(KLWRAP(second), target);
+		if(flag) klDeref(KLWRAP(second));
+		return;
+	}
+
+	auto size = first->size + second->size;
+	auto value = new char[size];
+	value[0] = 0;
+	value[first->size] = 0;
+
+	strncat(value, first->value, first->size);
+	strncat(value, second->value, first->size);
+
+	auto dev = klIns(&klBType_String);
+	KLCAST(kl_string, dev)->size = size;
+	KLCAST(kl_string, dev)->value = value;
+	// move will ref dev, but we don't are using it so set its ref count to 0
+	dev->refs = 0;
+	klMove(dev, target);
+
+	if(flag)
+	{
+		klDeref(KLWRAP(second));
+	}
+}
+
+KlObject* kstring_clone(KlObject* obj)
+{
+	auto n = string(KLCAST(kl_string, obj)->value, KLCAST(kl_string, obj)->size);
+	return KLSTR(n);
+}
+
+KLType klBType_String =
+{
+		KlObject(),
+		"str",
+		0,
+		sizeof(kl_string),
+		kstring_init,
+		nullptr,
+		kstring_end,
+		klself_return,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kstring_compare,
+		kstring_equals,
+		kstring_add,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		kstring_clone,
+		nullptr,
+};
+
+#pragma endregion string
+
 
 void kptr_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_ptr, obj);
@@ -499,17 +667,6 @@ void karr_init(KlObject* obj) {
 	ptr->size = 0;
 	ptr->content = nullptr;
 }
-
-KLType klBType_String =
-{
-		KlObject(),
-		"str",
-		0,
-		sizeof(kl_string),
-		kstring_init,
-		nullptr,
-		kstring_end
-};
 
 KLType klBType_Ptr =
 {
