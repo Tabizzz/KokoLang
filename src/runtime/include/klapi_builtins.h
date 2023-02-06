@@ -20,6 +20,7 @@
 #define KLSTR(x) klBuiltinString_c(x)
 #endif
 #define KSTR(x) KLCAST(kl_string, KLSTR(x))
+#define KASSTR(x) KLCAST(kl_string, x)->value
 #define KLPTR(x) klBuiltinPtr(x)
 #define KPTR(x) KLCAST(kl_ptr, KLPTR(x))
 #define KLOPTR(x) klBuiltinOPtr(x)

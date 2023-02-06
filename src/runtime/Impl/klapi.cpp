@@ -144,7 +144,10 @@ void inline kliCopyD(KlObject *src, KlObject **dest) {
 	*dest = src;
 }
 
+#define THROW_ON_NO_VALID_TARGET if(!dest){throw std::runtime_error("Not a valid target");}
+
 CAPI void klCopy(KlObject *src, KlObject **dest) {
+	THROW_ON_NO_VALID_TARGET
 	if(!src && *dest) {
 		kliCopyA(src, dest);
 	} else if (src && !*dest) {
@@ -155,6 +158,7 @@ CAPI void klCopy(KlObject *src, KlObject **dest) {
 }
 
 CAPI void klClone(KlObject *src, KlObject **dest) {
+	THROW_ON_NO_VALID_TARGET
 	if(!src && *dest) {
 		kliCopyA(src, dest);
 	} else if (src && !*dest) {
@@ -175,6 +179,7 @@ CAPI void klClone(KlObject *src, KlObject **dest) {
 }
 
 CAPI void klMove(KlObject *src, KlObject **dest) {
+	THROW_ON_NO_VALID_TARGET
 	klDeref(*dest);
 	klRef(src);
 	*dest = src;

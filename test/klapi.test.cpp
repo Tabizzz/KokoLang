@@ -1,5 +1,7 @@
+#include <cstring>
 #include "catch.hpp"
 #include "KokoLang.h"
+#include "testmacros.h"
 
 TEST_CASE( "klapi.h", "[klapi]" ) {
 
@@ -26,6 +28,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 	SECTION("klCopy")
 	{
+		SECTION("copy throws on null target pointer")
+		{
+			REQUIRE_THROWS(klCopy(nullptr, nullptr));
+		}
 		GIVEN("A not null src with copy and with clone")
 		{
 			auto src = KLINT(1);
@@ -150,20 +156,75 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			klDeref(src);
 		}
-		GIVEN("A not null src without copy and with clone") // TODO: implement clone in strings and test
+		GIVEN("A not null src without copy and with clone")
 		{
+			auto src = KLSTR("value");
 			WHEN( "dest is null" )
 			{
+				KlObject* dest = nullptr;
 
+				REQUIRE(src->refs == 1);
+
+				klCopy(src, &dest);
+
+				// is a clone, object mus be different references
+				REQUIRE(src != dest);
+				REQUIRE(src->refs == 1);
+				REQUIRE(dest->refs == 1);
+
+				// the size of the copy must be the same
+				REQUIRE(STR_EQUALS(src, dest));
+
+				klDeref(dest);
 			}
 			WHEN( "dest is not null and the same type of src" )
 			{
+				KlObject* dest = KLSTR("test");
+				auto oldDest = dest;
+				klRef(oldDest);
+				REQUIRE(src->refs == 1);
 
+				CHECK(STR_NOT_EQUALS(src, dest));
+
+				klCopy(src, &dest);
+
+				// is a clone, object mus be different references
+				REQUIRE(src != dest);
+				REQUIRE(dest != oldDest);
+				REQUIRE(src->refs == 1);
+				REQUIRE(dest->refs == 1);
+				REQUIRE(oldDest->refs == 1);
+
+				// the size of the copy must be the same
+				REQUIRE(STR_EQUALS(src, dest));
+				REQUIRE(STR_NOT_EQUALS(oldDest, dest));
+
+				klDeref(dest);
+				klDeref(oldDest);
 			}
 			WHEN( "dest is not null and not the same type of src" )
 			{
+				KlObject* dest = KLINT(0);
+				auto oldDest = dest;
+				klRef(oldDest);
+				REQUIRE(src->refs == 1);
 
+				klCopy(src, &dest);
+
+				// is a clone, object mus be different references
+				REQUIRE(src != dest);
+				REQUIRE(dest != oldDest);
+				REQUIRE(src->refs == 1);
+				REQUIRE(dest->refs == 1);
+				REQUIRE(oldDest->refs == 1);
+
+				// the size of the copy must be the same
+				REQUIRE(STR_EQUALS(src, dest));
+
+				klDeref(dest);
+				klDeref(oldDest);
 			}
+			klDeref(src);
 		}
 		GIVEN("A null src")
 		{
@@ -196,6 +257,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 	SECTION("kClone")
 	{
+		SECTION("clone throws on null target pointer")
+		{
+			REQUIRE_THROWS(klClone(nullptr, nullptr));
+		}
 		GIVEN("A not null src with clone")
 		{
 			auto src = KLINT(0);
@@ -312,6 +377,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 	SECTION("klMove")
 	{
+		SECTION("move throws on null target pointer")
+		{
+			REQUIRE_THROWS(klMove(nullptr, nullptr));
+		}
 		GIVEN("A not null src")
 		{
 			auto src = KLSTR("");
