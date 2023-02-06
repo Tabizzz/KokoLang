@@ -18,8 +18,9 @@ static map<string, KLPackage*>* packages;
 
 void kliBuildGlobalPackage()
 {
-	globalPackage = klCreatePackage();
-	globalPackage->name = KLSTR("global");
+	globalPackage = new KLPackage();
+	globalPackage->klbase.type = &klBType_Package;
+	klBType_Package.initializer(KLWRAP(globalPackage));
 }
 
 CAPI void klInit()
@@ -55,6 +56,10 @@ CAPI void klInit()
 	STDREGTYPE(klBType_Package)
 	STDREGTYPE(klBType_Variable)
 
+	// manually increment the ins-count due to global package
+	klBType_Package.inscount++;
+	globalPackage->name = KLSTR("global");
+
 	packages = new map<string, KLPackage*>();
 
 	klRegisterPackage(globalPackage);
@@ -89,14 +94,14 @@ CAPI KLPackage* klGlobalPackage() {
 }
 
 CAPI void klRegisterPackage(KLPackage *klPackage) {
-	string name = KLCAST(kl_string, klPackage->name)->value;
+	string name = string(KLCAST(kl_string, klPackage->name)->value, KLCAST(kl_string, klPackage->name)->size);
 	auto find = packages->find(name);
 	if(find == packages->end())
 	{
 		packages->insert(pair<string, KLPackage*>(name, klPackage));
 		return;
 	}
-	throw invalid_argument("trying to load a package but another package with the same name already exists");
+	throw invalid_argument("trying to add a package but another package with the same name already exists");
 }
 
 CAPI void klDefType(KLType *type) {
@@ -106,12 +111,13 @@ CAPI void klDefType(KLType *type) {
 	klBType_Type.inscount ++;
 	// the type is defined, so it only have one ref.
 	type->klbase.refs = 1;
+	type->inscount = 0;
 }
 
 /*
  * src is null, dest is not null.
  */
-void inline kliCopyA(KlObject *src, KlObject **dest) {
+void inline kliCopyA(KlObject **dest) {
 	klDeref(*dest);
 	*dest = nullptr;
 }
@@ -149,7 +155,7 @@ void inline kliCopyD(KlObject *src, KlObject **dest) {
 CAPI void klCopy(KlObject *src, KlObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	if(!src && *dest) {
-		kliCopyA(src, dest);
+		kliCopyA(dest);
 	} else if (src && !*dest) {
 		kliCopyB(src, dest);
 	} else if(src && *dest) {
@@ -160,7 +166,7 @@ CAPI void klCopy(KlObject *src, KlObject **dest) {
 CAPI void klClone(KlObject *src, KlObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	if(!src && *dest) {
-		kliCopyA(src, dest);
+		kliCopyA(dest);
 	} else if (src && !*dest) {
 		kliCopyB(src, dest);
 	} else if(src && *dest) {

@@ -11,7 +11,8 @@
 
 CAPI
 /*
- * Initialize the kokolang runtime, this creates the std package.
+ * Initialize the kokolang runtime, this creates the std package and
+ * define builtin types.
  */
 void klInit();
 

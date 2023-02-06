@@ -26,6 +26,22 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 	}
 
+	SECTION("klRegisterPackage")
+	{
+		SECTION("Cant add a package with a repeated name")
+		{
+			REQUIRE_THROWS(klRegisterPackage(klGlobalPackage()));
+		}
+	}
+
+	SECTION("klDefType")
+	{
+		CHECK(testT.klbase.type != &klBType_Type);
+		klDefType(&testT);
+		REQUIRE(testT.inscount == 0);
+		REQUIRE(testT.klbase.type == &klBType_Type);
+	}
+
 	SECTION("klCopy")
 	{
 		SECTION("copy throws on null target pointer")
