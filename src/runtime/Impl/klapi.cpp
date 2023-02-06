@@ -3,6 +3,7 @@
 #include "klapi.h"
 #include <stdexcept>
 #include <iostream>
+#include <cstring>
 
 #define  STDREGTYPE(x) klDefType(&x); klPackageRegType(globalPackage, &x);
 
@@ -25,7 +26,8 @@ void kliBuildGlobalPackage()
 
 CAPI void klInit()
 {
-	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value), "kl_int and kl_float dont have the same size.");
+	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value),
+			"kl_int and kl_float dont have the same size.");
 
 	kliSetDefaultResolvers();
 
@@ -93,8 +95,24 @@ CAPI KLPackage* klGlobalPackage() {
 	return globalPackage;
 }
 
+CAPI KLPackage** klRootPackages() {
+	auto size = packages->size() + 1;
+	auto dev = new KLPackage*[size];
+	dev[size-1] = nullptr;
+	size_t index = 0;
+	for ( const auto &p : *packages)
+	{
+		dev[index++] = p.second;
+	}
+	return dev;
+}
+
 CAPI void klRegisterPackage(KLPackage *klPackage) {
-	string name = string(KLCAST(kl_string, klPackage->name)->value, KLCAST(kl_string, klPackage->name)->size);
+	if(!klPackage->name || KLCAST(kl_string, klPackage->name)->size == 0)
+	{
+		throw runtime_error("Types must have a name");
+	}
+	string name = KSTRING(klPackage->name);
 	auto find = packages->find(name);
 	if(find == packages->end())
 	{
@@ -105,6 +123,14 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 }
 
 CAPI void klDefType(KLType *type) {
+	if(!type->name || strlen(type->name) == 0)
+	{
+		throw runtime_error("Types must have a name");
+	}
+	if(strchr(type->name, '.') || strchr(type->name, ':') || strchr(type->name, '%'))
+	{
+		throw runtime_error("Types cant contain the following characters in name: '.', ':' and '%'");
+	}
 	// set the type
 	type->klbase.type = &klBType_Type;
 	// increase the instance count of type

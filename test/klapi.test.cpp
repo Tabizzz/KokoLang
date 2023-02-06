@@ -20,6 +20,18 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			REQUIRE(klGlobalPackage());
 		}
 
+		SECTION("Global package is named 'global'") {
+			auto package = klGlobalPackage();
+			REQUIRE(strncmp(KASSTR(package->name), "global", KASSTRSIZE(package->name)) == 0);
+		}
+
+		SECTION("There must be only one package")
+		{
+			COUNT_ARRAY(count, klRootPackages())
+			REQUIRE(count == 1);
+
+		}
+
 		SECTION("klBType_Type is it own type")
 		{
 			REQUIRE(klBType_Type.klbase.type == &klBType_Type);
@@ -32,19 +44,57 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		{
 			REQUIRE_THROWS(klRegisterPackage(klGlobalPackage()));
 		}
+		SECTION("Dont allow empty or null name")
+		{
+			auto package = klCreatePackage();
+			// null name
+			REQUIRE_THROWS(klRegisterPackage(package));
+			package->name = KLSTR("");
+			REQUIRE_THROWS(klRegisterPackage(package));
+			klDestroyPackage(package);
+		}
+		SECTION("Register increase the root package count")
+		{
+			COUNT_ARRAY(preCount, klRootPackages())
+			auto package = klCreatePackage();
+			package->name = KLSTR("testPackage");
+			klRegisterPackage(package);
+			COUNT_ARRAY(postCount, klRootPackages())
+			REQUIRE(postCount == preCount + 1);
+			// package will be destroyed on end
+		}
 	}
 
 	SECTION("klDefType")
 	{
-		CHECK(testT.klbase.type != &klBType_Type);
-		klDefType(&testT);
-		REQUIRE(testT.inscount == 0);
-		REQUIRE(testT.klbase.type == &klBType_Type);
+		SECTION("Correctly set the type and inscount")
+		{
+			CHECK(testT.klbase.type != &klBType_Type);
+			klDefType(&testT);
+			REQUIRE(testT.inscount == 0);
+			REQUIRE(testT.klbase.type == &klBType_Type);
+		}
+		SECTION("Dont allow names with invalid characters")
+		{
+			testT.name = "test.type";
+			REQUIRE_THROWS(klDefType(&testT));
+			testT.name = "test:type";
+			REQUIRE_THROWS(klDefType(&testT));
+			testT.name = "test%type";
+			REQUIRE_THROWS(klDefType(&testT));
+		}
+		SECTION("Dont allow null or empty names")
+		{
+			testT.name = "";
+			REQUIRE_THROWS(klDefType(&testT));
+			testT.name = nullptr;
+			REQUIRE_THROWS(klDefType(&testT));
+		}
 	}
 
 	SECTION("klCopy")
 	{
-		SECTION("copy throws on null target pointer")
+		SECTION("Copy throws on null target pointer")
 		{
 			REQUIRE_THROWS(klCopy(nullptr, nullptr));
 		}

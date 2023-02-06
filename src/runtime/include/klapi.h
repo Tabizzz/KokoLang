@@ -33,6 +33,16 @@ KLPackage* klGlobalPackage();
 
 CAPI
 /*
+ * Get all the packages registered on the runtime, this includes
+ * the global package.
+ *
+ * This method allocate memory, you must use delete[] on the returned
+ * pointer.
+ */
+KLPackage** klRootPackages();
+
+CAPI
+/*
  * Add a package to the runtime to be used by others packages.
  */
 void klRegisterPackage(KLPackage* klPackage);

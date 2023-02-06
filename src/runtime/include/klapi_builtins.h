@@ -21,6 +21,8 @@
 #endif
 #define KSTR(x) KLCAST(kl_string, KLSTR(x))
 #define KASSTR(x) KLCAST(kl_string, x)->value
+#define KASSTRSIZE(x) KLCAST(kl_string, x)->size
+#define KSTRING(x) std::string(KASSTR(x), KASSTRSIZE(x))
 #define KLPTR(x) klBuiltinPtr(x)
 #define KPTR(x) KLCAST(kl_ptr, KLPTR(x))
 #define KLOPTR(x) klBuiltinOPtr(x)
