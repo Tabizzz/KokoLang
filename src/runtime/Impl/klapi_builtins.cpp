@@ -9,7 +9,7 @@ CAPI KlObject* klBuiltinInt(int64_t val)
 	return base;
 }
 
-KlObject *klBuiltinFloat(double val) {
+CAPI KlObject *klBuiltinFloat(double val) {
 	auto base = klIns(&klBType_Float);
 	auto obj = KLCAST(kl_float , base);
 	obj->value = val;
@@ -32,7 +32,7 @@ static kl_bool kl_bool_false = {
 		false
 };
 
-KlObject *klBuiltinBool(bool val) {
+CAPI KlObject *klBuiltinBool(char val) {
 	return KLWRAP(val ? &kl_bool_true : &kl_bool_false);
 }
 
@@ -46,6 +46,5 @@ CPPAPI KlObject *klBuiltinString(const string &val) {
 }
 
 CAPI KlObject *klBuiltinString_c(const char *val) {
-	string source = val;
-	return klBuiltinString(source);
+	return klBuiltinString(val);
 }

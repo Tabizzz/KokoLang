@@ -3,6 +3,14 @@
 #include "KokoLang.h"
 #include "testmacros.h"
 
+KLType testT =
+{
+		KlObject(),
+		"test",
+		0,
+		sizeof (kl_int)
+};
+
 TEST_CASE( "klapi.h", "[klapi]" ) {
 
 	SECTION("pre klInit")

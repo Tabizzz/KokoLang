@@ -43,7 +43,7 @@ CAPI KlObject* klBuiltinFloat(double_t val);
 /*
  * Creates bool int instance
  */
-CAPI KlObject* klBuiltinBool(bool val);
+CAPI KlObject* klBuiltinBool(char val);
 
 /*
  * Creates new string instance from a c string

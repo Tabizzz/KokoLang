@@ -10,11 +10,3 @@ strncmp(KASSTR(x), KASSTR(y), KLCAST(kl_string, x)->size) != 0)
 auto count##x = y;                      \
 while(count##x[x]) {x++;}             \
 delete[] count##x;
-
-KLType testT =
-{
-	KlObject(),
-	"test",
-	0,
-	sizeof (kl_int)
-};

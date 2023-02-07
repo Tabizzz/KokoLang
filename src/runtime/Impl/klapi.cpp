@@ -2,7 +2,6 @@
 #include "KokoLangInternal.h"
 #include "klapi.h"
 #include <stdexcept>
-#include <iostream>
 #include <cstring>
 
 #define  STDREGTYPE(x) klDefType(&x); klPackageRegType(globalPackage, &x);
