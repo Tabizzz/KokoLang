@@ -6,6 +6,9 @@
 
 #include "kldelegates.h"
 
+#define KLTYPE_FLAG_NOINSTANCE 1
+#define KLTYPE_IS_STATIC(x) (x->flags & KLTYPE_FLAG_NOINSTANCE)
+
 struct CPPAPI KLType {
 	KLOBJECTHEAD
 	const char *name;			// the name of the types
@@ -48,5 +51,5 @@ struct CPPAPI KLType {
 	 *
 	 * other flags are currently unused.
 	 */
-	kbyte boolFlags;
+	kbyte flags;
 };

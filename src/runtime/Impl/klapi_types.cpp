@@ -701,6 +701,28 @@ KLType klBType_Type =
 	"type",
 	0,
 	sizeof (KLType),
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	MetaMap(),
+	MetaMap(),
+	MetaMap(),
+	KLTYPE_FLAG_NOINSTANCE
 };
 
 KLType klBType_Reg =
@@ -729,17 +751,20 @@ KLType klBType_Reg =
 		kint_copy,
 };
 
-CAPI KlObject *klNewVar(KLType *type, KlObject *args, ...) {
+CAPI KlObject *klNewVar(KLType *type, size_t argc, KlObject *args, ...) {
 	return nullptr;
 }
 
-CAPI KlObject *klNew(KLType *type, KlObject **args, int argc) {
+CAPI KlObject *klNew(KLType *type, KlObject **args, size_t argc) {
 	return nullptr;
 }
 
 CAPI KlObject *klIns(KLType *type) {
+	if(KLTYPE_IS_STATIC(type)) {
+		throw runtime_error("Unable to instance not instantiable type");
+	}
 	auto size = type->size;
-	auto space = (KlObject*)malloc(size);
+	auto space = KLWRAP(malloc(size));
 	space->type = type;
 	space->refs = 1;
 	type->inscount++;
@@ -749,11 +774,13 @@ CAPI KlObject *klIns(KLType *type) {
 }
 
 CAPI void klRef(KlObject *object) {
-	if(object) object->refs++;
+	if(object && !KLTYPE_IS_STATIC(object->type)) object->refs++;
 }
 
 CAPI void klDeref(KlObject* object) {
 	if(!object) return;
+	if( KLTYPE_IS_STATIC(object->type)) return;
+
 	assert(object->refs > 0);
 	assert(object->type->inscount > 0);
 	object->refs--;
@@ -768,6 +795,10 @@ CAPI void klDestroy(KlObject *object) {
 	// call finalizer
 	KLINVOKE(object->type->finalizer)(object);
 	free(object);
+}
+
+CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, size_t argc) {
+	return nullptr;
 }
 
 #pragma clang diagnostic pop

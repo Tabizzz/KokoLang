@@ -54,7 +54,7 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
 		klDeref(reg);
 	}
 
-	return nullptr;
+	return call.ret;
 }
 
 void kfunc_instantiator(KlObject * obj)

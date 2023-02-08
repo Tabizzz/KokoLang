@@ -57,12 +57,12 @@ CAPI KLType klBType_Reg;
 /*
  * Create a new object calling the constructor of the type.
  */
-CAPI KlObject* klNew(KLType* type, KlObject** args, int argc);
+CAPI KlObject* klNew(KLType* type, KlObject** args, size_t argc);
 
 /*
  * Create a new object calling the constructor of the type.
  */
-CAPI KlObject* klNewVar(KLType* type, KlObject* args...);
+CAPI KlObject* klNewVar(KLType *type, size_t argc, KlObject *args ...);
 
 /*
  * Create a new instance of an object only calling the initializer but not the
@@ -85,3 +85,9 @@ CAPI void klDeref(KlObject* object);
  * Destroy an object, this call the finalizer and free the memory.
  */
 CAPI void klDestroy(KlObject* object);
+
+/*
+ * Invokes a KlObject, if the object is a function is invoked directly, if is a
+ * type with a method called "invoke" that method is used.
+ */
+CAPI KlObject* klInvoke(KlObject *target, KlObject **argv, size_t argc);

@@ -41,7 +41,7 @@ typedef struct kl_string {
  */
 typedef struct kl_bool {
 	KLOBJECTHEAD
-	char value;
+	const char value;
 } kl_bool;
 
 /*
