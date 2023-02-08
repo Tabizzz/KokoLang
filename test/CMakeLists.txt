@@ -1,5 +1,13 @@
 project( Tests CXX )
 
+add_subdirectory(deps/segvcatch)
+
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fnon-call-exceptions")
+endif()
+
+include_directories(deps/segvcatch/lib)
+
 add_executable(kltest main.cpp catch.hpp klapi.test.cpp testmacros.h klapi_builtins.test.cpp klapi_types.test.cpp)
 
-target_link_libraries(kltest KokoLangRuntime Threads::Threads nowide)
+target_link_libraries(kltest KokoLangRuntime Threads::Threads nowide segvcatch)
