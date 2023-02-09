@@ -75,7 +75,7 @@ int8_t kint_equal(KlObject* x, KlObject* y) {
 		}
 	}
 
-	return 0;
+	return KASINT(x) == 0;
 }
 
 KlObject* kint_clone(KlObject* base) {
@@ -108,7 +108,8 @@ void kint_add(KlObject* first, KlObject* second, KlObject** target)
 {
 	if(second) {
 		if(second->type == &klBType_Float) {
-			klBType_Float.opAdd(second, first, target);
+			temp_float.value = KASINT(first);
+			klBType_Float.opAdd(KLWRAP(&temp_float), second, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -123,7 +124,7 @@ void kint_add(KlObject* first, KlObject* second, KlObject** target)
 		temp_int.value = x + y;
 		klCopy(KLWRAP(&temp_int), target);
 	} else {
-		klCopy(nullptr, target);
+		klCopy(first, target);
 	}
 }
 
@@ -147,7 +148,7 @@ void kint_sub(KlObject* first, KlObject* second, KlObject** target)
 		temp_int.value = x + y;
 		klCopy(KLWRAP(&temp_int), target);
 	} else {
-		klCopy(nullptr, target);
+		klCopy(first, target);
 	}
 }
 
