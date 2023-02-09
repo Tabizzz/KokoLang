@@ -104,9 +104,7 @@ void klFunction_reallocateLabels(KLFunction* function) {
 						break;
 				}
 				if(reflabel && ref->operands[0]->type == &klBType_String) {
-					auto label = KLCAST(kl_string, ref->operands[0]);
-					auto label2 =  KLCAST(kl_string, instruction->label);
-					if(strcmp(label->value, label2->value) == 0)
+					if(klBType_String.equal(ref->operands[0], instruction->label))
 					{
 						klDeref(ref->operands[0]);
 						ref->operands[0] = KLINT(i);

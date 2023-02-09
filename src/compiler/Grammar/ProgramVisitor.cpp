@@ -12,7 +12,7 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 	for (size_t i = 0; i < funcionCount; i++)
 	{
 		auto func = any_cast<KLFunction*>(visitFunction(functionContexts[i]));
-		string name = KLCAST(kl_string, func->name)->value;
+		string name = KSTRING(func->name);
 
 		auto find = program->functions->find(name);
 		if(find == program->functions->end()) {

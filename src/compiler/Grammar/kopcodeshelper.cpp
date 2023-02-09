@@ -105,7 +105,7 @@ return KLSTR(id->getText());					\
 #define RETURN_ANY_CORE 						\
 auto boolv = ctx->bool_();						\
 if(boolv) {										\
-return KLBOOL(boolv->True());					\
+return KLBOOL(boolv->True()?1:0);				\
 }												\
 auto stringv = ctx->String();					\
 if(stringv) {									\
