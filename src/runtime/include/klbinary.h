@@ -17,9 +17,9 @@ CAPI
  */
 KLPackage* klCreatePackageFromStream(std::istream* stream);
 
-CAPI
+//CAPI
 /*
  * Load a package from a memory region.
  * If the package has no name this return the global package and the definitions on the package are added to the global.
  */
-KLPackage* klCreatePackageFromMemory(const void* ptr, size_t size);
+//KLPackage* klCreatePackageFromMemory(const void* ptr, size_t size);

@@ -430,7 +430,7 @@ TEST_CASE("kl_int", "[klapi_types][kl_int]")
 				klDeref(y);
 				klDeref(res);
 			}
-			SECTION("Positive")
+			SECTION("Negative")
 			{
 				auto y = KLINT(-10);
 				KlObject* res = nullptr;
@@ -482,7 +482,7 @@ TEST_CASE("kl_int", "[klapi_types][kl_int]")
 				klDeref(y);
 				klDeref(res);
 			}
-			SECTION("Positive")
+			SECTION("Negative")
 			{
 				auto y = KLFLOAT(-10);
 				KlObject* res = nullptr;
@@ -534,7 +534,7 @@ TEST_CASE("kl_int", "[klapi_types][kl_int]")
 				klDeref(y);
 				klDeref(res);
 			}
-			SECTION("Positive")
+			SECTION("Negative")
 			{
 				auto y = KLSTR("-10");
 				KlObject* res = nullptr;
@@ -572,6 +572,614 @@ TEST_CASE("kl_int", "[klapi_types][kl_int]")
 				REQUIRE(KASINT(res) == 10);
 				klDeref(y);
 				klDeref(res);
+			}
+		}
+		klDeref(x);
+	}
+
+	SECTION("subtract")
+	{
+		auto x = KLINT(10);
+		SECTION("With others ints")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLINT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLINT(-10);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(KASINT(res) == 20);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLINT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == -9223372036854775797);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLINT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == -9223372036854775798);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLINT(0);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+		}
+		SECTION("With floats")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLFLOAT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLFLOAT(-10);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 20);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLFLOAT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == -9223372036854775797);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLFLOAT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 9223372036854775808.0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLFLOAT(0);
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+		}
+		SECTION("With type not convertible to int")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLSTR("10");
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLSTR("-10");
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLSTR("INT64_MAX");
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLSTR("INT64_MIN");
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLSTR("0");
+				KlObject* res = nullptr;
+				klBType_Int.opSub(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+		}
+		klDeref(x);
+	}
+
+	SECTION("multiplication")
+	{
+		auto x = KLINT(10);
+		SECTION("With others ints")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLINT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(KASINT(res) == 100);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLINT(-10);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(KASINT(res) == -100);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLINT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == -10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLINT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLINT(0);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+		}
+		SECTION("With floats")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLFLOAT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 100);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLFLOAT(-10);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == -100);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLFLOAT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 92233720368547758080.0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLFLOAT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == -92233720368547758080.0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLFLOAT(0);
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+		}
+		SECTION("With type not convertible to int")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLSTR("10");
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLSTR("-10");
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLSTR("INT64_MAX");
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLSTR("INT64_MIN");
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLSTR("0");
+				KlObject* res = nullptr;
+				klBType_Int.opMul(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+		}
+		klDeref(x);
+	}
+
+	SECTION("division")
+	{
+		auto x = KLINT(10);
+		SECTION("With others ints")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLINT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				REQUIRE(KASINT(res) == 1);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLINT(-10);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				REQUIRE(KASINT(res) == -1);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLINT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLINT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLINT(0);
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+		}
+		SECTION("With floats")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLFLOAT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 1);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLFLOAT(-10);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == -1);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLFLOAT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) > 0);
+				REQUIRE(KASFLOAT(res) < 0.000000001);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLFLOAT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opDiv(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) < 0);
+				REQUIRE(KASFLOAT(res) > -0.000000001);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLFLOAT(0);
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+		}
+		SECTION("With type not convertible to int")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLSTR("10");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLSTR("-10");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLSTR("INT64_MAX");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLSTR("INT64_MIN");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLSTR("0");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opDiv(x, y, &res));
+				klDeref(y);
+			}
+		}
+		klDeref(x);
+	}
+
+	SECTION("modulo")
+	{
+		auto x = KLINT(10);
+		SECTION("With others ints")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLINT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				REQUIRE(KASINT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLINT(-15);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLINT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLINT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				// overflow
+				REQUIRE(KASINT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLINT(0);
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
+			}
+		}
+		SECTION("With floats")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLFLOAT(10);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 0);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLFLOAT(-15);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLFLOAT(INT64_MAX);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLFLOAT(INT64_MIN);
+				KlObject* res = nullptr;
+				klBType_Int.opMod(x, y, &res);
+				REQUIRE(res->type == &klBType_Float);
+				REQUIRE(KASFLOAT(res) == 10);
+				klDeref(y);
+				klDeref(res);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLFLOAT(0);
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
+			}
+		}
+		SECTION("With type not convertible to int")
+		{
+			SECTION("Positive")
+			{
+				auto y = KLSTR("10");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Negative")
+			{
+				auto y = KLSTR("-10");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Max value")
+			{
+				auto y = KLSTR("INT64_MAX");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Min Value")
+			{
+				auto y = KLSTR("INT64_MIN");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
+			}
+			SECTION("Zero")
+			{
+				auto y = KLSTR("0");
+				KlObject* res = nullptr;
+				REQUIRE_THROWS(klBType_Int.opMod(x, y, &res));
+				klDeref(y);
 			}
 		}
 		klDeref(x);

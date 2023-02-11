@@ -1,5 +1,4 @@
 ﻿#include "KokoLangLib.h"
-#define TERMCOLOR_USE_ANSI_ESCAPE_SEQUENCES
 #include "termcolor/termcolor.hpp"
 #include "nowide/iostream.hpp"
 

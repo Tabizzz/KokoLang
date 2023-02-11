@@ -145,7 +145,7 @@ void kint_sub(KlObject* first, KlObject* second, KlObject** target)
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x + y;
+		temp_int.value = x - y;
 		klCopy(KLWRAP(&temp_int), target);
 	} else {
 		klCopy(first, target);
@@ -156,7 +156,7 @@ void kint_mul(KlObject* first, KlObject* second, KlObject** target)
 {
 	if(second) {
 		if(second->type == &klBType_Float) {
-			klBType_Float.opSub(second, first, target);
+			klBType_Float.opMul(second, first, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -171,7 +171,8 @@ void kint_mul(KlObject* first, KlObject* second, KlObject** target)
 		temp_int.value = x * y;
 		klCopy(KLWRAP(&temp_int), target);
 	} else {
-		klCopy(nullptr, target);
+		temp_int.value = 0;
+		klCopy(KLWRAP(&temp_int), target);
 	}
 }
 
@@ -180,7 +181,7 @@ void kint_div(KlObject* first, KlObject* second, KlObject** target)
 	if(second) {
 		if(second->type == &klBType_Float) {
 			temp_float.value = KASINT(first);
-			klBType_Float.opSub(KLWRAP(&temp_float), second, target);
+			klBType_Float.opDiv(KLWRAP(&temp_float), second, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -192,16 +193,23 @@ void kint_div(KlObject* first, KlObject* second, KlObject** target)
 			y = KASINT(frees);
 			klDeref(frees);
 		}
+		// throw before hardware error
+		if (y == 0) throw logic_error("Division by 0");
 		temp_int.value = x / y;
 		klCopy(KLWRAP(&temp_int), target);
 	} else {
-		klCopy(nullptr, target);
+		throw logic_error("Division by 0");
 	}
 }
 
 void kint_mod(KlObject* first, KlObject* second, KlObject** target)
 {
 	if(second) {
+		if(second->type == &klBType_Float) {
+			temp_float.value = KASINT(first);
+			klBType_Float.opMod(KLWRAP(&temp_float), second, target);
+			return;
+		}
 		auto x = KASINT(first);
 		int64_t y = 0;
 		if (second->type == &klBType_Int) {
@@ -211,10 +219,12 @@ void kint_mod(KlObject* first, KlObject* second, KlObject** target)
 			y = KASINT(frees);
 			klDeref(frees);
 		}
+		// throw before hardware error
+		if (y == 0) throw logic_error("Division by 0");
 		temp_int.value = x % y;
 		klCopy(KLWRAP(&temp_int), target);
 	} else {
-		klCopy(nullptr, target);
+		throw logic_error("Division by 0");
 	}
 }
 
@@ -378,7 +388,8 @@ void kfloat_mul(KlObject* first, KlObject* second, KlObject** target)
 		temp_float.value = x * y;
 		klCopy(KLWRAP(&temp_float), target);
 	} else {
-		klCopy(nullptr, target);
+		temp_float.value = 0;
+		klCopy(KLWRAP(&temp_float), target);
 	}
 }
 
@@ -396,10 +407,35 @@ void kfloat_div(KlObject* first, KlObject* second, KlObject** target)
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
+		// throw before hardware error
+		if (y == 0) throw logic_error("Division by 0");
 		temp_float.value = x / y;
 		klCopy(KLWRAP(&temp_float), target);
 	} else {
-		klCopy(nullptr, target);
+		throw logic_error("Division by 0");
+	}
+}
+
+void kfloat_mod(KlObject* first, KlObject* second, KlObject** target)
+{
+	if(second) {
+		auto x = KASFLOAT(first);
+		double y = 0;
+		if (second->type == &klBType_Float) {
+			y = KASFLOAT(second);
+		} else if (second->type == &klBType_Int) {
+			y = KASINT(second);
+		}  else if (second->type->toFloat) {
+			auto frees = second->type->toFloat(second);
+			y = KASFLOAT(frees);
+			klDeref(frees);
+		}
+		// throw before hardware error
+		if (y == 0) throw logic_error("Division by 0");
+		temp_float.value = fmod(x, y);
+		klCopy(KLWRAP(&temp_float), target);
+	} else {
+		throw logic_error("Division by 0");
 	}
 }
 
@@ -424,7 +460,7 @@ KLType klBType_Float =
 		kfloat_sub,
 		kfloat_mul,
 		kfloat_div,
-		nullptr,
+		kfloat_mod,
 		kfloat_clone,
 		kfloat_copy,
 };

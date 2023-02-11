@@ -27,3 +27,4 @@ typedef struct KlObject {
 #endif
 
 typedef std::map<std::string, KlObject *> MetaMap;
+typedef std::pair<std::string, KlObject*> MetaPair;
