@@ -20,6 +20,11 @@ y = valy;                                            	\
 klDeref(z);                                             \
 z = valz;
 
+#define SWAP(x, valx, y, valy) klDeref(x); \
+x = valx;                                            	\
+klDeref(y);                                             \
+y = valy;
+
 static bool segv_init = false;
 
 static inline bool is_valid(KlObject* obj)

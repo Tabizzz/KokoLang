@@ -16,6 +16,7 @@ add_executable(kltest
         klapi_builtins.test.cpp
         klapi_types.test.cpp
         kl_int.test.cpp
-        kl_float.test.cpp)
+        kl_float.test.cpp
+        kl_string.test.cpp)
 
 target_link_libraries(kltest KokoLangRuntime Threads::Threads nowide segvcatch)

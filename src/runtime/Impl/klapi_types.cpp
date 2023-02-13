@@ -517,7 +517,7 @@ KLType klBType_Bool =
 		MetaMap(),
 		MetaMap(),
 		MetaMap(),
-		1				// cannot instance
+		KLTYPE_FLAG_NOINSTANCE				// cannot instance
 };
 
 #pragma endregion bool
@@ -540,14 +540,17 @@ int8_t kstring_compare(KlObject* x, KlObject* y)
 	auto first = KLCAST(kl_string, x);
 	kl_string* second = nullptr;
 	bool flag = false;
-	if(y->type == &klBType_String)
+	if(y)
 	{
-		second = KLCAST(kl_string, y);
-	}
-	else if(y->type->toString)
-	{
-		flag = true;
-		second = KLCAST(kl_string, y->type->toString(y));
+		if(y->type == &klBType_String)
+		{
+			second = KLCAST(kl_string, y);
+		}
+		else if(y->type->toString)
+		{
+			flag = true;
+			second = KLCAST(kl_string, y->type->toString(y));
+		}
 	}
 	if(!second) {
 		if (first->size == 0) {
@@ -555,18 +558,18 @@ int8_t kstring_compare(KlObject* x, KlObject* y)
 			return 0;
 		} else {
 			// first is not empty so is bigger than null.
-			return 1;
+			return -1;
 		}
 	}
 
-	int8_t dev = strncmp(first->value, second->value, min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
+	int8_t dev = strncmp(first->value, second->value, min(first->size, second->size)) * -1; // NOLINT(cppcoreguidelines-narrowing-conversions)
 
 	if(dev == 0 && first->size != second->size)
 	{
 		if(first->size < second->size)
-			dev = -1;
-		else
 			dev = 1;
+		else
+			dev = -1;
 	}
 
 	if(flag)
@@ -581,14 +584,13 @@ int8_t kstring_equals(KlObject* x, KlObject* y)
 	auto first = KLCAST(kl_string, x);
 	kl_string* second = nullptr;
 	bool flag = false;
-	if(y->type == &klBType_String)
-	{
-		second = KLCAST(kl_string, y);
-	}
-	else if(y->type->toString)
-	{
-		flag = true;
-		second = KLCAST(kl_string, y->type->toString(y));
+	if(y) {
+		if (y->type == &klBType_String) {
+			second = KLCAST(kl_string, y);
+		} else if (y->type->toString) {
+			flag = true;
+			second = KLCAST(kl_string, y->type->toString(y));
+		}
 	}
 	if(!second) {
 		if (first->size == 0) {
@@ -618,16 +620,15 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 	auto first = KLCAST(kl_string, x);
 	kl_string* second = nullptr;
 	bool flag = false;
-	if(y->type == &klBType_String)
-	{
-		second = KLCAST(kl_string, y);
+	if(y) {
+		if (y->type == &klBType_String) {
+			second = KLCAST(kl_string, y);
+		} else if (y->type->toString) {
+			flag = true;
+			second = KLCAST(kl_string, y->type->toString(y));
+		}
 	}
-	else if(y->type->toString)
-	{
-		flag = true;
-		second = KLCAST(kl_string, y->type->toString(y));
-	}
-	if(!second || second->size == 0) {
+	if(!second) {
 		// second is null, so the resulting string is equals to first
 		klClone(x, target);
 		return;
@@ -635,8 +636,15 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 
 	if(first->size == 0)
 	{
-		// second is null, so the resulting string is equals to first
+		// first is empty, so directly clone second
 		klClone(KLWRAP(second), target);
+		if(flag) klDeref(KLWRAP(second));
+		return;
+	}
+	else if(second->size == 0)
+	{
+		// second is empty, so directly clone second
+		klClone(x, target);
 		if(flag) klDeref(KLWRAP(second));
 		return;
 	}
@@ -647,14 +655,14 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 	value[first->size] = 0;
 
 	strncat(value, first->value, first->size);
-	strncat(value, second->value, first->size);
+	strncat(value, second->value, second->size);
 
 	auto dev = klIns(&klBType_String);
 	KLCAST(kl_string, dev)->size = size;
 	KLCAST(kl_string, dev)->value = value;
-	// move will ref dev, but we don't are using it so set its ref count to 0
-	dev->refs = 0;
-	klMove(dev, target);
+	// dereference anything current value
+	klDeref(*target);
+	*target = dev;
 
 	if(flag)
 	{
@@ -664,8 +672,7 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 
 KlObject* kstring_clone(KlObject* obj)
 {
-	auto n = string(KLCAST(kl_string, obj)->value, KLCAST(kl_string, obj)->size);
-	return KLSTR(n);
+	return KLSTR(KSTRING(obj));
 }
 
 KLType klBType_String =
@@ -797,9 +804,6 @@ KLType klBType_Reg =
 		kint_copy,
 };
 
-CAPI KlObject *klNewVar(KLType *type, size_t argc, KlObject *args, ...) {
-	return nullptr;
-}
 
 CAPI KlObject *klNew(KLType *type, KlObject **args, size_t argc) {
 	return nullptr;
