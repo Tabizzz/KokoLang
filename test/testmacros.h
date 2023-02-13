@@ -4,8 +4,7 @@
 #include "KokoLang.h"
 #include "segvcatch.h"
 
-#define STR_EQUALS(x, y) (KLCAST(kl_string, x)->size == KLCAST(kl_string, y)->size && \
-strncmp(KASSTR(x), KASSTR(y), KLCAST(kl_string, x)->size) == 0)
+#define STR_EQUALS(x, y) klBType_String.equal(x, y)
 #define STR_NOT_EQUALS(x, y) (KLCAST(kl_string, x)->size != KLCAST(kl_string, y)->size || \
 strncmp(KASSTR(x), KASSTR(y), KLCAST(kl_string, x)->size) != 0)
 

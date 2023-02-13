@@ -9,7 +9,7 @@ CAPI KlObject* klBuiltinInt(int64_t val)
 	return base;
 }
 
-CAPI KlObject *klBuiltinFloat(double val) {
+CAPI KlObject *klBuiltinFloat(double_t val) {
 	auto base = klIns(&klBType_Float);
 	auto obj = KLCAST(kl_float , base);
 	obj->value = val;

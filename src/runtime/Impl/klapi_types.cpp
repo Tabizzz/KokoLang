@@ -2,6 +2,7 @@
 #include "klapi_types.h"
 #include <cassert>
 #include <cstring>
+#include <sstream>
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnreachableCode"
@@ -265,11 +266,13 @@ void kfloat_init(KlObject* obj) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantFunctionResult"
 int8_t kfloat_comparer(KlObject* x, KlObject* y) {
-	double first = KASFLOAT(x);
-	double second = 0;
+	double_t first = KASFLOAT(x);
+	double_t second = 0;
 	if(y) {
 		if (y->type == &klBType_Float) {
 			second = KASFLOAT(y);
+		} else if (y->type == &klBType_Int) {
+			second = KASINT(y);
 		} else if (y->type->toFloat) {
 			auto frees = y->type->toFloat(y);
 			second = KASFLOAT(frees);
@@ -292,6 +295,8 @@ int8_t kfloat_equal(KlObject* x, KlObject* y) {
 	{
 		if (y->type == &klBType_Float) {
 			return KASFLOAT(x) == KASFLOAT(y);
+		} else if (y->type == &klBType_Int) {
+			return KASFLOAT(x) == KASINT(y);
 		} else if (y->type->toFloat) {
 			auto frees = y->type->toFloat(y);
 			auto dev = KASFLOAT(frees);
@@ -300,7 +305,7 @@ int8_t kfloat_equal(KlObject* x, KlObject* y) {
 		}
 	}
 
-	return 0;
+	return KASFLOAT(x) == 0;
 }
 
 KlObject* kfloat_clone(KlObject* base) {
@@ -314,7 +319,11 @@ void kfloat_copy(KlObject* a, KlObject* b) {
 KlObject* kfloat_tostr(KlObject* base)
 {
 	auto val = KASFLOAT(base);
-	return KLSTR(to_string(val));
+	std::ostringstream stream;
+	auto max = std::numeric_limits<double_t>::digits10 + 1;
+	stream.precision(max);
+	stream << val;
+	return KLSTR(stream.str());
 }
 
 KlObject* kfloat_toint(KlObject* base)
