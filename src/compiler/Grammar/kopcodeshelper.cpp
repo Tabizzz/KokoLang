@@ -97,7 +97,7 @@ if(val) {										\
 return KLINT(stol(val->getText()));				\
 }
 
-#define  RETURN_ID auto id = ctx->Id();			\
+#define  RETURN_ID auto id = ctx->identifier();	\
 if(id) {										\
 return KLSTR(id->getText());					\
 }
@@ -143,7 +143,7 @@ KlObject * kliCheckRegOrInt(KokoLangParser::ValueContext *ctx)
 KlObject* kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx)
 {
 	if(ctx) {
-		auto idv = ctx->Id();
+		auto idv = ctx->identifier();
 		if(idv) {
 			throw invalid_argument("identifier is not a valid operand");
 		}
@@ -177,7 +177,7 @@ KlObject* kliCheckIdentifier(KokoLangParser::ValueContext *ctx)
 KlObject * kliCheckAnyNoId(KokoLangParser::ValueContext *ctx)
 {
 	if(!ctx) throw std::invalid_argument("missing required operand");
-	auto idv = ctx->Id();
+	auto idv = ctx->identifier();
 	if(idv) {
 		throw invalid_argument("identifier is not a valid operand");
 	}
@@ -220,7 +220,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 #pragma endregion
 #pragma region 1any_no_reg 1reg
 		case KOpcode::push:
-			if(values[0]->Id()) *pOpcode = KOpcode::get;
+			if(values[0]->identifier()) *pOpcode = KOpcode::get;
 			SETOPERAND(0, kliCheckAnyNoReg);
 			SETOPERAND(1, kliCheckReg);
 			break;

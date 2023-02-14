@@ -27,9 +27,11 @@ nlr: NL+;
 
 nlo: NL*;
 
-value: Null | bool | String | register | Number | Id;
+value: Null | bool | String | register | Number | identifier;
 
 register: Sper Number;
+
+identifier: (Id Sdot)? Id (Dp Id)?;
 
 bool: True | False;
 
