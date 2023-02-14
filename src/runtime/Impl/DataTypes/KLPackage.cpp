@@ -72,17 +72,20 @@ CAPI int klPackage_Run(KLPackage* program, int argc, const char* argv[]) {
 		if(find != program->functions->end())
 		{
 			main = KLCAST(KLFunction, find->second);
+			auto dev = 0;
 			auto args = argstoobject(argv, argc);
 			auto kargc = KLINT(argc);
-			main->invokable(find->second, args, kargc);
+			auto ret = main->invokable(find->second, args, kargc);
 			// release allocated args
 			klDeref(kargc);
 			for (int i = 0; i < argc; ++i) {
 				klDeref(args[i]);
 			}
 			delete[] args;
-
-			return 0;
+			if(ret && ret->type == &klBType_Int) dev = KASINT(ret);
+			if(ret && ret->type == &klBType_Bool && !KASBOOL(ret)) dev = EXIT_FAILURE;
+			klDeref(ret);
+			return dev;
 		}
 		cout<<"Error: unable to find entry point 'main'" << endl;
 		return 1;
