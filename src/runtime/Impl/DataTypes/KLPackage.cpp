@@ -74,10 +74,9 @@ CAPI int klPackage_Run(KLPackage* program, int argc, const char* argv[]) {
 			main = KLCAST(KLFunction, find->second);
 			auto dev = 0;
 			auto args = argstoobject(argv, argc);
-			auto kargc = KLINT(argc);
-			auto ret = main->invokable(find->second, args, kargc);
+			auto ret = main->invokable(find->second, args, argc);
+
 			// release allocated args
-			klDeref(kargc);
 			for (int i = 0; i < argc; ++i) {
 				klDeref(args[i]);
 			}

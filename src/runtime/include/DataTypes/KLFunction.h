@@ -12,7 +12,7 @@ extern "C" {
  */
 struct CPPAPI KLFunction {
 	KLOBJECTHEAD					// base type KLObject
-	KlObject* name;					// the name of the function
+	KlObject* name;				// the name of the function
 	klinvokable invokable;			// the actual function,
 	kbyte margs;					// minimum amount of params the function expects
 	char args;						// maximum amount of params the function can receive or -1 to unlimited

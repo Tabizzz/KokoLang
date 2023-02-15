@@ -1,13 +1,10 @@
-﻿#include <cstring>
-#include <iostream>
-#include "../KokoLangInternal.h"
+﻿#include "../KokoLangInternal.h"
 #include "DataTypes/KLFunction.h"
 #include "KLFunctionImpl.h"
 
-KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, KlObject *argsc)
+KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
 {
 	auto func = KLCAST(KLFunction, caller);
-	auto passedArgs = KLCAST(kl_int, argsc)->value;
 	if(passedArgs < func->margs){
 		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
 		" expected  at least" << (int)func->margs << " argv but received " << passedArgs << endl;

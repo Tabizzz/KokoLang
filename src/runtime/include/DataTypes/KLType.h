@@ -12,9 +12,9 @@ struct CPPAPI KLType {
 	const char *name;			// the name of the types
 	size_t inscount;			// the number of instances
 	size_t size;				// the size to allocate this an object of this type
-	klinitializer initializer;	// the initializer to this type
+	kltypefunc initializer;		// the initializer to this type
 	KlObject* constructor;		// the constructor of the type
-	klfinalizer finalizer;      // the finalizer to this type
+	kltypefunc finalizer;      // the finalizer to this type
 
 	klunaryop toString;			// return the string representation of the type
 	klunaryop toInt;			// return the int representation of the type

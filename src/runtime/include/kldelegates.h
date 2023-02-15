@@ -1,13 +1,14 @@
-﻿#pragma onces
+﻿#pragma once
 
-typedef void (*klinitializer)(KlObject*);   // the initializer is the responsible for example set ints to 0
-
-typedef void (*klfinalizer)(KlObject*);     // the finalizer is the responsible for example free memory allocation/ deref other object
+/**
+ * @brief A function that receives an object an changes its state.
+ */
+typedef void (*kltypefunc)(KlObject* obj);
 
 typedef KlObject* (*klinvokable)			// a delegate for invokable objects like constructors or functions
-		(KlObject *func,					// the function object itself
-		 KlObject **args,					// the args passed to the function
-		 KlObject *argc);					// the number of arguments passed to the function
+		(KlObject* func,					// the function object itself
+		 KlObject* args[],					// the args passed to the function
+		 kbyte);							// the number of arguments passed to the function
 
 typedef int8_t (*klcomparer)					// comparator signature
 		(KlObject* first,

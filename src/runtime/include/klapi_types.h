@@ -57,7 +57,7 @@ CAPI KLType klBType_Reg;
 /**
  * Create a new object calling the constructor of the type.
  */
-CAPI KlObject* klNew(KLType* type, KlObject** args, size_t argc);
+CAPI KlObject* klNew(KLType* type, KlObject** args, kbyte argc);
 
 
 /**
@@ -86,4 +86,4 @@ CAPI void klDestroy(KlObject* object);
  * Invokes a KlObject, if the object is a function is invoked directly, if is a
  * type with a method called "call" that method is used.
  */
-CAPI KlObject* klInvoke(KlObject *target, KlObject **argv, size_t argc);
+CAPI KlObject* klInvoke(KlObject *target, KlObject **argv, kbyte argc);

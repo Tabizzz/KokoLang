@@ -804,8 +804,7 @@ KLType klBType_Reg =
 		kint_copy,
 };
 
-
-CAPI KlObject *klNew(KLType *type, KlObject **args, size_t argc) {
+CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
 	return nullptr;
 }
 
@@ -847,7 +846,7 @@ CAPI void klDestroy(KlObject *object) {
 	free(object);
 }
 
-CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, size_t argc) {
+CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
 	return nullptr;
 }
 
