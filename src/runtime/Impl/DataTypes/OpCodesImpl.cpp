@@ -13,6 +13,15 @@ typedef vector<KlObject*>::reference vecref;
 #pragma ide diagnostic ignored "UnusedParameter"
 void opcode_noc(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {}
 
+void opcode_set(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+	if(argv[0]->type == &klBType_String)
+	{
+		auto var = KokoLang::KLDefaultResolvers::getVariableResolver()(argv[0], &caller, true);
+		klDeref(argv[0]);
+		argv[0] = var;
+	}
+}
+
 void opcode_lflag(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto index = KASINT(argv[0]);
@@ -161,6 +170,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_lflag;
 			break;
 		case KOpcode::set:
+			instruction->call = opcode_set;
 			break;
 		case KOpcode::get:
 			break;

@@ -2,11 +2,19 @@
 * This file contain utility methods and macros for creating builtin types instances
 */
 #pragma once
-#include "klapi_types.h"
-#include "kltypedef.h"
+#include "DataTypes/KLObject.h"
 
+/**
+ * Macro for create a new kl_int as KLObject* from a native int
+ */
 #define KLINT(x) klBuiltinInt(x)
+/**
+ * Macro for create a new kl_int from a native int
+ */
 #define KINT(x) KLCAST(kl_int, KLINT(x))
+/**
+ * Macro for access to the internal value of a kl_int
+ */
 #define KASINT(x) KLCAST(kl_int, x)->value
 #define KLFLOAT(x) klBuiltinFloat(x)
 #define KFLOAT(x) KLCAST(kl_float , KLFLOAT(x))
@@ -27,45 +35,104 @@
 #define KPTR(x) KLCAST(kl_ptr, KLPTR(x))
 #define KLOPTR(x) klBuiltinOPtr(x)
 #define KOPTR(x) KLCAST(kl_optr, KLOPTR(x))
-#define KLARR(x, y) klBuiltinArr(x, y)
-#define KARR(x, y) KLCAST(kl_arr, KLARR(x, y))
+#define KLARR(x) klBuiltinArr(x)
+#define KARR(x) KLCAST(kl_arr, KLARR(x))
 
-/*
- * Creates new int instance
+CAPI
+/**
+ * @brief Creates an int instance.
+ *
+ * @param val The native value that will be used on the object.
+ *
+ * @return A new kokolang object with the same value as val.
  */
-CAPI KlObject* klBuiltinInt(int64_t val);
+KlObject* klBuiltinInt(int64_t val);
 
-/*
- * Creates new float instance
+CAPI
+/**
+ * @brief Creates a float instance.
+ *
+ * @param val The native value that will be used on the object.
+ *
+ * @return A new kokolang object with the same value as val.
  */
-CAPI KlObject* klBuiltinFloat(double_t val);
+KlObject* klBuiltinFloat(double_t val);
 
-/*
- * Creates bool int instance
+CAPI
+/**
+ * @brief Creates a bool instance.
+ *
+ * @param val The native value that will be used on the object.
+ *
+ * @return A new kokolang object with the same value as val.
  */
-CAPI KlObject* klBuiltinBool(char val);
+KlObject* klBuiltinBool(char val);
 
-/*
- * Creates new string instance from a c string
+CPPAPI
+/**
+ * @brief Creates new string instance from a c++ string.
+ *
+ * @param val The C++ string.
+ *
+ * @return A kl_string with the same content as val.
  */
-CAPI KlObject* klBuiltinString_c(const char* val);
+KlObject* klBuiltinString(const std::string& val);
 
-/*
- * Creates new string instance from a c++ string
+CAPI
+/**
+ * @brief Creates new string instance from a c string
+ *
+ * This function exist to allow interop with languages that not support c++ strings.
+ *
+ * @param val A null terminating C string.
+ *
+ * @return A kl_string with the same content as val.
  */
-CPPAPI KlObject* klBuiltinString(const std::string& val);
+inline KlObject* klBuiltinString_c(const char* val){
+	return klBuiltinString(val);
+}
 
-/*
- * Creates new ptr instance
+CAPI
+/**
+ * @brief Creates new ptr instance
+ *
+ * @param val native pointer to wrap.
+ *
+ * @return A ptr object wrapping val.
  */
-CAPI KlObject* klBuiltinPtr(void* val);
+KlObject* klBuiltinPtr(void* val);
 
-/*
- * Creates new optr instance
+CAPI
+/**
+ * @brief Creates new optr instance
+ *
+ * @param val The object to wrap on this Optr.
+ *
+ * @return A new object containing a weak reference to val.
  */
-CAPI KlObject* klBuiltinOPtr(KlObject** val);
+KlObject* klBuiltinOPtr(KlObject* val);
 
-/*
- * Creates new array instance, all internal index are null.
+CAPI
+/**
+ * @brief Creates new array instance with multiple dimensions.
+ *
+ * @param dimensions The number of dimensions on the array plus 1, that is, if you want to create a 0 dimensional array pass 1 as parameters.
+ * @param sizes A array containing the sizes of each dimension on the array, the size of the array must be greater or equal than dimensions.
+ *
+ * @return A new array of arbitrary dimension and with the given sizes.
  */
-CAPI KlObject* klBuiltinArr(int size, int dimensions = 0);
+KlObject* klBuiltinMultiArr(uint32_t dimensions, uint32_t* sizes);
+
+CAPI
+/**
+ * @brief Creates new array instance with one dimension.
+ *
+ * @param size The number of elements in the array.
+ *
+ * @return A new array of dimension 0.
+ */
+inline KlObject* klBuiltinArr(uint32_t size)
+{
+	uint32_t sizes []{size};
+	return klBuiltinMultiArr(1, sizes);
+}

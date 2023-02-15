@@ -1,9 +1,6 @@
 ﻿#pragma once
 
-#include <map>
-#include "klimports.h"
-#include "DataTypes/KLFunction.h"
-#include "DataTypes/KLInstruction.h"
+#include "DataTypes/KLObject.h"
 
 #ifdef __cplusplus
 extern "C" {

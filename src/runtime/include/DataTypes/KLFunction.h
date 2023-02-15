@@ -1,10 +1,7 @@
 ﻿#pragma once
 
-#include "klimports.h"
-#include "DataTypes/KLObject.h"
 #include "DataTypes/KLType.h"
 #include "DataTypes/KLInstruction.h"
-#include "kltypedef.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,8 +16,7 @@ struct CPPAPI KLFunction {
 	klinvokable invokable;			// the actual function,
 	kbyte margs;					// minimum amount of params the function expects
 	char args;						// maximum amount of params the function can receive or -1 to unlimited
-	bool external;					// if true the function is not defined in kokolang
-
+	kbyte external;					// if true the function is not defined in kokolang
 	kbyte locals;					// how many locals the function have
 	unsigned short size;			// the amount of instructions on the function body.
 	std::vector<KLInstruction *>*

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <map>
-#include "klimports.h"
 #include "DataTypes/KLObject.h"
 
 #include "kldelegates.h"

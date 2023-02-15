@@ -41,10 +41,12 @@ CPPAPI KlObject *klBuiltinString(const string &val) {
 	auto obj = KLCAST(kl_string , base);
 	obj->size = val.size();
 	obj->value = new char[obj->size];
-	val.copy(obj->value, obj->size);
+	val.copy(const_cast<char*>(obj->value), obj->size);
 	return base;
 }
 
-CAPI KlObject *klBuiltinString_c(const char *val) {
-	return klBuiltinString(val);
+KlObject* klBuiltinMultiArr(uint32_t dimensions, uint32_t* sizes) {
+	auto base = klIns(&klBType_Arr);
+
+	return base;
 }

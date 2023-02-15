@@ -369,3 +369,5 @@ CTestTestfile.cmake
 build/
 cmake-build-debug/
 .antlr/
+
+docs/gen/

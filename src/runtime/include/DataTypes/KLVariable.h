@@ -9,12 +9,13 @@ extern "C" {
 struct CPPAPI KLVariable
 {
 	KLOBJECTHEAD                            // base
-	bool type;                              // the type of var, true is package variable, false is type variable.
+	kbyte type;                              // the type of var, true is package variable, false is type variable.
 	union {
 		size_t offset;                      // for type variable
 		KlObject* value;
 	} data;
-	KlObject* source;
+	// klbinary.cpp - readVariableDefinition - line 160
+	//KlObject* source;
 	KlObject* defaultValue;
 	MetaMap* metadata;
 

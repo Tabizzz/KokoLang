@@ -156,7 +156,9 @@ inline void readVariableDefinition(std::map<std::string, KlObject*>* target, ist
 	readMetadata(stream, var->metadata);
 	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
 	var->defaultValue = defaultValue;
-	var->source = source;
+
+	// var->source = source;
+	
 	if(type) {
 		klMove(var->defaultValue, &var->data.value);
 	} else {
@@ -417,9 +419,6 @@ KLPackage *klCreatePackageFromStream(std::istream* stream) {
 	return package;
 }
 
-KLPackage *klCreatePackageFromMemory(const void *ptr, size_t size) {
-	return nullptr;
-}
 
 
 #pragma clang diagnostic pop

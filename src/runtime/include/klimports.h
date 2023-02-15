@@ -8,6 +8,10 @@
 #include <any>
 #include <vector>
 #include <cstdint>
+#include <map>
+#include <stack>
+#include <bitset>
+#include <cmath>
 
 #if defined _WIN32 || defined __CYGWIN__
 #ifdef KokoLangRuntime_EXPORTS

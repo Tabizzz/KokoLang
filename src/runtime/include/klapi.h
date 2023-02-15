@@ -3,59 +3,62 @@
  * Generic kokolang functions exposed to the C API.
  */
 
-#include "klimports.h"
 #include "DataTypes/KLRuntime.h"
 
-#ifndef CAPI_H
-#define CAPI_H
-
 CAPI
-/*
- * Initialize the kokolang runtime, this creates the std package and
- * define builtin types.
+/**
+ * @brief Initialize the kokolang runtime
+ *
+ * This creates the global package and define builtin types.
  */
 void klInit();
 
 CAPI
-/*
- * Finalize the runtime, disposing all the objects in the runtime,
+/**
+ * @brief Finalize the runtime
+ *
+ * Dispose all the objects in the runtime,
  * call this to ensure all the objects created by the runtime
  * being finalized.
  */
 void klEnd();
 
 CAPI
-/*
- *  Get the global package.
+/**
+ *  @brief Get the global package.
+ *
  *  This package contains the standard types and functions.
  */
 KLPackage* klGlobalPackage();
 
 CAPI
-/*
- * Get all the packages registered on the runtime, this includes
+/**
+ * @brief Get all the packages registered on the runtime, this includes
  * the global package.
  *
  * This method allocate memory, you must use delete[] on the returned
  * pointer.
+ * The returned array end with a null entry.
  */
 KLPackage** klRootPackages();
 
 CAPI
-/*
- * Add a package to the runtime to be used by others packages.
+/**
+ * @brief Add a package to the runtime to be used by others packages.
  */
 void klRegisterPackage(KLPackage* klPackage);
 
 CAPI
-/*
- * Define a type, use this to initialize the header of any type.
+/**
+ * @brief Define a type, use this to initialize the header of any type.
  */
 void klDefType(KLType* type);
 
 CAPI
-/*
- * Main object copy operation. This function will try to copy objects
+/**
+ * @brief Main object copy operation.
+ *
+ * This function will try to copy objects
  * by value or by reference if is not possible by value.
  * there are four different cases:
  *
@@ -85,8 +88,10 @@ CAPI
 void klCopy(KlObject *src, KlObject** dest);
 
 CAPI
-/*
- * Main object clone operation. This function will try to clone
+/**
+ * @brief Main object clone operation.
+ *
+ * This function will try to clone
  * objects always or pass by reference if not possible to clone.
  * there are four different cases:
  *
@@ -106,8 +111,10 @@ CAPI
 void klClone(KlObject* src, KlObject** dest);
 
 CAPI
-/*
- * Main object move operation. This function will always move
+/**
+ * @brief Main object move operation.
+ *
+ * This function will always move
  * objects by reference, so no new object are created or values
  * copied.
  *
@@ -121,6 +128,3 @@ CAPI
  * dest is deref, src is ref and set by reference to dest.
  */
 void klMove(KlObject* src, KlObject** dest);
-
-#endif // !CAPI_H
-

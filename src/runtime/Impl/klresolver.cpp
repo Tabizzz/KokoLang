@@ -7,24 +7,24 @@ static klresolver functionResolver;
 static klresolver variableResolver;
 
 
-KlObject* defaultPackageResolver(const char* fullname, KLPackage* callerPackage, KLType* callerType, KLFunction* callerFunction, kbyte mode)
+KlObject* defaultPackageResolver(KlObject* fullname, const KlObject* caller, kbyte mode)
 {
 	return nullptr;
 }
 
-KlObject* defaultTypeResolver(const char* fullname, KLPackage* callerPackage, KLType* callerType, KLFunction* callerFunction, kbyte mode)
+KlObject* defaultTypeResolver(KlObject* fullname, const KlObject* caller, kbyte mode)
 {
 	return nullptr;
 }
 
-KlObject* defaultFunctionResolver(const char* fullname, KLPackage* callerPackage, KLType* callerType, KLFunction* callerFunction, kbyte mode)
+KlObject* defaultFunctionResolver(KlObject* fullname, const KlObject* caller, kbyte mode)
 {
 	return nullptr;
 }
 
-KlObject* defaultVariableResolver(const char* fullname, KLPackage* callerPackage, KLType* callerType, KLFunction* callerFunction, kbyte mode)
+KlObject* defaultVariableResolver(KlObject* fullname, const KlObject* caller, kbyte mode)
 {
-	return nullptr;
+	return KLINT(0);
 }
 
 void kliSetDefaultResolvers() {

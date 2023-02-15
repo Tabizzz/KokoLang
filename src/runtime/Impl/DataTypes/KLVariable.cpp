@@ -4,7 +4,9 @@ void kvar_instantiator(KlObject* obj) {
 	auto var = KLCAST(KLVariable, obj);
 	var->type = false;
 	var->data.value = nullptr;
-	var->source = nullptr;
+
+	//var->source = nullptr;
+
 	var->defaultValue = nullptr;
 	var->metadata = new std::map<std::string, KlObject*>();
 }

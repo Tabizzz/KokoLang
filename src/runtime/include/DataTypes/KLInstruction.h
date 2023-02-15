@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "klimports.h"
 #include "KOpcode.h"
 #include "DataTypes/KLObject.h"
 #include "DataTypes/KLCall.h"

@@ -1,8 +1,11 @@
 ﻿#pragma once
 
+/**
+ * Available instructions for the klruntime.
+ */
 enum class KOpcode : unsigned char
 {
-	/*
+	/**
 	 *	no code, used for labels only, can be used manually to do "nothing" in one instruction.
 	 *
 	 *	usage:
@@ -12,7 +15,7 @@ enum class KOpcode : unsigned char
 
 #pragma region local jumps
 
-	/*
+	/**
 	 *  move to a target instruction by index, can be used with labels.
 	 *
 	 * usage:
@@ -22,7 +25,7 @@ enum class KOpcode : unsigned char
 	 * -label: the target label name or the index of the target instruction.
 	 */
 	go,
-	/*
+	/**
 	 *  move to a target instruction by index if the value in the reg is true
 	 *  or not null, can be used with labels.
 	 *
@@ -33,7 +36,7 @@ enum class KOpcode : unsigned char
 	 * -label: the target label name or the index of the target instruction.
 	 */
 	goif,
-	/*
+	/**
 	 *  move to a target instruction by index if the value in the reg is false
 	 *  or null, can be used with labels.
 	 *
@@ -49,7 +52,7 @@ enum class KOpcode : unsigned char
 
 #pragma region register operations
 
-	/*
+	/**
 	 * push an inline value into a register.
 	 *
 	 * usage:
@@ -60,7 +63,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to save the value.
 	 */
 	push,
-	/*
+	/**
 	 * pop a value from the specific register.
 	 *
 	 * usage:
@@ -70,7 +73,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to remove, this register will be set to null.
 	 */
 	pop,
-	/*
+	/**
 	 * clone the element in one register to other register.
 	 * this operation clone the object only if the type support the clone
 	 * operation, if is not supported then a move operation is used.
@@ -84,7 +87,7 @@ enum class KOpcode : unsigned char
 	 * overwritten.
 	 */
 	cl,
-	/*
+	/**
 	 * Copy the value from one register to another.
 	 * this operation is a value copy, if the source and destination
 	 * objects are of the same type the value is copied based on the
@@ -101,7 +104,7 @@ enum class KOpcode : unsigned char
 	 * overwritten.
 	 */
 	cp,
-	/*
+	/**
 	 * Move an object by reference, the current value in dest is deref.
 	 *
 	 * usage:
@@ -113,7 +116,7 @@ enum class KOpcode : unsigned char
 	 * overwritten.
 	 */
 	mv,
-	/*
+	/**
 	 * Get the value of a flag of the call and save it as a bool.
 	 *
 	 * usage:
@@ -129,7 +132,7 @@ enum class KOpcode : unsigned char
 
 #pragma region variable manipulation
 
-	/*
+	/**
 	 * Copy one register to a global variable.
 	 * this copy operation acts like the cp code.
 	 *
@@ -141,7 +144,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to operate.
 	 */
 	set,
-	/*
+	/**
 	 * Copy one global variable to a register.
 	 * this copy operation acts like the cp code.
 	 *
@@ -153,7 +156,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to operate.
 	 */
 	get,
-	/*
+	/**
 	 * Copy one register to an argument by index.
 	 * this copy operation acts like the cp code.
 	 *
@@ -165,7 +168,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to operate.
 	 */
 	starg,
-	/*
+	/**
 	 * Copy one argument by index to a register.
 	 * this copy operation acts like the cp code.
 	 *
@@ -182,7 +185,7 @@ enum class KOpcode : unsigned char
 
 #pragma region boolean operations
 
-	/*
+	/**
 	 * Computes the AND operation of two values and set the check flag.
 	 * AND evaluates to true only if the two values are true.
 	 *
@@ -196,7 +199,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	andi,
-	/*
+	/**
 	 * Computes the OR operation of two values and set the check flag
 	 * OR evaluates to true if one or two of the operands are true.
 	 *
@@ -210,7 +213,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	ori,
-	/*
+	/**
 	 * Computes the XOR operation of two values and set the check flag.
 	 * XOR evaluates to true if and only if one of the operands are true.
 	 *
@@ -224,7 +227,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	xori,
-	/*
+	/**
 	 * Computes the LT operation of two values and set the check flag.
 	 * LT evaluates to true if the first operand is less than the second.
 	 *
@@ -236,7 +239,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	oplt,
-	/*
+	/**
 	 * Computes the LE operation of two values and set the check flag.
 	 * LE evaluates to true if the first operand is less than or equal to the second.
 	 *
@@ -248,7 +251,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	ople,
-	/*
+	/**
 	 * Computes the GT operation of two values and set the check flag.
 	 * GT evaluates to true if the first operand is greater than the second.
 	 *
@@ -260,7 +263,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	opgt,
-	/*
+	/**
 	 * Computes the GE operation of two values and set the check flag.
 	 * GE evaluates to true if the first operand is greater than or equal to the second.
 	 *
@@ -272,7 +275,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	opge,
-	/*
+	/**
 	 * Computes the EQ operation of two values and set the check flag.
 	 * EQ evaluates to true if the operands are equal, by default this means that are
 	 * the same pointer.
@@ -285,7 +288,7 @@ enum class KOpcode : unsigned char
 	 * -b: second object to evaluate.
 	 */
 	opeq,
-	/*
+	/**
 	 * Computes the NE operation of two values and set the check flag.
 	 * NE evaluates to true if the operands are not equal, by default this means that
 	 * are not the same pointer.
@@ -303,7 +306,7 @@ enum class KOpcode : unsigned char
 
 #pragma region arithmetic operations
 
-	/*
+	/**
 	 * Add two values and save the result in the given register.
 	 *
 	 * usage:
@@ -315,7 +318,7 @@ enum class KOpcode : unsigned char
 	 * -res: the register to save the result.
 	 */
 	add,
-	/*
+	/**
 	 * Subtract two values and save the result in the given register.
 	 *
 	 * usage:
@@ -327,7 +330,7 @@ enum class KOpcode : unsigned char
 	 * -res: the register to save the result.
 	 */
 	sub,
-	/*
+	/**
 	 * Multiply two values and save the result in the given register.
 	 *
 	 * usage:
@@ -339,7 +342,7 @@ enum class KOpcode : unsigned char
 	 * -res: the register to save the result.
 	 */
 	mul,
-	/*
+	/**
 	 * Divide the first value by the second value and save the result
 	 * in the given register.
 	 *
@@ -352,7 +355,7 @@ enum class KOpcode : unsigned char
 	 * -res: the register to save the result.
 	 */
 	div,
-	/*
+	/**
 	 * Compute the modulo of the first value by the second value and
 	 * save the result in the given register.
 	 *
@@ -370,7 +373,7 @@ enum class KOpcode : unsigned char
 
 #pragma region convertion to types
 
-	/*
+	/**
 	 * Convert the value to the string representation and save the value
 	 * on the given register.
 	 *
@@ -382,7 +385,7 @@ enum class KOpcode : unsigned char
 	 * -dest: the register to save the conversion.
 	 */
 	tstr,
-	/*
+	/**
 	 * Convert the value to the int representation and save the value
 	 * on the given register.
 	 *
@@ -394,7 +397,7 @@ enum class KOpcode : unsigned char
 	 * -dest: the register to save the conversion.
 	 */
 	tint,
-	/*
+	/**
 	 * Convert the value to the float representation and save the value
 	 * on the given register.
 	 *
@@ -406,7 +409,7 @@ enum class KOpcode : unsigned char
 	 * -dest: the register to save the conversion.
 	 */
 	tflt,
-	/*
+	/**
 	 * Convert the value to the bool representation and save the value
 	 * on the given register.
 	 *
@@ -418,7 +421,7 @@ enum class KOpcode : unsigned char
 	 * -dest: the register to save the conversion.
 	 */
 	tbit,
-	/*
+	/**
 	 * Convert an object to another type, this conversion is called
 	 * on the type of the object, not in the target type.
 	 *
@@ -430,7 +433,7 @@ enum class KOpcode : unsigned char
 	 * -dest: the register to save the conversion.
 	 */
 	tobj,
-	/*
+	/**
 	 * Convert an object to another type, this conversion is called
 	 * on the target type, not in the current type of the object.
 	 *
@@ -447,7 +450,7 @@ enum class KOpcode : unsigned char
 
 #pragma region function related
 
-	/*
+	/**
 	 * Exit from this function and call the target function in the context of the
 	 * caller of this function.
 	 *
@@ -460,7 +463,7 @@ enum class KOpcode : unsigned char
 	 * -params: a list of registers used as params of the called function.
 	 */
 	jump,
-	/*
+	/**
 	 * Exit from this function and call the target function in the context of the
 	 * caller of this function.
 	 *
@@ -474,7 +477,7 @@ enum class KOpcode : unsigned char
 	 * register not contains an array the call will fail.
 	 */
 	jumpa,
-	/*
+	/**
 	 * Invoke a target function, if the function return something the value will be set
 	 * in the given register.
 	 *
@@ -486,7 +489,7 @@ enum class KOpcode : unsigned char
 	 * -params: a list of registers used as params of the called function.
 	 */
 	call,
-	/*
+	/**
 	 * Invoke a target function, if the function return something the value will be set
 	 * in the given register.
 	 *
@@ -499,7 +502,7 @@ enum class KOpcode : unsigned char
 	 * register not contains an array the call will fail.
 	 */
 	calla,
-	/*
+	/**
 	 * Set in a register the number of arguments passed to the function.
 	 *
 	 * usage:
@@ -508,7 +511,7 @@ enum class KOpcode : unsigned char
 	 * -reg: register to save the value.
 	 */
 	argc,
-	/*
+	/**
 	 * Exit from the current function and return to the caller with an optional
 	 * value.
 	 *
@@ -524,7 +527,7 @@ enum class KOpcode : unsigned char
 
 #pragma region memory
 
-	/*
+	/**
 	 * Allocates a block of memory of arbitrary size and save the pointer
 	 * to the beginning of the block in the given register.
 	 *
@@ -536,7 +539,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to save the pointer.
 	 */
 	aloc,
-	/* Free a previously allocated block of memory by the pointer to the block.
+	/** Free a previously allocated block of memory by the pointer to the block.
 	 *
 	 * usage:
 	 * free <ptr>
@@ -545,7 +548,7 @@ enum class KOpcode : unsigned char
 	 * -ptr: the register that contains the pointer to free.
 	 */
 	freei,
-	/*
+	/**
 	 * Copy bytes from a memory block to another block, memory blocks are referenced
 	 * by pointers.
 	 *
@@ -559,7 +562,7 @@ enum class KOpcode : unsigned char
 	 * integer.
 	 */
 	copy,
-	/*
+	/**
 	 * Fill the target block of memory with a specific value.
 	 *
 	 * usage:
@@ -577,7 +580,7 @@ enum class KOpcode : unsigned char
 
 #pragma region arrays
 
-	/*
+	/**
 	 * Creates a new array object of the specific size.
 	 *
 	 * usage:
@@ -589,7 +592,7 @@ enum class KOpcode : unsigned char
 	 * list of sizes or registers to sizes.
 	 */
 	arr,
-	/*
+	/**
 	 * Save in the given register the length of the array.
 	 *
 	 * usage:
@@ -601,7 +604,7 @@ enum class KOpcode : unsigned char
 	 * -dimension: the dimension of the array to get the size. Can be an int or a register.
 	 */
 	arl,
-	/*
+	/**
 	 * Save in the given register the dimension count of an array.
 	 *
 	 * usage:
@@ -611,7 +614,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register containing the array.
 	 */
 	ard,
-	/*
+	/**
 	 * Load the element of the array at the specific index.
 	 *
 	 * usage:
@@ -624,7 +627,7 @@ enum class KOpcode : unsigned char
 	 * list of indices or registers to indices.
 	 */
 	lde,
-	/*
+	/**
 	 * Store the element of the array at the specific index.
 	 *
 	 * usage:
@@ -642,7 +645,7 @@ enum class KOpcode : unsigned char
 
 #pragma region types
 
-	/*
+	/**
 	 * Save in the given register the runtime pointer of the given type.
 	 *
 	 * usage:
@@ -653,7 +656,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to save the type.
 	 */
 	type,
-	/*
+	/**
 	 * Save in the given register the runtime pointer of the type from the
 	 * object.
 	 *
@@ -665,7 +668,7 @@ enum class KOpcode : unsigned char
 	 * -reg: where to save the type.
 	 */
 	typeofi,
-	/*
+	/**
 	 * Determines if an object is an instance of the given type.
 	 *
 	 * usage:
@@ -681,7 +684,7 @@ enum class KOpcode : unsigned char
 
 #pragma region structs
 
-	/*
+	/**
 	 * Create a new instance of the given type calling the constructor of the type.
 	 *
 	 * usage:
@@ -693,7 +696,7 @@ enum class KOpcode : unsigned char
 	 * -params: a list of registers or values used as params of the constructor.
 	 */
 	newi,
-	/*
+	/**
 	 * Create a new instance of the given type calling the constructor of the type.
 	 *
 	 * usage:
@@ -705,7 +708,7 @@ enum class KOpcode : unsigned char
 	 * -params: a register with an array with the params to pass to the constructor.
 	 */
 	newa,
-	/*
+	/**
 	 * Push onto the stack the size in bytes of memory required by the type.
 	 * This value don't include the header size.
 	 *
@@ -718,7 +721,7 @@ enum class KOpcode : unsigned char
 	 * -out: the register to save the size.
 	 */
 	sizeofi,
-	/*
+	/**
 	 * Store the value in a field of the object.
 	 * Fields names depends on the type of the object.
 	 *
@@ -731,7 +734,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register with the value to set in the field.
 	 */
 	stfld,
-	/*
+	/**
 	 * Load the value of a field from the object.
 	 * Fields names depends on the type of the object.
 	 *
@@ -744,7 +747,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register to save the field.
 	 */
 	ldfld,
-	/*
+	/**
 	 * Increase the ref count of the object.
 	 *
 	 * usage:
@@ -754,7 +757,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register with the object to increase the ref count.
 	 */
 	ref,
-	/*
+	/**
 	 * Decrease the ref count of the object.
 	 *
 	 *  if the ref count of the object is now 0 the object will be destroyed leaving
@@ -767,7 +770,7 @@ enum class KOpcode : unsigned char
 	 * -reg: the register with the object to increase the ref count.
 	 */
 	deref,
-	/*
+	/**
 	 * Create a new instance of the target type and initialize it but not
 	 * call the constructor.
 	 *
@@ -782,7 +785,7 @@ enum class KOpcode : unsigned char
 
 #pragma endregion
 
-	/*
+	/**
 	 * Reserved
 	 */
 	reserved_ext = UINT8_MAX
