@@ -1,3 +1,4 @@
+#include <cstring>
 #include "KokoLangInternal.h"
 #include "klresolver.h"
 
@@ -24,7 +25,19 @@ KlObject* defaultFunctionResolver(KlObject* fullname, const KlObject* caller, kb
 
 KlObject* defaultVariableResolver(KlObject* fullname, const KlObject* caller, kbyte mode)
 {
-	return KLINT(0);
+	auto str = KSTRING(fullname);
+	auto find = str.find(':');
+	// if not package separator we need to find on the global var.
+	if(find == std::string::npos)
+	{
+
+	}
+	else
+	{
+
+	}
+
+	return nullptr;
 }
 
 void kliSetDefaultResolvers() {

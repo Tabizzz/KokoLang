@@ -822,10 +822,6 @@ CAPI KlObject *klIns(KLType *type) {
 	return space;
 }
 
-CAPI void klRef(KlObject *object) {
-	if(object && !KLTYPE_IS_STATIC(object->type)) object->refs++;
-}
-
 CAPI void klDeref(KlObject* object) {
 	if(!object) return;
 	if( KLTYPE_IS_STATIC(object->type)) return;

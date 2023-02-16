@@ -7,6 +7,9 @@
  */
 
 #define KLCAST(x, y) ((x*)(y))
+/**
+ * @brief Cast any object as KlObject.
+ */
 #define KLWRAP(x) ((KlObject*)(x))
 
 /**
@@ -59,7 +62,6 @@ CAPI KLType klBType_Reg;
  */
 CAPI KlObject* klNew(KLType* type, KlObject** args, kbyte argc);
 
-
 /**
  * Create a new instance of an object only calling the initializer but not the
  * constructor.
@@ -69,7 +71,9 @@ CAPI KlObject* klIns(KLType* type);
 /**
  * Increase the ref count of an object.
  */
-CAPI void klRef(KlObject* object);
+CAPI inline void klRef(KlObject *object) {
+	if(object && !KLTYPE_IS_STATIC(object->type)) object->refs++;
+}
 
 /**
  * Decrease the refcount of an object.
@@ -82,8 +86,22 @@ CAPI void klDeref(KlObject* object);
  */
 CAPI void klDestroy(KlObject* object);
 
+CAPI
 /**
- * Invokes a KlObject, if the object is a function is invoked directly, if is a
+ * @briefs Invokes a KlObject, if the object is a function is invoked directly, if is a
  * type with a method called "call" that method is used.
+ *
+ * Any invocable object in kokolang must be invoked using this function.
+ * *
+ * This method also checks the number of arguments passed to the function.
+ *
+ * @param target The object to invoke.
+ * If is a function is invoked directly with the klinvokable.
+ * If is a package, this will find a function called 'main' or 'code' on that package and invoke that function, if not present throws an error.
+ * If is another object, this will find a function called 'call' on the type of the object and run that, if not present throws an error.
+ * @param argv An array with all the parameters to pass to the invoked object.
+ * @param argc The number of parameters in argv.
+ *
+ * @return The object returned by the invoked object.
  */
-CAPI KlObject* klInvoke(KlObject *target, KlObject **argv, kbyte argc);
+KlObject* klInvoke(KlObject *target, KlObject **argv, kbyte argc);

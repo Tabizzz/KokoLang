@@ -14,12 +14,11 @@ typedef vector<KlObject*>::reference vecref;
 void opcode_noc(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {}
 
 void opcode_set(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
-	if(argv[0]->type == &klBType_String)
-	{
-		auto var = KokoLang::KLDefaultResolvers::getVariableResolver()(argv[0], &caller, true);
-		klDeref(argv[0]);
-		argv[0] = var;
-	}
+	auto var = KLCAST(KLVariable, argv[0]);
+	REGORRET(argv[1])
+	vecref current = call.st.at(reg);
+	// we are working with a package variable
+	klSetVariable(var, nullptr, current);
 }
 
 void opcode_lflag(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {

@@ -13,6 +13,7 @@
 
 	// i < iterations
 	:comp
+	set total %1
 	oplt %2 %0
 	goifn end
 

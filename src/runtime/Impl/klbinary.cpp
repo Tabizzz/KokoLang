@@ -136,7 +136,7 @@ KlObject* readObject(std::istream &stream)
 	return value;
 }
 
-inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type, KlObject* source) {
+inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type) {
 	auto var = KLCAST(KLVariable, klIns(&klBType_Variable));
 	kbyte namesize;
 	bool hasdefaultvalue;
@@ -155,22 +155,20 @@ inline void readVariableDefinition(std::map<std::string, KlObject*>* target, ist
 		defaultValue = readObject(stream);
 	readMetadata(stream, var->metadata);
 	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
-	var->defaultValue = defaultValue;
-
-	// var->source = source;
 	
-	if(type) {
-		klMove(var->defaultValue, &var->data.value);
-	} else {
-		var->data.offset = offset * sizeof(KlObject*);
+	if(!type) { // type var
+		var->data.typevar.offset = offset * sizeof(KlObject*);
+		var->data.typevar.defaultValue = defaultValue;
 	}
-	auto find = target->find(namebuff);
+
+	string name(namebuff);
+	delete [] namebuff;
+	auto find = target->find(name);
 	if(find == target->end()) {
-		target->insert(std::pair<std::string, KlObject*>(namebuff, KLWRAP(var)));
+		target->insert(std::pair<std::string, KlObject*>(std::move(name), KLWRAP(var)));
 	} else {
 		klDeref(KLWRAP(var));
 	}
-	delete [] namebuff;
 }
 
 vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
@@ -273,7 +271,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 		switch (def) {
 
 			case KDefinitionType::variable:
-				readVariableDefinition(&type->variables, stream, false, KLWRAP(type));
+				readVariableDefinition(&type->variables, stream, false);
 				break;
 			case KDefinitionType::function:
 				readFunctionDefinition(&type->functions, stream, false);
@@ -305,7 +303,7 @@ KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 			case KDefinitionType::close:
 				break;
 			case KDefinitionType::variable:
-				readVariableDefinition(pPackage->variables, stream, true, KLWRAP(pPackage));
+				readVariableDefinition(pPackage->variables, stream, true);
 				break;
 			case KDefinitionType::function:
 				readFunctionDefinition(pPackage->functions, stream, true);

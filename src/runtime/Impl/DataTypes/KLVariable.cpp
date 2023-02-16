@@ -1,13 +1,10 @@
 #include "../KokoLangInternal.h"
+#include "DataTypes/KLVariable.h"
+
 
 void kvar_instantiator(KlObject* obj) {
 	auto var = KLCAST(KLVariable, obj);
-	var->type = false;
-	var->data.value = nullptr;
-
-	//var->source = nullptr;
-
-	var->defaultValue = nullptr;
+	var->data.packvar.defined = false;
 	var->metadata = new std::map<std::string, KlObject*>();
 }
 
@@ -15,12 +12,12 @@ void kvar_destructor(KlObject* obj) {
 	auto var = KLCAST(KLVariable, obj);
 
 	kliDerefAndDeleteMap(var->metadata);
-	klDeref(var->defaultValue);
-	// the source is a package or a type, so we don't ref the source.
-	//klDeref(var->source);
-	if(var->type) {
-		klDeref(var->data.value);
-	}
+
+	// we dont deref the value held by package variables.
+}
+
+void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
+
 }
 
 KLType klBType_Variable =
