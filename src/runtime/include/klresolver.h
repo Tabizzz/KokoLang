@@ -7,22 +7,31 @@
 #include "DataTypes/KLRuntime.h"
 
 /**
- * A method used to resolve a reference to a target definition by name, if necessary the resolver must load the package
- * and register it.
+ * @brief A method used to resolve a reference to a target definition by name.
  *
+ * When mode is true and if necessary the resolver must load the packages.
  */
 typedef KlObject*(*klresolver)(
 		/**
-		 * The full name of the object to resolve. Always type string.
+		 * @brief The full name of the object to resolve. Always type string.
 		 */
-		KlObject* fullname,
+		const KlObject* fullname,
 		/**
-		 * The object requesting the resolver, generally a function.
-		 */
-		const KlObject* caller,
+         * @brief The package resolving the object.
+         */
+		const KLPackage* package,
 		/**
-		 * For variable resolves: if true we need to create the variable if is not founds, if false we don't create the variable.
-		 * For packages resolves: if true the package must be loaded if is not loaded, if false we don't load the package.
+         * @brief The type resolving the object. Can be null if is a package function resolving.
+         */
+		const KLType* type,
+		/**
+         * @brief The function resolving the object.
+         */
+		const KLFunction* function,
+		/**
+		 * @brief Generally indicated that the resolver should load or create the requested object.
+		 *
+		 * Is always true while building functions.
 		 */
 		kbyte mode);
 

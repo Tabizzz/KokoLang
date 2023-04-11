@@ -82,7 +82,7 @@ void kfunc_destructor(KlObject* obj)
 	kliDerefAndDeleteMap(func->metadata);
 }
 
-void klFunction_reallocateLabels(KLFunction* function) {
+inline void klFunction_reallocateLabels(KLFunction* function) {
 	auto olsize = function->size;
 	for (int i = 0; i < function->body->size(); i++)
 	{
@@ -112,10 +112,6 @@ void klFunction_reallocateLabels(KLFunction* function) {
 			function->body->erase(next(function->body->begin(), i--));
 			klDeref(KLWRAP(removed));
 		}
-		else
-		{
-			klFunction_setInstructionCall(instruction);
-		}
 	}
 	function->size = function->body->size();
 	// resize the body if we delete instructions
@@ -123,6 +119,50 @@ void klFunction_reallocateLabels(KLFunction* function) {
 
 	function->invokable = kliFunctionImpl;
 }
+
+void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
+
+	for (auto instruction : *func->body) {
+		klFunction_setInstructionCall(instruction);
+		// replace identifiers with pointers
+		switch (instruction->opcode) {
+			case KOpcode::set:
+			case KOpcode::get:
+				if (instruction->operands[0]->type == &klBType_String) {
+                    auto current = instruction->operands[0];
+					klMove(KokoLang::KLDefaultResolvers::getVariableResolver()(current, package, type, func, true),
+						   &instruction->operands[0]);
+                }
+                break;
+			case KOpcode::tobj:
+			case KOpcode::cast:
+			case KOpcode::type:
+			case KOpcode::is:
+			case KOpcode::newi:
+			case KOpcode::newa:
+			case KOpcode::sizeofi:
+			case KOpcode::ins:
+				if (instruction->operands[0]->type == &klBType_String) {
+					auto current = instruction->operands[0];
+					klMove(KokoLang::KLDefaultResolvers::getTypeResolver()(current, package, type, func, true),
+						   &instruction->operands[0]);
+				}
+				break;
+			case KOpcode::call:
+			case KOpcode::calla:
+				if (instruction->operands[0]->type == &klBType_String) {
+					auto current = instruction->operands[0];
+					klMove(KokoLang::KLDefaultResolvers::getFunctionResolver()(current, package, type, func, true),
+						   &instruction->operands[0]);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	klFunction_reallocateLabels(func);
+}
+
 
 KLType klBType_Func =
 {

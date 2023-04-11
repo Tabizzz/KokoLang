@@ -46,8 +46,8 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{"tbit",	KOpcode::tbit	},
 			{"tobj",	KOpcode::tobj	},
 			{"cast",	KOpcode::cast	},
-			{"jump",	KOpcode::jump	},
-			{"jumpa",	KOpcode::jumpa	},
+			{"ivk",	KOpcode::ivk	},
+			{"ivka",	KOpcode::ivka	},
 			{"call",	KOpcode::call	},
 			{"calla",	KOpcode::calla	},
 			{"argc",	KOpcode::argc	},
@@ -72,6 +72,7 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{"ref",		KOpcode::ref	},
 			{"deref",	KOpcode::deref	},
 			{"ins",		KOpcode::ins	},
+			{"ldfn",		KOpcode::ldfn	},
 	};
 
 	auto itr = optionStrings.find(code);
@@ -306,7 +307,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 			break;
 #pragma endregion
 #pragma region 1id 1reg Uany_no_id
-		case KOpcode::jump:
+		case KOpcode::ivk:
 		case KOpcode::call:
 		case KOpcode::newi:
 		{
@@ -319,11 +320,12 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		}
 #pragma endregion
 #pragma region 1id 2reg
-		case KOpcode::jumpa:
+		case KOpcode::ivka:
 		case KOpcode::calla:
 		case KOpcode::newa:
 		case KOpcode::stfld:
 		case KOpcode::ldfld:
+		case KOpcode::ldfn:
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckReg);
@@ -408,7 +410,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 			break;
 #pragma endregion
 #pragma region two unlimited
-		case KOpcode::jump:
+		case KOpcode::ivk:
 		case KOpcode::call:
 		case KOpcode::newi:
 		case KOpcode::arr:
@@ -459,7 +461,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 		case KOpcode::mod:
 		case KOpcode::tobj:
 		case KOpcode::cast:
-		case KOpcode::jumpa:
+		case KOpcode::ivka:
 		case KOpcode::calla:
 		case KOpcode::copy:
 		case KOpcode::fill:
@@ -467,6 +469,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 		case KOpcode::newa:
 		case KOpcode::stfld:
 		case KOpcode::ldfld:
+		case KOpcode::ldfn:
 			flag = 3;
 			break;
 #pragma endregion

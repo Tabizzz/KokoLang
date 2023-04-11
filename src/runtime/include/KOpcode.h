@@ -451,32 +451,32 @@ enum class KOpcode : unsigned char
 #pragma region function related
 
 	/**
-	 * Exit from this function and call the target function in the context of the
-	 * caller of this function.
+	 * Invoke a target object, if the function return something the value will be set
+	 * in the given register.
 	 *
 	 * usage:
-	 * jump <function> <ret> [params]*
+	 * jump <obj> <ret> [params]*
 	 *
 	 * operators:
-	 * -function: the identifier of the function to call.
+	 * -obj: the register with the object to invoke.
 	 * -ret: a register to save the return value of the function, can be null to ignore.
-	 * -params: a list of registers used as params of the called function.
+	 * -params: a list of registers used as params of the called object.
 	 */
-	jump,
+	ivk,
 	/**
-	 * Exit from this function and call the target function in the context of the
-	 * caller of this function.
+	 * Invoke a object, if the invocation return something the value will be set in
+	 * the given register.
 	 *
 	 * usage:
-	 * jump <function> <ret> <params>
+	 * jump <obj> <ret> <params>
 	 *
 	 * operators:
-	 * -function: the identifier of the function to call.
+	 * -obj: The register with the object to invoke.
 	 * -ret: a register to save the return value of the function, can be null to ignore.
-	 * -params: the register with an array to be used as args of the function if the
+	 * -params: the register with an array to be used as args of the invoke if the
 	 * register not contains an array the call will fail.
 	 */
-	jumpa,
+	ivka,
 	/**
 	 * Invoke a target function, if the function return something the value will be set
 	 * in the given register.
@@ -782,6 +782,18 @@ enum class KOpcode : unsigned char
 	 * -reg: register to save the new object.
 	 */
 	ins,
+	/**
+	 * Loads a function object from a type and save it in the given register.
+	 *
+	 * usage:
+	 * ldfn <identifier> <obj> <reg>
+	 *
+	 * operands:
+	 * -identifier: the name of the function to search.
+	 * -obj: the object on which to get the function.
+	 * -reg: register to save the function.
+	 */
+	ldfn,
 
 #pragma endregion
 

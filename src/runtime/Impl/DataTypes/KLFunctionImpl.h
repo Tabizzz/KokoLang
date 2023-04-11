@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "DataTypes/KLFunction.h"
-
-void klFunction_reallocateLabels(KLFunction *function);
+#include "DataTypes/KLInstruction.h"
 
 void klFunction_setInstructionCall(KLInstruction* instruction);

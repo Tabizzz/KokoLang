@@ -16,6 +16,11 @@ STDCHECKTYPE(x)
 static KLPackage* globalPackage = nullptr;
 static map<string, KLPackage*>* packages;
 
+map<string, KLPackage*>* kliRootPackages()
+{
+	return packages;
+}
+
 void kliBuildGlobalPackage()
 {
 	globalPackage = new KLPackage();

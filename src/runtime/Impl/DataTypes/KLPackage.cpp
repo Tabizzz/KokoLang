@@ -6,14 +6,14 @@ void kpack_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
 	ins->name = nullptr;
-	ins->functions 	= new map<string, KlObject *>();
-	ins->variables 	= new map<string, KlObject *>();
-	ins->types 		= new map<string, KlObject *>();
-	ins->packs	= new map<string, KlObject *>();
-	ins->metadata	= new map<string, KlObject *>();
+	ins->functions 	= new MetaMap();
+	ins->variables 	= new MetaMap();
+	ins->types 		= new MetaMap();
+	ins->packs		= new MetaMap();
+	ins->metadata	= new MetaMap();
 }
 
-void kliDerefAndDeleteMap(map<std::string, KlObject *>* pMap)
+void kliDerefAndDeleteMap(MetaMap* pMap)
 {
 	for (const auto& item: *pMap) {
 		klDeref(item.second);
@@ -57,10 +57,26 @@ CAPI void klDestroyPackage(KLPackage *klPackage)
 	klDestroy(KLWRAP(klPackage));
 }
 
-CAPI void klPackage_Build(KLPackage *klPackage)
+CAPI void klBuildPackage(KLPackage *klPackage, kbyte recursive) // NOLINT(misc-no-recursion)
 {
+	// Build package functions
 	for (const auto& func: *klPackage->functions) {
-		klFunction_reallocateLabels(KLCAST(KLFunction, func.second));
+		klBuildFunction(klPackage, nullptr, KLCAST(KLFunction, func.second));
+	}
+
+	// build functions in types
+	for (const auto& typer: *klPackage->types) {
+		auto type = KLCAST(KLType, typer.second);
+		for (const auto& func: type->functions) {
+			klBuildFunction(klPackage, type, KLCAST(KLFunction, func.second));
+		}
+	}
+
+	if (recursive) {
+		// Build subpackages
+		for (const auto& pack: *klPackage->packs) {
+			klBuildPackage(KLCAST(KLPackage, pack.second), true);
+		}
 	}
 
 }
@@ -76,12 +92,12 @@ inline KlObject** argstoobject(const char **pString, int i)
 	return ret;
 }
 
-CAPI int klPackage_Run(KLPackage* program, int argc, const char* argv[]) {
-	if (program)
+CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]) {
+	if (klPackage)
 	{
 		KLFunction* main;
-		auto find = program->functions->find("main");
-		if(find != program->functions->end())
+		auto find = klPackage->functions->find("main");
+		if(find != klPackage->functions->end())
 		{
 			main = KLCAST(KLFunction, find->second);
 			auto dev = 0;

@@ -51,11 +51,11 @@ CAPI void klDestroyPackage(KLPackage* klPackage);
 /*
  * Build a package.
  */
-CAPI void klPackage_Build(KLPackage* klPackage);
+CAPI void klBuildPackage(KLPackage* klPackage, kbyte recursive = 1);
 
 /*
  * Run the 'main' function in a package.
  */
-CAPI int klPackage_Run(KLPackage* klPackage, int argc, const char* argv[]);
+CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]);
 
 CAPI KLType klBType_Package;

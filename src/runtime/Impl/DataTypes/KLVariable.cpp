@@ -5,7 +5,7 @@
 void kvar_instantiator(KlObject* obj) {
 	auto var = KLCAST(KLVariable, obj);
 	var->data.packvar.defined = false;
-	var->metadata = new std::map<std::string, KlObject*>();
+	var->metadata = new MetaMap();
 }
 
 void kvar_destructor(KlObject* obj) {

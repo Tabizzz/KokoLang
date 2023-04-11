@@ -219,9 +219,9 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			break;
 		case KOpcode::cast:
 			break;
-		case KOpcode::jump:
+		case KOpcode::ivk:
 			break;
-		case KOpcode::jumpa:
+		case KOpcode::ivka:
 			break;
 		case KOpcode::call:
 			instruction->call = opcode_call;

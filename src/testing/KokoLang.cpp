@@ -19,17 +19,17 @@ if (time)  {															\
 sub = high_resolution_clock::now() - start;								\
 duration = duration_cast<microseconds>(sub);                         	\
 if(duration.count() < 1000)    {                                      	\
-nowide::cout << termcolor::yellow <<                                 \
-(x) << termcolor::reset << duration.count() << u8"μs" << std::endl; 		\
+nowide::cout << termcolor::yellow <<                                 	\
+(x) << termcolor::reset << duration.count() << u8"μs" << std::endl; 	\
 }else {                                                              	\
 durationms = duration_cast<milliseconds>(sub);                      	\
 if(durationms.count() < 1000)    {                                      \
-nowide::cout << termcolor::yellow <<                                 \
-(x) << termcolor::reset << durationms.count() << "ms" << std::endl;			\
+nowide::cout << termcolor::yellow <<                                 	\
+(x) << termcolor::reset << durationms.count() << "ms" << std::endl;		\
 }else {  																\
 durations = duration_cast<seconds>(sub);								\
-nowide::cout << termcolor::yellow <<                                 \
-(x) << termcolor::reset << durations.count() << "s" << std::endl;			\
+nowide::cout << termcolor::yellow <<                                 	\
+(x) << termcolor::reset << durations.count() << "s" << std::endl;		\
 }}}
 
 int main(int argc, const char* argv[])
@@ -59,8 +59,8 @@ int main(int argc, const char* argv[])
 		if(program) {
 			klRegisterPackage(program);
 
-			MEASURE("Program build: ", klPackage_Build(program))
-			MEASURE("Program run: ", exit = klPackage_Run(program, argc, argv))
+			MEASURE("Program build: ", klBuildPackage(program))
+			MEASURE("Program run: ", exit = klRunPackage(program, argc, argv))
 		} else {
 			exit = EXIT_FAILURE;
 		}
