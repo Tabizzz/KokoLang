@@ -47,9 +47,9 @@ int main(int argc, const char* argv[])
 			}
 		}
 		auto start = high_resolution_clock::now();
-		auto sub = high_resolution_clock::now() - start;
+		duration<long,  std::ratio<1, 1000000000>> sub{};
 		microseconds duration;
-		milliseconds durationms ;
+		milliseconds durationms;
 		seconds durations;
 
 		klInit();

@@ -643,7 +643,7 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 	}
 	else if(second->size == 0)
 	{
-		// second is empty, so directly clone second
+		// second is empty, so directly clone first
 		klClone(x, target);
 		if(flag) klDeref(KLWRAP(second));
 		return;
@@ -660,7 +660,7 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 	auto dev = klIns(&klBType_String);
 	KLCAST(kl_string, dev)->size = size;
 	KLCAST(kl_string, dev)->value = value;
-	// dereference anything current value
+	// dereference any current value
 	klDeref(*target);
 	*target = dev;
 
