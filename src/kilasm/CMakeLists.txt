@@ -20,8 +20,6 @@ set(lib_files
         "KokoLangLib.cpp"
         "Grammar/kopcodeshelper.cpp")
 
-add_compile_definitions(KOKOLANGLIB_STATIC)
-
 add_library(kilasm SHARED
         ${ANTLR_KokoLangParser_CXX_OUTPUTS}
         ${lib_files})
