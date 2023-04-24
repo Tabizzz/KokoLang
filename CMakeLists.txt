@@ -36,42 +36,6 @@ antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURC
 include_directories(${PROJECT_SOURCE_DIR}/src/klvm/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/gen)
-include_directories(${PROJECT_SOURCE_DIR}/src/translator/include)
-
-set(include_files 
-	"src/klvm/include/KokoLang.h"
-	"src/klvm/include/klapi.h"
-	"src/klvm/include/klimports.h"
-	"src/klvm/include/DataTypes/KLRuntime.h"
-	"src/klvm/include/DataTypes/KLPackage.h"
-	"src/klvm/include/DataTypes/KLFunction.h"
-	"src/klvm/include/DataTypes/KLInstruction.h"
-	"src/klvm/include/DataTypes/KLObject.h"
-	"src/klvm/include/DataTypes/KLCall.h"
-	"src/klvm/include/kltypedef.h"
-	"src/klvm/include/KOpcode.h"
-	"src/klvm/include/klapi_types.h"
-	"src/klvm/include/klapi_builtins.h"
-	"src/klvm/Impl/DataTypes/KLFunctionImpl.h"
-	"src/klvm/include/kldelegates.h"
-	"src/klvm/include/klbinary.h"
-	"src/klvm/include/Binary/KMetaType.h"
-	"src/klvm/include/Binary/KDefinitionType.h"
-	"src/klvm/include/DataTypes/KLType.h"
-	"src/klvm/include/DataTypes/KLVariable.h"
-	"src/klvm/Impl/fnptr.h"
-	"src/klvm/include/klresolver.h" src/klvm/Impl/klresolverImpl.h)
-
-set(source_files 
-	"src/klvm/Impl/klapi.cpp"
-	"src/klvm/Impl/DataTypes/KLFunction.cpp"
-	"src/klvm/Impl/DataTypes/KLPackage.cpp"
-	"src/klvm/Impl/DataTypes/KLInstruction.cpp"
-	"src/klvm/Impl/klapi_types.cpp"
-	"src/klvm/Impl/klapi_builtins.cpp"
-	"src/klvm/Impl/DataTypes/OpCodesImpl.cpp"
-	"src/klvm/Impl/klbinary.cpp"
-	"src/klvm/Impl/DataTypes/KLVariable.cpp" src/klvm/Impl/klresolver.cpp)
 
 set(lib_files
 	"src/kilasm/include/KokoLangLib.h"
@@ -84,17 +48,7 @@ set(lib_files
 
 add_compile_definitions(KOKOLANGLIB_STATIC)
 
-add_library(KokoLangRuntime SHARED
-			${source_files}
-			${include_files})
-add_library(KokoLangRuntimeStatic STATIC
-			${source_files}
-			${include_files})
-
-set_target_properties(KokoLangRuntime PROPERTIES OUTPUT_NAME "klruntime")
-set_target_properties(KokoLangRuntimeStatic PROPERTIES OUTPUT_NAME "klruntime-static")
-target_compile_definitions(KokoLangRuntimeStatic PRIVATE KOKOLANG_STATIC)
-
+add_subdirectory(src)
 
 add_library(KokoLangLib SHARED
 			${ANTLR_KokoLangParser_CXX_OUTPUTS}
@@ -111,10 +65,10 @@ set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kl")
 
 find_package(Threads REQUIRED)
 # link required libraries
-target_link_libraries(KokoLangLib antlr4_static KokoLangRuntime Threads::Threads)
-target_link_libraries(KokoLangLibStatic antlr4_static KokoLangRuntime Threads::Threads)
+target_link_libraries(KokoLangLib antlr4_static klvm Threads::Threads)
+target_link_libraries(KokoLangLibStatic antlr4_static klvm Threads::Threads)
 
-target_link_libraries(KokoLangExe KokoLangLibStatic KokoLangRuntime Threads::Threads nowide)
+target_link_libraries(KokoLangExe KokoLangLibStatic klvm Threads::Threads nowide)
 
 #set environment variable to ON if you want to enable testing
 if (BUILD_TESTING)
