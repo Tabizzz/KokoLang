@@ -30,57 +30,57 @@ set(ANTLR_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/tools/antlr-4.10.1-complete.jar
 find_package(ANTLR REQUIRED)
 
 # Call macro to add lexer and grammar to your build dependencies.
-antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/compiler/gen/)
+antlr_target(KokoLangParser KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/kilasm/gen/)
 
 # add our project source directories
-include_directories(${PROJECT_SOURCE_DIR}/src/runtime/include)
-include_directories(${PROJECT_SOURCE_DIR}/src/compiler/include)
-include_directories(${PROJECT_SOURCE_DIR}/src/compiler/gen)
+include_directories(${PROJECT_SOURCE_DIR}/src/klvm/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/gen)
 include_directories(${PROJECT_SOURCE_DIR}/src/translator/include)
 
 set(include_files 
-	"src/runtime/include/KokoLang.h"
-	"src/runtime/include/klapi.h"
-	"src/runtime/include/klimports.h"
-	"src/runtime/include/DataTypes/KLRuntime.h"
-	"src/runtime/include/DataTypes/KLPackage.h"
-	"src/runtime/include/DataTypes/KLFunction.h"
-	"src/runtime/include/DataTypes/KLInstruction.h"
-	"src/runtime/include/DataTypes/KLObject.h"
-	"src/runtime/include/DataTypes/KLCall.h"
-	"src/runtime/include/kltypedef.h"
-	"src/runtime/include/KOpcode.h"
-	"src/runtime/include/klapi_types.h"
-	"src/runtime/include/klapi_builtins.h"
-	"src/runtime/Impl/DataTypes/KLFunctionImpl.h"
-	"src/runtime/include/kldelegates.h"
-	"src/runtime/include/klbinary.h"
-	"src/runtime/include/Binary/KMetaType.h"
-	"src/runtime/include/Binary/KDefinitionType.h"
-	"src/runtime/include/DataTypes/KLType.h"
-	"src/runtime/include/DataTypes/KLVariable.h"
-	"src/runtime/Impl/fnptr.h"
-	"src/runtime/include/klresolver.h" src/runtime/Impl/klresolverImpl.h)
+	"src/klvm/include/KokoLang.h"
+	"src/klvm/include/klapi.h"
+	"src/klvm/include/klimports.h"
+	"src/klvm/include/DataTypes/KLRuntime.h"
+	"src/klvm/include/DataTypes/KLPackage.h"
+	"src/klvm/include/DataTypes/KLFunction.h"
+	"src/klvm/include/DataTypes/KLInstruction.h"
+	"src/klvm/include/DataTypes/KLObject.h"
+	"src/klvm/include/DataTypes/KLCall.h"
+	"src/klvm/include/kltypedef.h"
+	"src/klvm/include/KOpcode.h"
+	"src/klvm/include/klapi_types.h"
+	"src/klvm/include/klapi_builtins.h"
+	"src/klvm/Impl/DataTypes/KLFunctionImpl.h"
+	"src/klvm/include/kldelegates.h"
+	"src/klvm/include/klbinary.h"
+	"src/klvm/include/Binary/KMetaType.h"
+	"src/klvm/include/Binary/KDefinitionType.h"
+	"src/klvm/include/DataTypes/KLType.h"
+	"src/klvm/include/DataTypes/KLVariable.h"
+	"src/klvm/Impl/fnptr.h"
+	"src/klvm/include/klresolver.h" src/klvm/Impl/klresolverImpl.h)
 
 set(source_files 
-	"src/runtime/Impl/klapi.cpp"
-	"src/runtime/Impl/DataTypes/KLFunction.cpp"
-	"src/runtime/Impl/DataTypes/KLPackage.cpp"
-	"src/runtime/Impl/DataTypes/KLInstruction.cpp"
-	"src/runtime/Impl/klapi_types.cpp"
-	"src/runtime/Impl/klapi_builtins.cpp"
-	"src/runtime/Impl/DataTypes/OpCodesImpl.cpp"
-	"src/runtime/Impl/klbinary.cpp"
-	"src/runtime/Impl/DataTypes/KLVariable.cpp" src/runtime/Impl/klresolver.cpp)
+	"src/klvm/Impl/klapi.cpp"
+	"src/klvm/Impl/DataTypes/KLFunction.cpp"
+	"src/klvm/Impl/DataTypes/KLPackage.cpp"
+	"src/klvm/Impl/DataTypes/KLInstruction.cpp"
+	"src/klvm/Impl/klapi_types.cpp"
+	"src/klvm/Impl/klapi_builtins.cpp"
+	"src/klvm/Impl/DataTypes/OpCodesImpl.cpp"
+	"src/klvm/Impl/klbinary.cpp"
+	"src/klvm/Impl/DataTypes/KLVariable.cpp" src/klvm/Impl/klresolver.cpp)
 
 set(lib_files
-	"src/compiler/include/KokoLangLib.h"
-	"src/runtime/Impl/KokoLangInternal.h"
-	"src/compiler/Grammar/KLInterpreter.h"
-	"src/compiler/Grammar/ProgramVisitor.h"
-	"src/compiler/Grammar/ProgramVisitor.cpp"
-	"src/compiler/KokoLangLib.cpp"
-	"src/compiler/Grammar/kopcodeshelper.cpp")
+	"src/kilasm/include/KokoLangLib.h"
+	"src/klvm/Impl/KokoLangInternal.h"
+	"src/kilasm/Grammar/KLInterpreter.h"
+	"src/kilasm/Grammar/ProgramVisitor.h"
+	"src/kilasm/Grammar/ProgramVisitor.cpp"
+	"src/kilasm/KokoLangLib.cpp"
+	"src/kilasm/Grammar/kopcodeshelper.cpp")
 
 add_compile_definitions(KOKOLANGLIB_STATIC)
 
@@ -106,7 +106,7 @@ add_library(KokoLangLibStatic STATIC
 set_target_properties(KokoLangLib PROPERTIES OUTPUT_NAME "kokolang")
 target_compile_definitions(KokoLangLibStatic PRIVATE KOKOLANGLIB_STATIC)
 
-add_executable(KokoLangExe "src/testing/KokoLang.cpp")
+add_executable(KokoLangExe "src/host/KokoLang.cpp")
 set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kl")
 
 find_package(Threads REQUIRED)
