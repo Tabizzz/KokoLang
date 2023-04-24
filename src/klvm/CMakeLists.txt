@@ -42,6 +42,6 @@ add_library(klvm_static STATIC
         ${include_files})
 
 set_target_properties(klvm PROPERTIES OUTPUT_NAME "klvm")
-set_target_properties(klvm PROPERTIES OUTPUT_NAME "klvm-static")
+set_target_properties(klvm_static PROPERTIES OUTPUT_NAME "klvm-static")
 target_compile_definitions(klvm_static PRIVATE KOKOLANG_STATIC)
 
