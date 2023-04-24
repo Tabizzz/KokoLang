@@ -1,6 +1,6 @@
 ﻿#include "KokoLangLib.h"
 #include "termcolor/termcolor.hpp"
-#include "nowide/iostream.hpp"
+#include "boost/nowide/iostream.hpp"
 
 #include <chrono>
 #include <cstring>
@@ -12,6 +12,7 @@
 #endif
 
 using namespace std::chrono;
+using namespace boost;
 
 #define MEASURE(x, y)if(time) start = high_resolution_clock::now(); 	\
 y;                                                                      \

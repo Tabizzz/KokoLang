@@ -8,11 +8,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(antlr4-runtime CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS nowide)
 
-#include deps header only libs
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps)
-
-include_directories(${HEADER_ONLY_LIBS})
 include_directories(${ANTLR4_INCLUDE_DIR})
 
 # add our project source directories
@@ -20,12 +17,14 @@ include_directories(${PROJECT_SOURCE_DIR}/src/klvm/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/gen)
 
-add_subdirectory(src)
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH true)
 
-add_executable(KokoLangExe "src/host/KokoLang.cpp")
-set_target_properties(KokoLangExe PROPERTIES OUTPUT_NAME "kl")
-find_package(Threads REQUIRED)
-target_link_libraries(KokoLangExe kilasm_static klvm Threads::Threads nowide)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts)
+
+add_subdirectory(src)
 
 #set environment variable to ON if you want to enable testing
 if (BUILD_TESTING)

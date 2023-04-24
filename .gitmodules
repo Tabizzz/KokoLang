@@ -1,9 +1,3 @@
-[submodule "deps/termcolor"]
-	path = deps/termcolor
-	url = https://github.com/ikalnytskyi/termcolor.git
-[submodule "deps/nowide"]
-	path = deps/nowide
-	url = https://github.com/boostorg/nowide
 [submodule "test/deps/segvcatch"]
 	path = test/deps/segvcatch
 	url = https://github.com/Plaristote/segvcatch
