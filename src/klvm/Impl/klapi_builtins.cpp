@@ -1,7 +1,7 @@
 ﻿#include "KokoLangInternal.h"
 #include "klapi_builtins.h"
 
-CAPI KlObject* klBuiltinInt(int64_t val)
+CAPI KlObject* klBuiltinInt(kint val)
 {
 	auto base = klIns(&klBType_Int);
 	auto obj = KLCAST(kl_int, base);
@@ -9,7 +9,7 @@ CAPI KlObject* klBuiltinInt(int64_t val)
 	return base;
 }
 
-CAPI KlObject *klBuiltinFloat(double_t val) {
+CAPI KlObject *klBuiltinFloat(kfloat val) {
 	auto base = klIns(&klBType_Float);
 	auto obj = KLCAST(kl_float , base);
 	obj->value = val;

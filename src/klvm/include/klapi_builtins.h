@@ -46,7 +46,7 @@ CAPI
  *
  * @return A new kokolang object with the same value as val.
  */
-KlObject* klBuiltinInt(int64_t val);
+KlObject* klBuiltinInt(kint val);
 
 CAPI
 /**
@@ -56,7 +56,7 @@ CAPI
  *
  * @return A new kokolang object with the same value as val.
  */
-KlObject* klBuiltinFloat(double_t val);
+KlObject* klBuiltinFloat(kfloat val);
 
 CAPI
 /**

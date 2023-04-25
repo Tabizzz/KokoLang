@@ -19,7 +19,7 @@ goto ArgLoop
 
 :Build
 
-cmake -B "build\%BUILD_CONFIG%-win\%BUILD_ARCH%" -S .  -DCMAKE_TOOLCHAIN_FILE="E:\Dev\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=%BUILD_ARCH%-windows-static-md
+cmake -B "build\%BUILD_CONFIG%-win\%BUILD_ARCH%" -S . -DCMAKE_TOOLCHAIN_FILE="E:\Dev\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=%BUILD_ARCH%-windows-static-md
 
 
 

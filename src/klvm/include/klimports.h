@@ -42,3 +42,11 @@
 
 typedef uint8_t kbyte;
 typedef uint16_t kshort;
+
+#ifdef TARGET_32B
+typedef int_fast32_t kint;
+typedef float kfloat;
+#else
+typedef int_fast64_t kint;
+typedef double kfloat;
+#endif

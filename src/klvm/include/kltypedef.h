@@ -20,7 +20,7 @@ struct CPPAPI kl_int {
 	/**
 	 * @brief Internal native value of the int.
 	 */
-	int64_t value;
+    kint value;
 };
 
 /**
@@ -34,7 +34,7 @@ struct CPPAPI kl_float {
 	/**
 	 * @brief Internal native value of the float.
 	 */
-	double_t value;
+	kfloat value;
 };
 
 /**
@@ -129,7 +129,7 @@ struct CPPAPI kl_arr {
 	 */
 	uint32_t size;
 	/**
-	 * @brief THe native array containing the objects.s
+	 * @brief The native array containing the objects.s
 	 */
 	KlObject** content;
 };
