@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash 
+﻿#!/bin/bash 
 
 scriptPath="`dirname \"$0\"`"
 kokolangPath=$scriptPath/

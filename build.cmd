@@ -1,8 +1,8 @@
-﻿@setlocal
+@setlocal
 @echo off
 
 set KOKOLANG_ROOT=%~dp0
-set BUILD_CONFIG=Debug
+set BUILD_CONFIG=Release
 set BUILD_ARCH=x64
 set BUILD_CMAKE_GENERATOR_PLATFORM=x64
 
@@ -18,16 +18,10 @@ shift
 goto ArgLoop
 
 :Build
-pushd %KOKOLANG_ROOT%
 
-If NOT exist ".\build\%BUILD_ARCH%" (
-  mkdir build\%BUILD_ARCH%
-)
-pushd build\%BUILD_ARCH%
-cmake -DCMAKE_GENERATOR_PLATFORM=%BUILD_CMAKE_GENERATOR_PLATFORM% ..\..
+cmake -B "build\%BUILD_CONFIG%-win\%BUILD_ARCH%" -S .  -DCMAKE_TOOLCHAIN_FILE="E:\Dev\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=%BUILD_ARCH%-windows-static-md
 
-popd
-popd
+
 
 :Success
 exit /b 0

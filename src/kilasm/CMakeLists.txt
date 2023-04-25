@@ -31,5 +31,9 @@ set_target_properties(kilasm PROPERTIES OUTPUT_NAME "kilasm")
 target_compile_definitions(kilasm_static PRIVATE KOKOLANGLIB_STATIC)
 
 # link required libraries
-target_link_libraries(kilasm antlr4_static klvm Threads::Threads)
+if (TARGET antlr4_shared)
+    target_link_libraries(kilasm antlr4_shared klvm Threads::Threads)
+else ()
+    target_link_libraries(kilasm antlr4_static klvm Threads::Threads)
+endif ()
 target_link_libraries(kilasm_static antlr4_static klvm Threads::Threads)
