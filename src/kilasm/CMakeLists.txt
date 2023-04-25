@@ -12,7 +12,7 @@ find_package(Threads REQUIRED)
 antlr_target(KokoLangParser ${CMAKE_SOURCE_DIR}/KokoLang.g4 VISITOR OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/gen/)
 
 set(lib_files
-        "include/KokoLangLib.h"
+        "include/kilasm.h"
         "${PROJECT_SOURCE_DIR}/src/klvm/Impl/KokoLangInternal.h"
         "Grammar/KLInterpreter.h"
         "Grammar/ProgramVisitor.h"

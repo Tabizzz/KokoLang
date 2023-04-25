@@ -2,7 +2,7 @@
 #include "Grammar/KLInterpreter.h"
 #include "gen/KokoLangLexer.h"
 #include "gen/KokoLangParser.h"
-#include "KokoLangLib.h"
+#include "kilasm.h"
 
 #define MEASURETIME
 
@@ -13,7 +13,7 @@ using namespace std::chrono;
 using namespace antlr4;
 using namespace std;
 
-KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename)
+KLIBAPI KLPackage* klLoadIntermediateFile(const char* filename)
 {
 	std::ifstream stream;
 	stream.open(filename);
@@ -37,18 +37,4 @@ KLIBAPI KLPackage* klCreateProgramFromFile(const char* filename)
 
 	stream.close();
 	return ret;
-}
-
-KLIBAPI KLPackage* klCreateProgramFromString(const char *code)
-{
-	ANTLRInputStream input(code);
-	KokoLangLexer lexer(&input);
-	CommonTokenStream tokens(&lexer);
-	KokoLangParser parser(&tokens);
-
-	auto tree = parser.program();
-	if (parser.getNumberOfSyntaxErrors() > 0) return nullptr;
-
-	ProgramVisitor visitor;
-	return any_cast<KLPackage*>(visitor.visitProgram(tree));
 }

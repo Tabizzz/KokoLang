@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "KokoLangLib.h"
+#include "kilasm.h"
 #include "KokoLangBaseVisitor.h"
 
 class ProgramVisitor : KokoLangBaseVisitor

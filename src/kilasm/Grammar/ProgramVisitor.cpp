@@ -1,4 +1,4 @@
-﻿#include "KokoLangLib.h"
+﻿#include "kilasm.h"
 #include "ProgramVisitor.h"
 
 using namespace std;
