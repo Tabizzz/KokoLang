@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "KOpcode.h"
+#include "Binary/KLOpcode.h"
 #include "DataTypes/KLObject.h"
 #include "DataTypes/KLCall.h"
 
@@ -17,7 +17,7 @@ struct CPPAPI KLInstruction
 {
 	KLOBJECTHEAD
 	KlObject* label;	// the name of the label if this instruction is a label, null otherwise
-	KOpcode opcode;		// the opcode this instruction represent
+	KLOpcode opcode;		// the opcode this instruction represent
 	KlObject** operands;// the operands of the op code
 	size_t operandc;	// the amount of operands passed to the opcode
 	opcodecall call;	// the function invoked with the opcode logic

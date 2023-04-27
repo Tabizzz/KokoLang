@@ -1,10 +1,10 @@
-﻿#include "../KokoLangInternal.h"
+﻿#include "../klvm_internal.h"
 
 void kins_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLInstruction, pack);
 	ins->label = nullptr;
-	ins->opcode = KOpcode::noc;
+	ins->opcode = KLOpcode::noc;
 	ins->operands = nullptr;
 	ins->operandc = 0;
 	ins->call = nullptr;

@@ -1,4 +1,4 @@
-﻿#include "../KokoLangInternal.h"
+﻿#include "../klvm_internal.h"
 #include "DataTypes/KLFunction.h"
 #include "KLFunctionImpl.h"
 
@@ -87,14 +87,14 @@ inline void klFunction_reallocateLabels(KLFunction* function) {
 	for (int i = 0; i < function->body->size(); i++)
 	{
 		auto instruction = (*function->body)[i];
-		if(instruction->opcode == KOpcode::noc)
+		if(instruction->opcode == KLOpcode::noc)
 		{
 			for (auto ref: *function->body) {
 				auto reflabel = false;
 				switch (ref->opcode) {
-					case KOpcode::go:
-					case KOpcode::goif:
-					case KOpcode::goifn:
+					case KLOpcode::go:
+					case KLOpcode::goif:
+					case KLOpcode::goifn:
 						reflabel = true;
 						break;
 					default:
@@ -126,30 +126,30 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 		klFunction_setInstructionCall(instruction);
 		// replace identifiers with pointers
 		switch (instruction->opcode) {
-			case KOpcode::set:
-			case KOpcode::get:
+			case KLOpcode::set:
+			case KLOpcode::get:
 				if (instruction->operands[0]->type == &klBType_String) {
                     auto current = instruction->operands[0];
 					klMove(KokoLang::KLDefaultResolvers::getVariableResolver()(current, package, type, func, true),
 						   &instruction->operands[0]);
                 }
                 break;
-			case KOpcode::tobj:
-			case KOpcode::cast:
-			case KOpcode::type:
-			case KOpcode::is:
-			case KOpcode::newi:
-			case KOpcode::newa:
-			case KOpcode::sizeofi:
-			case KOpcode::ins:
+			case KLOpcode::tobj:
+			case KLOpcode::cast:
+			case KLOpcode::type:
+			case KLOpcode::is:
+			case KLOpcode::newi:
+			case KLOpcode::newa:
+			case KLOpcode::sizeofi:
+			case KLOpcode::ins:
 				if (instruction->operands[0]->type == &klBType_String) {
 					auto current = instruction->operands[0];
 					klMove(KokoLang::KLDefaultResolvers::getTypeResolver()(current, package, type, func, true),
 						   &instruction->operands[0]);
 				}
 				break;
-			case KOpcode::call:
-			case KOpcode::calla:
+			case KLOpcode::call:
+			case KLOpcode::calla:
 				if (instruction->operands[0]->type == &klBType_String) {
 					auto current = instruction->operands[0];
 					klMove(KokoLang::KLDefaultResolvers::getFunctionResolver()(current, package, type, func, true),

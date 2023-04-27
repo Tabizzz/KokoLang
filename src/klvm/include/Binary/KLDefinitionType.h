@@ -3,7 +3,7 @@
 /**
  * Type of definitions available for binary format
  */
-enum class KDefinitionType : unsigned char
+enum class KLDefinitionType : unsigned char
 {
 	close,
 	variable,

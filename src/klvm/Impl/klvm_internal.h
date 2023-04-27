@@ -1,8 +1,7 @@
 ﻿#pragma once
-#include "KokoLang.h"
+#include "klvm.h"
 #include "DataTypes/KLFunctionImpl.h"
 #include "klresolverImpl.h"
-#include "fnptr.h"
 
 using namespace std;
 

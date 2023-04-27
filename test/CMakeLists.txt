@@ -19,4 +19,4 @@ add_executable(kltest
         kl_float.test.cpp
         kl_string.test.cpp)
 
-target_link_libraries(kltest klvm Threads::Threads nowide segvcatch)
+target_link_libraries(kltest klvm Threads::Threads segvcatch)

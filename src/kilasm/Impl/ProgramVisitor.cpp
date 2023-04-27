@@ -1,7 +1,5 @@
-﻿#include "kilasm.h"
+﻿#include "kilasm_internal.h"
 #include "ProgramVisitor.h"
-
-using namespace std;
 
 any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 {

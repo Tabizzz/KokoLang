@@ -1,6 +1,6 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-no-recursion"
-#include "KokoLangInternal.h"
+#include "klvm_internal.h"
 #include "klbinary.h"
 
 #include <iostream>
@@ -39,7 +39,7 @@ void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metada
 		std::string key = keybuff;
 		delete[] keybuff;
 
-		KMetaType type;
+		KLMetaType type;
 		stream.read((char*)&type, 1);
 		CHECKSTREAM(,)
 
@@ -48,23 +48,23 @@ void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metada
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wswitch"
 		switch (type) {
-			case KMetaType::bfalse:
+			case KLMetaType::bfalse:
 				value = KLBOOL(false);
 				break;
-			case KMetaType::btrue:
+			case KLMetaType::btrue:
 				value = KLBOOL(true);
 				break;
-			case KMetaType::integer:
+			case KLMetaType::integer:
 				int64_t rvalue;
 				stream.read((char*)&rvalue, sizeof(int64_t));
 				value = KLINT(rvalue);
 				break;
-			case KMetaType::number:
+			case KLMetaType::number:
 				double_t dvalue;
 				stream.read((char*)&dvalue, sizeof(double_t));
 				value = KLFLOAT(dvalue);
 				break;
-			case KMetaType::string:
+			case KLMetaType::string:
 				stream.read((char*)&keyl, 1);
 				CHECKSTREAM(,)
 				value = klIns(&klBType_String);
@@ -88,37 +88,37 @@ void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metada
 KlObject* readObject(std::istream &stream)
 {
 	KlObject* value = nullptr;
-	KMetaType type;
+	KLMetaType type;
 	stream.read((char*)&type, 1);
 	CHECKSTREAM(nullptr,)
 
 	switch (type) {
-		case KMetaType::null:
+		case KLMetaType::null:
 			value = nullptr;
 			break;
-		case KMetaType::bfalse:
+		case KLMetaType::bfalse:
 			value = KLBOOL(false);
 			break;
-		case KMetaType::btrue:
+		case KLMetaType::btrue:
 			value = KLBOOL(true);
 			break;
-		case KMetaType::integer:
+		case KLMetaType::integer:
 			int64_t rvalue;
 			stream.read((char*)&rvalue, sizeof(int64_t));
 			value = KLINT(rvalue);
 			break;
-		case KMetaType::reg:
+		case KLMetaType::reg:
 			int16_t ivalue;
 			stream.read((char*)&ivalue, sizeof(int16_t));
 			value = klIns(&klBType_Reg);
 			KLCAST(kl_int, value)->value = ivalue;
 			break;
-		case KMetaType::number:
+		case KLMetaType::number:
 			double_t dvalue;
 			stream.read((char*)&dvalue, sizeof(double_t));
 			value = KLFLOAT(dvalue);
 			break;
-		case KMetaType::string:
+		case KLMetaType::string:
 			kbyte keyl;
 			stream.read((char*)&keyl, 1);
 			CHECKSTREAM(nullptr,)
@@ -174,7 +174,7 @@ inline void readVariableDefinition(std::map<std::string, KlObject*>* target, ist
 vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 	auto dev = new vector<KLInstruction*>();
 	while (size--) {
-		KOpcode opcode;
+		KLOpcode opcode;
 		kshort count;
 		kbyte labelsize;
 		stream.read((char*)&opcode, 1);
@@ -262,7 +262,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 			sizeof(KlObject)
 	};
 	readMetadata(stream, &type->metadata);
-	KDefinitionType def;
+	KLDefinitionType def;
 	do
 	{
 		stream.read((char*)&def, 1);
@@ -270,19 +270,19 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 
 		switch (def) {
 
-			case KDefinitionType::variable:
+			case KLDefinitionType::variable:
 				readVariableDefinition(&type->variables, stream, false);
 				break;
-			case KDefinitionType::function:
+			case KLDefinitionType::function:
 				readFunctionDefinition(&type->functions, stream, false);
 				break;
-			case KDefinitionType::close:
-			case KDefinitionType::type:
-			case KDefinitionType::subpackage:
+			case KLDefinitionType::close:
+			case KLDefinitionType::type:
+			case KLDefinitionType::subpackage:
 				break;
 		}
 		CHECKSTREAM(, delete type;)
-	} while (def == KDefinitionType::variable || def == KDefinitionType::function);
+	} while (def == KLDefinitionType::variable || def == KLDefinitionType::function);
 	type->size += type->variables.size() * sizeof(KlObject*);
 	// todo: convert functions in the type to builtin operations
 	klDefType(type);
@@ -291,7 +291,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 #pragma clang diagnostic pop
 
 KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
-	KDefinitionType def;
+	KLDefinitionType def;
 
 	do
 	{
@@ -300,23 +300,23 @@ KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 
 		switch (def) {
 
-			case KDefinitionType::close:
+			case KLDefinitionType::close:
 				break;
-			case KDefinitionType::variable:
+			case KLDefinitionType::variable:
 				readVariableDefinition(pPackage->variables, stream, true);
 				break;
-			case KDefinitionType::function:
+			case KLDefinitionType::function:
 				readFunctionDefinition(pPackage->functions, stream, true);
 				break;
-			case KDefinitionType::type:
+			case KLDefinitionType::type:
 				readTypeDefinition(stream, pPackage);
 				break;
-			case KDefinitionType::subpackage:
+			case KLDefinitionType::subpackage:
 				readPackageDefinition(pPackage->packs, stream);
 				break;
 		}
 		CHECKSTREAM(nullptr, klDeref(KLWRAP(pPackage));)
-	} while (def != KDefinitionType::close);
+	} while (def != KLDefinitionType::close);
 
 	return pPackage;
 }

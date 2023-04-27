@@ -1,6 +1,6 @@
 #include <cstring>
 #include "catch.hpp"
-#include "KokoLang.h"
+#include "klvm.h"
 #include "testmacros.h"
 
 TEST_CASE("klapi_builtins.h", "[klapi_builtins]")

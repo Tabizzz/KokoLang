@@ -13,12 +13,14 @@ antlr_target(KokoLangParser ${CMAKE_SOURCE_DIR}/KokoLang.g4 VISITOR OUTPUT_DIREC
 
 set(lib_files
         "include/kilasm.h"
-        "${PROJECT_SOURCE_DIR}/src/klvm/Impl/KokoLangInternal.h"
-        "Grammar/KLInterpreter.h"
-        "Grammar/ProgramVisitor.h"
-        "Grammar/ProgramVisitor.cpp"
-        "KokoLangLib.cpp"
-        "Grammar/kopcodeshelper.cpp")
+        "Impl/kilasm_internal.h"
+        "Impl/ProgramVisitor.h"
+        "Impl/ProgramVisitor.cpp"
+        "Impl/klloader.cpp"
+        "Impl/kopcodeshelper.cpp"
+        "include/klloader.h"
+        "include/klcompiler.h"
+        "include/klibimports.h")
 
 add_library(kilasm SHARED
         ${ANTLR_KokoLangParser_CXX_OUTPUTS}

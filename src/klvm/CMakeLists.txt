@@ -1,6 +1,6 @@
 # header files
 set(include_files
-        "include/KokoLang.h"
+        "include/klvm.h"
         "include/klapi.h"
         "include/klimports.h"
         "include/DataTypes/KLRuntime.h"
@@ -10,17 +10,16 @@ set(include_files
         "include/DataTypes/KLObject.h"
         "include/DataTypes/KLCall.h"
         "include/kltypedef.h"
-        "include/KOpcode.h"
+        "include/Binary/KLOpcode.h"
         "include/klapi_types.h"
         "include/klapi_builtins.h"
         "Impl/DataTypes/KLFunctionImpl.h"
         "include/kldelegates.h"
         "include/klbinary.h"
-        "include/Binary/KMetaType.h"
-        "include/Binary/KDefinitionType.h"
+        "include/Binary/KLMetaType.h"
+        "include/Binary/KLDefinitionType.h"
         "include/DataTypes/KLType.h"
         "include/DataTypes/KLVariable.h"
-        "Impl/fnptr.h"
         "include/klresolver.h" Impl/klresolverImpl.h)
 #source files
 set(source_files

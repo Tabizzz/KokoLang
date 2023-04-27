@@ -1,6 +1,5 @@
-﻿#include <stdexcept>
-#include "kilasm.h"
-#include "ProgramVisitor.h"
+﻿#include "kilasm_internal.h"
+#include <stdexcept>
 
 #define INTTOREG(x) SWITCH_TYPE(x, klBType_Int, klBType_Reg)
 
@@ -8,71 +7,71 @@
 
 using namespace std;
 
-KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
+KLOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	auto code = pContext->Id()->getText();
 	// https://stackoverflow.com/a/16388594
-	static const map<string, KOpcode> optionStrings {
-			{"noc",		KOpcode::noc	},
-			{"go",		KOpcode::go		},
-			{"goif",	KOpcode::goif	},
-			{"goifn",	KOpcode::goifn	},
-			{"push",	KOpcode::push	},
-			{"pop",		KOpcode::pop	},
-			{"cl",		KOpcode::cl	    },
-			{"cp",		KOpcode::cp		},
-			{"mv",		KOpcode::mv		},
-			{"lflag",	KOpcode::lflag	},
-			{"set",		KOpcode::set	},
-			{"get",		KOpcode::get	},
-			{"starg",	KOpcode::starg	},
-			{"ldarg",	KOpcode::ldarg	},
-			{"and",		KOpcode::andi	},
-			{"or",		KOpcode::ori	},
-			{"xor",		KOpcode::xori	},
-			{"oplt",	KOpcode::oplt	},
-			{"ople",	KOpcode::ople	},
-			{"opgt",	KOpcode::opgt	},
-			{"opge",	KOpcode::opge	},
-			{"opeq",	KOpcode::opeq	},
-			{"opne",	KOpcode::opne	},
-			{"add",		KOpcode::add	},
-			{"sub",		KOpcode::sub	},
-			{"mul",		KOpcode::mul	},
-			{"div",		KOpcode::div	},
-			{"mod",		KOpcode::mod	},
-			{"tstr",	KOpcode::tstr	},
-			{"tint",	KOpcode::tint	},
-			{"tflt",	KOpcode::tflt	},
-			{"tbit",	KOpcode::tbit	},
-			{"tobj",	KOpcode::tobj	},
-			{"cast",	KOpcode::cast	},
-			{"ivk",	KOpcode::ivk	},
-			{"ivka",	KOpcode::ivka	},
-			{"call",	KOpcode::call	},
-			{"calla",	KOpcode::calla	},
-			{"argc",	KOpcode::argc	},
-			{"ret",		KOpcode::ret	},
-			{"aloc",	KOpcode::aloc	},
-			{"free",	KOpcode::freei	},
-			{"copy",	KOpcode::copy	},
-			{"fill",	KOpcode::fill	},
-			{"arr",		KOpcode::arr	},
-			{"arl",		KOpcode::arl	},
-			{"ard",		KOpcode::ard	},
-			{"lde",		KOpcode::lde	},
-			{"ste",		KOpcode::ste	},
-			{"type",	KOpcode::type	},
-			{"typeof",	KOpcode::typeofi},
-			{"is",		KOpcode::is		},
-			{"new",		KOpcode::newi	},
-			{"newa",	KOpcode::newa	},
-			{"sizeof",	KOpcode::sizeofi},
-			{"stfld",	KOpcode::stfld	},
-			{"ldfld",	KOpcode::ldfld	},
-			{"ref",		KOpcode::ref	},
-			{"deref",	KOpcode::deref	},
-			{"ins",		KOpcode::ins	},
-			{"ldfnd",		KOpcode::ldfnd	},
+	static const map<string, KLOpcode> optionStrings {
+			{"noc",    KLOpcode::noc	},
+			{"go",     KLOpcode::go		},
+			{"goif",   KLOpcode::goif	},
+			{"goifn",  KLOpcode::goifn	},
+			{"push",   KLOpcode::push	},
+			{"pop",    KLOpcode::pop	},
+			{"cl",     KLOpcode::cl	    },
+			{"cp",     KLOpcode::cp		},
+			{"mv",     KLOpcode::mv		},
+			{"lflag",  KLOpcode::lflag	},
+			{"set",    KLOpcode::set	},
+			{"get",    KLOpcode::get	},
+			{"starg",  KLOpcode::starg	},
+			{"ldarg",  KLOpcode::ldarg	},
+			{"and",    KLOpcode::andi	},
+			{"or",     KLOpcode::ori	},
+			{"xor",    KLOpcode::xori	},
+			{"oplt",   KLOpcode::oplt	},
+			{"ople",   KLOpcode::ople	},
+			{"opgt",   KLOpcode::opgt	},
+			{"opge",   KLOpcode::opge	},
+			{"opeq",   KLOpcode::opeq	},
+			{"opne",   KLOpcode::opne	},
+			{"add",    KLOpcode::add	},
+			{"sub",    KLOpcode::sub	},
+			{"mul",    KLOpcode::mul	},
+			{"div",    KLOpcode::div	},
+			{"mod",    KLOpcode::mod	},
+			{"tstr",   KLOpcode::tstr	},
+			{"tint",   KLOpcode::tint	},
+			{"tflt",   KLOpcode::tflt	},
+			{"tbit",   KLOpcode::tbit	},
+			{"tobj",   KLOpcode::tobj	},
+			{"cast",   KLOpcode::cast	},
+			{"ivk",    KLOpcode::ivk	},
+			{"ivka",   KLOpcode::ivka	},
+			{"call",   KLOpcode::call	},
+			{"calla",  KLOpcode::calla	},
+			{"argc",   KLOpcode::argc	},
+			{"ret",    KLOpcode::ret	},
+			{"aloc",   KLOpcode::aloc	},
+			{"free",   KLOpcode::freei	},
+			{"copy",   KLOpcode::copy	},
+			{"fill",   KLOpcode::fill	},
+			{"arr",    KLOpcode::arr	},
+			{"arl",    KLOpcode::arl	},
+			{"ard",    KLOpcode::ard	},
+			{"lde",    KLOpcode::lde	},
+			{"ste",    KLOpcode::ste	},
+			{"type",   KLOpcode::type	},
+			{"typeof", KLOpcode::typeofi},
+			{"is",     KLOpcode::is		},
+			{"new",    KLOpcode::newi	},
+			{"newa",   KLOpcode::newa	},
+			{"sizeof", KLOpcode::sizeofi},
+			{"stfld",  KLOpcode::stfld	},
+			{"ldfld",  KLOpcode::ldfld	},
+			{"ref",    KLOpcode::ref	},
+			{"deref",  KLOpcode::deref	},
+			{"ins",    KLOpcode::ins	},
+			{"ldfnd",  KLOpcode::ldfnd	},
 	};
 
 	auto itr = optionStrings.find(code);
@@ -210,106 +209,106 @@ KlObject* kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx)
 
 #pragma endregion
 
-void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *>& values, size_t size) {
+void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *>& values, size_t size) {
 	switch (*pOpcode) {
 #pragma region 1id
-		case KOpcode::go:
-		case KOpcode::goif:
-		case KOpcode::goifn:
+		case KLOpcode::go:
+		case KLOpcode::goif:
+		case KLOpcode::goifn:
 			SETOPERAND(0, kliCheckIdentifier);
 			break;
 #pragma endregion
 #pragma region 1any_no_reg 1reg
-		case KOpcode::push:
-			if(values[0]->identifier()) *pOpcode = KOpcode::get;
+		case KLOpcode::push:
+			if(values[0]->identifier()) *pOpcode = KLOpcode::get;
 			SETOPERAND(0, kliCheckAnyNoReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1reg
-		case KOpcode::pop:
-		case KOpcode::argc:
-		case KOpcode::freei:
-		case KOpcode::ard:
-		case KOpcode::ref:
-		case KOpcode::deref:
+		case KLOpcode::pop:
+		case KLOpcode::argc:
+		case KLOpcode::freei:
+		case KLOpcode::ard:
+		case KLOpcode::ref:
+		case KLOpcode::deref:
 			SETOPERAND(0, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 2reg
-		case KOpcode::cl:
-		case KOpcode::cp:
-		case KOpcode::mv:
-		case KOpcode::typeofi:
+		case KLOpcode::cl:
+		case KLOpcode::cp:
+		case KLOpcode::mv:
+		case KLOpcode::typeofi:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1int 1reg
-		case KOpcode::lflag:
-		case KOpcode::starg:
-		case KOpcode::ldarg:
-		case KOpcode::aloc:
+		case KLOpcode::lflag:
+		case KLOpcode::starg:
+		case KLOpcode::ldarg:
+		case KLOpcode::aloc:
 			SETOPERAND(0, kliCheckInteger);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1id 1reg
-		case KOpcode::set:
-		case KOpcode::get:
-		case KOpcode::type:
-		case KOpcode::is:
-		case KOpcode::ins:
+		case KLOpcode::set:
+		case KLOpcode::get:
+		case KLOpcode::type:
+		case KLOpcode::is:
+		case KLOpcode::ins:
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 2any_no_id
-		case KOpcode::andi:
-		case KOpcode::ori:
-		case KOpcode::xori:
-		case KOpcode::oplt:
-		case KOpcode::ople:
-		case KOpcode::opgt:
-		case KOpcode::opge:
-		case KOpcode::opeq:
-		case KOpcode::opne:
+		case KLOpcode::andi:
+		case KLOpcode::ori:
+		case KLOpcode::xori:
+		case KLOpcode::oplt:
+		case KLOpcode::ople:
+		case KLOpcode::opgt:
+		case KLOpcode::opge:
+		case KLOpcode::opeq:
+		case KLOpcode::opne:
 			SETOPERAND(0, kliCheckAnyNoId);
 			SETOPERAND(1, kliCheckAnyNoId);
 			break;
 #pragma endregion
 #pragma region 2any_no_id 1reg
-		case KOpcode::add:
-		case KOpcode::sub:
-		case KOpcode::mul:
-		case KOpcode::div:
-		case KOpcode::mod:
+		case KLOpcode::add:
+		case KLOpcode::sub:
+		case KLOpcode::mul:
+		case KLOpcode::div:
+		case KLOpcode::mod:
 			SETOPERAND(0, kliCheckAnyNoId);
 			SETOPERAND(1, kliCheckAnyNoId);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1any 1reg
-		case KOpcode::tstr:
-		case KOpcode::tint:
-		case KOpcode::tflt:
-		case KOpcode::tbit:
+		case KLOpcode::tstr:
+		case KLOpcode::tint:
+		case KLOpcode::tflt:
+		case KLOpcode::tbit:
 			SETOPERAND(0, kliCheckAny);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 3reg
-		case KOpcode::tobj:
-		case KOpcode::cast:
+		case KLOpcode::tobj:
+		case KLOpcode::cast:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1id 1reg Uany_no_id
-		case KOpcode::ivk:
-		case KOpcode::call:
-		case KOpcode::newi:
+		case KLOpcode::ivk:
+		case KLOpcode::call:
+		case KLOpcode::newi:
 		{
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
@@ -320,19 +319,19 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		}
 #pragma endregion
 #pragma region 1id 2reg
-		case KOpcode::ivka:
-		case KOpcode::calla:
-		case KOpcode::newa:
-		case KOpcode::stfld:
-		case KOpcode::ldfld:
-		case KOpcode::ldfnd:
+		case KLOpcode::ivka:
+		case KLOpcode::calla:
+		case KLOpcode::newa:
+		case KLOpcode::stfld:
+		case KLOpcode::ldfld:
+		case KLOpcode::ldfnd:
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
 #pragma region 1opany_no_id
-		case KOpcode::ret:
+		case KLOpcode::ret:
 			if(size > 0) {
 				SETOPERAND(0, kliCheckOptionalAnyNoId);
 			} else {
@@ -341,22 +340,22 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 			break;
 #pragma endregion
 #pragma region 2reg 1reg_or_int
-		case KOpcode::copy:
-		case KOpcode::arl:
+		case KLOpcode::copy:
+		case KLOpcode::arl:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckRegOrInt);
 			break;
 #pragma endregion
 #pragma region 1reg 2reg_or_int
-		case KOpcode::fill:
+		case KLOpcode::fill:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckRegOrInt);
 			SETOPERAND(2, kliCheckRegOrInt);
 			break;
 #pragma endregion
 #pragma region 1reg 1reg_or_int Ureg_or_int
-		case KOpcode::arr:
+		case KLOpcode::arr:
 		{
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckRegOrInt);
@@ -367,8 +366,8 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		}
 #pragma endregion
 #pragma region 2reg 1reg_or_int Ureg_or_int
-		case KOpcode::lde:
-		case KOpcode::ste:
+		case KLOpcode::lde:
+		case KLOpcode::ste:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckRegOrInt);
@@ -378,7 +377,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 			break;
 #pragma endregion
 #pragma region 1id_or_reg 1reg
-		case KOpcode::sizeofi:
+		case KLOpcode::sizeofi:
 			SETOPERAND(0, kliCheckIdentifierOrReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
@@ -388,88 +387,88 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 	}
 }
 
-int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optionals) {
+int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optionals) {
 	int flag = 0;
 	switch (opcode) {
 #pragma region zero one
-		case KOpcode::ret:
+		case KLOpcode::ret:
 			*optionals = 1;
 			break;
 #pragma endregion
 #pragma region one
-		case KOpcode::go:
-		case KOpcode::goif:
-		case KOpcode::goifn:
-		case KOpcode::pop:
-		case KOpcode::argc:
-		case KOpcode::freei:
-		case KOpcode::ard:
-		case KOpcode::ref:
-		case KOpcode::deref:
+		case KLOpcode::go:
+		case KLOpcode::goif:
+		case KLOpcode::goifn:
+		case KLOpcode::pop:
+		case KLOpcode::argc:
+		case KLOpcode::freei:
+		case KLOpcode::ard:
+		case KLOpcode::ref:
+		case KLOpcode::deref:
 			flag = 1;
 			break;
 #pragma endregion
 #pragma region two unlimited
-		case KOpcode::ivk:
-		case KOpcode::call:
-		case KOpcode::newi:
-		case KOpcode::arr:
+		case KLOpcode::ivk:
+		case KLOpcode::call:
+		case KLOpcode::newi:
+		case KLOpcode::arr:
 			*optionals = -1;
 #pragma endregion
 #pragma region two
-		case KOpcode::push:
-		case KOpcode::cl:
-		case KOpcode::cp:
-		case KOpcode::mv:
-		case KOpcode::lflag:
-		case KOpcode::set:
-		case KOpcode::get:
-		case KOpcode::starg:
-		case KOpcode::ldarg:
-		case KOpcode::andi:
-		case KOpcode::ori:
-		case KOpcode::xori:
-		case KOpcode::oplt:
-		case KOpcode::ople:
-		case KOpcode::opgt:
-		case KOpcode::opge:
-		case KOpcode::opeq:
-		case KOpcode::opne:
-		case KOpcode::tstr:
-		case KOpcode::tint:
-		case KOpcode::tflt:
-		case KOpcode::tbit:
-		case KOpcode::aloc:
-		case KOpcode::type:
-		case KOpcode::typeofi:
-		case KOpcode::is:
-		case KOpcode::sizeofi:
-		case KOpcode::ins:
+		case KLOpcode::push:
+		case KLOpcode::cl:
+		case KLOpcode::cp:
+		case KLOpcode::mv:
+		case KLOpcode::lflag:
+		case KLOpcode::set:
+		case KLOpcode::get:
+		case KLOpcode::starg:
+		case KLOpcode::ldarg:
+		case KLOpcode::andi:
+		case KLOpcode::ori:
+		case KLOpcode::xori:
+		case KLOpcode::oplt:
+		case KLOpcode::ople:
+		case KLOpcode::opgt:
+		case KLOpcode::opge:
+		case KLOpcode::opeq:
+		case KLOpcode::opne:
+		case KLOpcode::tstr:
+		case KLOpcode::tint:
+		case KLOpcode::tflt:
+		case KLOpcode::tbit:
+		case KLOpcode::aloc:
+		case KLOpcode::type:
+		case KLOpcode::typeofi:
+		case KLOpcode::is:
+		case KLOpcode::sizeofi:
+		case KLOpcode::ins:
 			flag = 2;
 			break;
 #pragma endregion
 #pragma region three unlimited
-		case KOpcode::lde:
-		case KOpcode::ste:
+		case KLOpcode::lde:
+		case KLOpcode::ste:
 			*optionals = -1;
 #pragma endregion
 #pragma region three
-		case KOpcode::add:
-		case KOpcode::sub:
-		case KOpcode::mul:
-		case KOpcode::div:
-		case KOpcode::mod:
-		case KOpcode::tobj:
-		case KOpcode::cast:
-		case KOpcode::ivka:
-		case KOpcode::calla:
-		case KOpcode::copy:
-		case KOpcode::fill:
-		case KOpcode::arl:
-		case KOpcode::newa:
-		case KOpcode::stfld:
-		case KOpcode::ldfld:
-		case KOpcode::ldfnd:
+		case KLOpcode::add:
+		case KLOpcode::sub:
+		case KLOpcode::mul:
+		case KLOpcode::div:
+		case KLOpcode::mod:
+		case KLOpcode::tobj:
+		case KLOpcode::cast:
+		case KLOpcode::ivka:
+		case KLOpcode::calla:
+		case KLOpcode::copy:
+		case KLOpcode::fill:
+		case KLOpcode::arl:
+		case KLOpcode::newa:
+		case KLOpcode::stfld:
+		case KLOpcode::ldfld:
+		case KLOpcode::ldfnd:
 			flag = 3;
 			break;
 #pragma endregion

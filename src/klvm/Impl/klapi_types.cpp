@@ -1,4 +1,4 @@
-﻿#include "KokoLangInternal.h"
+﻿#include "klvm_internal.h"
 #include "klapi_types.h"
 #include <cassert>
 #include <cstring>

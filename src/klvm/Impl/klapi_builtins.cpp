@@ -1,4 +1,4 @@
-﻿#include "KokoLangInternal.h"
+﻿#include "klvm_internal.h"
 #include "klapi_builtins.h"
 
 CAPI KlObject* klBuiltinInt(kint val)

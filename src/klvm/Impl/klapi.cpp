@@ -1,5 +1,5 @@
 ﻿
-#include "KokoLangInternal.h"
+#include "klvm_internal.h"
 #include "klapi.h"
 #include <stdexcept>
 #include <cstring>

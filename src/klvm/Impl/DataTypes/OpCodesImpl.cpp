@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include "../KokoLangInternal.h"
+#include "../klvm_internal.h"
 #include "KLFunctionImpl.h"
 
 #define GETREG(x, y) \
@@ -138,140 +138,140 @@ void opcode_push(const KlObject& caller, KLCall& call, KlObject* argv[], size_t 
 
 void klFunction_setInstructionCall(KLInstruction *instruction) {
 	switch (instruction->opcode) {
-		case KOpcode::noc:
+		case KLOpcode::noc:
 			instruction->call = opcode_noc;
 			break;
-		case KOpcode::go:
+		case KLOpcode::go:
 			instruction->call = opcode_go;
 			break;
-		case KOpcode::goif:
+		case KLOpcode::goif:
 			instruction->call= opcode_goif;
 			break;
-		case KOpcode::goifn:
+		case KLOpcode::goifn:
 			instruction->call = opcode_goifn;
 			break;
-		case KOpcode::push:
+		case KLOpcode::push:
 			instruction->call = opcode_push;
 			break;
-		case KOpcode::pop:
+		case KLOpcode::pop:
 			instruction->call = opcode_pop;
 			break;
-		case KOpcode::cl:
+		case KLOpcode::cl:
 			instruction->call = opcode_cl;
 			break;
-		case KOpcode::cp:
+		case KLOpcode::cp:
 			instruction->call = opcode_cp;
 			break;
-		case KOpcode::mv:
+		case KLOpcode::mv:
 			instruction->call = opcode_mv;
 			break;
-		case KOpcode::lflag:
+		case KLOpcode::lflag:
 			instruction->call = opcode_lflag;
 			break;
-		case KOpcode::set:
+		case KLOpcode::set:
 			instruction->call = opcode_set;
 			break;
-		case KOpcode::get:
+		case KLOpcode::get:
 			break;
-		case KOpcode::starg:
+		case KLOpcode::starg:
 			break;
-		case KOpcode::ldarg:
+		case KLOpcode::ldarg:
 			break;
-		case KOpcode::andi:
+		case KLOpcode::andi:
 			break;
-		case KOpcode::ori:
+		case KLOpcode::ori:
 			break;
-		case KOpcode::xori:
+		case KLOpcode::xori:
 			break;
-		case KOpcode::oplt:
+		case KLOpcode::oplt:
 			instruction->call = opcode_oplt;
 			break;
-		case KOpcode::ople:
+		case KLOpcode::ople:
 			break;
-		case KOpcode::opgt:
+		case KLOpcode::opgt:
 			break;
-		case KOpcode::opge:
+		case KLOpcode::opge:
 			break;
-		case KOpcode::opeq:
+		case KLOpcode::opeq:
 			break;
-		case KOpcode::opne:
+		case KLOpcode::opne:
 			break;
-		case KOpcode::add:
+		case KLOpcode::add:
 			instruction->call = opcode_add;
 			break;
-		case KOpcode::sub:
+		case KLOpcode::sub:
 			break;
-		case KOpcode::mul:
+		case KLOpcode::mul:
 			break;
-		case KOpcode::div:
+		case KLOpcode::div:
 			break;
-		case KOpcode::mod:
+		case KLOpcode::mod:
 			break;
-		case KOpcode::tstr:
+		case KLOpcode::tstr:
 			break;
-		case KOpcode::tint:
+		case KLOpcode::tint:
 			break;
-		case KOpcode::tflt:
+		case KLOpcode::tflt:
 			break;
-		case KOpcode::tbit:
+		case KLOpcode::tbit:
 			break;
-		case KOpcode::tobj:
+		case KLOpcode::tobj:
 			break;
-		case KOpcode::cast:
+		case KLOpcode::cast:
 			break;
-		case KOpcode::ivk:
+		case KLOpcode::ivk:
 			break;
-		case KOpcode::ivka:
+		case KLOpcode::ivka:
 			break;
-		case KOpcode::call:
+		case KLOpcode::call:
 			instruction->call = opcode_call;
 			break;
-		case KOpcode::calla:
+		case KLOpcode::calla:
 			break;
-		case KOpcode::argc:
+		case KLOpcode::argc:
 			break;
-		case KOpcode::ret:
+		case KLOpcode::ret:
 			instruction->call = opcode_ret;
 			break;
-		case KOpcode::aloc:
+		case KLOpcode::aloc:
 			break;
-		case KOpcode::freei:
+		case KLOpcode::freei:
 			break;
-		case KOpcode::copy:
+		case KLOpcode::copy:
 			break;
-		case KOpcode::fill:
+		case KLOpcode::fill:
 			break;
-		case KOpcode::arr:
+		case KLOpcode::arr:
 			break;
-		case KOpcode::arl:
+		case KLOpcode::arl:
 			break;
-		case KOpcode::ard:
+		case KLOpcode::ard:
 			break;
-		case KOpcode::lde:
+		case KLOpcode::lde:
 			break;
-		case KOpcode::ste:
+		case KLOpcode::ste:
 			break;
-		case KOpcode::type:
+		case KLOpcode::type:
 			break;
-		case KOpcode::typeofi:
+		case KLOpcode::typeofi:
 			break;
-		case KOpcode::is:
+		case KLOpcode::is:
 			break;
-		case KOpcode::newi:
+		case KLOpcode::newi:
 			break;
-		case KOpcode::newa:
+		case KLOpcode::newa:
 			break;
-		case KOpcode::sizeofi:
+		case KLOpcode::sizeofi:
 			break;
-		case KOpcode::stfld:
+		case KLOpcode::stfld:
 			break;
-		case KOpcode::ldfld:
+		case KLOpcode::ldfld:
 			break;
-		case KOpcode::ref:
+		case KLOpcode::ref:
 			break;
-		case KOpcode::deref:
+		case KLOpcode::deref:
 			break;
-		case KOpcode::ins:
+		case KLOpcode::ins:
 			break;
 		default:
 			break;

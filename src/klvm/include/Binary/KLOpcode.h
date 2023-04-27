@@ -3,7 +3,7 @@
 /**
  * Available instructions for the klruntime.
  */
-enum class KOpcode : unsigned char
+enum class KLOpcode : unsigned char
 {
 	/**
 	 *	no code, used for labels only, can be used manually to do "nothing" in one instruction.

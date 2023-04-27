@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstring>
-#include "KokoLang.h"
+#include "klvm.h"
 #include "segvcatch.h"
 
 #define STR_EQUALS(x, y) klBType_String.equal(x, y)

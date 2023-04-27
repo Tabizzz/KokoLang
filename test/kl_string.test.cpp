@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "KokoLang.h"
+#include "klvm.h"
 #include "testmacros.h"
 
 TEST_CASE("kl_string", "[klapi_types][kl_string]")

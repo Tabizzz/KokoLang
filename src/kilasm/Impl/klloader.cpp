@@ -1,8 +1,5 @@
-﻿#include "antlr4-runtime.h"
-#include "Grammar/KLInterpreter.h"
-#include "gen/KokoLangLexer.h"
-#include "gen/KokoLangParser.h"
-#include "kilasm.h"
+﻿#include "kilasm_internal.h"
+#include "klloader.h"
 
 #define MEASURETIME
 

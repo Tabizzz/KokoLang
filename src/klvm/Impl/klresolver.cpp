@@ -1,4 +1,4 @@
-#include "KokoLangInternal.h"
+#include "klvm_internal.h"
 #include "klresolver.h"
 
 static klresolver packageResolver;
