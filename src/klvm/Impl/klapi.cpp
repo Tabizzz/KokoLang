@@ -64,7 +64,10 @@ CAPI void klInit()
 
 	// manually increment the ins-count due to global package
 	klBType_Package.inscount++;
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NullDereference"
 	globalPackage->name = KLSTR("global");
+#pragma clang diagnostic pop
 
 	packages = new map<string, KLPackage*>();
 

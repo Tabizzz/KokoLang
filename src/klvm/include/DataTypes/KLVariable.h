@@ -39,8 +39,9 @@ struct CPPAPI KLVariable
 			 * @brief The offset of the variable.
 			 *
 			 * An offset of 0 indicates that the variable is in memory just after the object header.
-			 * An offset of 1 indicates that the variable is in the second pointer after the header, in some systems
-			 * the pointers have a size of 4 bytes and in others it is 8 bytes, the offset is measured by pointer size and not by bytes.
+			 * An offset of 1 indicates that the variable is in the second pointer after the header, in 32bits systems
+			 * the pointers have a size of 4 bytes and in 64bits systems it is 8 bytes, the offset is measured by pointer
+			 * size and not by bytes.
 			 */
 			size_t offset;
 			/**

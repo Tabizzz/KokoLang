@@ -34,28 +34,38 @@ KLIBAPI
 KLPackage* klLoadIntermediateFile(const char* filename);
 
 KLIBAPI
+/**
+ * @brief Create a new package from a string in Intermediate Language format.
+ *
+ * @param code A null terminated string containing the code to parse.
+ * @return A package parsed from the code, the package is not built.
+ */
 KLPackage* klCreateIntermediatePackage(const char* code);
 
 KLIBAPI
+/**
+ * @brief Load a package from a file in Script format.
+ *
+ * Loads a file in ks format, parse the code and create a package.
+ * The package is not built.
+ */
 KLPackage* klLoadScriptFile(const char* filename);
 
 KLIBAPI
+/**
+ * @brief Create a new package from a string in Script format.
+ *
+ * @param code A null terminated string containing the code to parse.
+ * @return A package parsed from the code, the package is not built.
+ */
 KLPackage* klCreateScriptPackage(const char* code);
 
 KLIBAPI
+/**
+ * @brief Convert a Intermediate Language file into a Binary file.
+ *
+ * @param filename A file with Intermediate Language code.
+ * @param output Path of the file to write the output.
+ * @return 0 on failure, 1 on success.
+ */
 kbyte klCompileIntermediateFile(const char* filename, const char* output);
-
-KLIBAPI
-kbyte klCompileIntermediateStrings(const char* code, const char* output);
-
-KLIBAPI
-kbyte klCompileScriptFile(const char* filename, const char* output);
-
-KLIBAPI
-kbyte klCompileScriptString(const char* code, const char* output);
-
-KLIBAPI
-kbyte klConvertScriptToIntermediateFile(const char* filename, const char* output);
-
-KLIBAPI
-kbyte klConvertScriptToIntermediateString(const char* code, const char* output);
