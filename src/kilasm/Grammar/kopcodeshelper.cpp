@@ -72,7 +72,7 @@ KOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 			{"ref",		KOpcode::ref	},
 			{"deref",	KOpcode::deref	},
 			{"ins",		KOpcode::ins	},
-			{"ldfn",		KOpcode::ldfn	},
+			{"ldfnd",		KOpcode::ldfnd	},
 	};
 
 	auto itr = optionStrings.find(code);
@@ -325,7 +325,7 @@ void ProgramVisitor::getOperands(KOpcode *pOpcode, KlObject **operands, const ve
 		case KOpcode::newa:
 		case KOpcode::stfld:
 		case KOpcode::ldfld:
-		case KOpcode::ldfn:
+		case KOpcode::ldfnd:
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckReg);
@@ -469,7 +469,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KOpcode opcode, int* optional
 		case KOpcode::newa:
 		case KOpcode::stfld:
 		case KOpcode::ldfld:
-		case KOpcode::ldfn:
+		case KOpcode::ldfnd:
 			flag = 3;
 			break;
 #pragma endregion

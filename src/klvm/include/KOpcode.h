@@ -786,14 +786,14 @@ enum class KOpcode : unsigned char
 	 * Loads a function object from a type and save it in the given register.
 	 *
 	 * usage:
-	 * ldfn <identifier> <obj> <reg>
+	 * ldfnd <identifier> <obj> <reg>
 	 *
 	 * operands:
 	 * -identifier: the name of the function to search.
 	 * -obj: the object on which to get the function.
 	 * -reg: register to save the function.
 	 */
-	ldfn,
+	ldfnd,
 
 #pragma endregion
 
