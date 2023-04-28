@@ -120,17 +120,6 @@ CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]) {
 	return 1;
 }
 
-KLType klBType_Package =
-{
-		KlObject(),
-		"pack",
-		0,
-		sizeof(KLPackage),
-		kpack_init,
-		nullptr,
-		kpack_end
-};
-
 void klPackageRegType(KLPackage *klPackage, KLType *type) {
 	string name = type->name;
 
@@ -142,3 +131,5 @@ void klPackageRegType(KLPackage *klPackage, KLType *type) {
 	}
 	throw invalid_argument("trying to define a type but another type with the same name already exists");
 }
+
+KLType klBType_Package = KLBASIC_TYPE("pack", KLPackage, kpack_init, kpack_end)};

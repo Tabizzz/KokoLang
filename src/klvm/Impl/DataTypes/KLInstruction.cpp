@@ -20,13 +20,4 @@ void kins_end(KlObject* pack)
 	delete[] ins->operands;
 }
 
-KLType klBType_Instruction =
-{
-		KlObject(),
-		"instruction",
-		0,
-		sizeof(KLInstruction),
-		kins_init,
-		nullptr,
-		kins_end
-};
+KLType klBType_Instruction = KLBASIC_TYPE("instruction", KLInstruction, kins_init, kins_end)};

@@ -163,14 +163,4 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 	klFunction_reallocateLabels(func);
 }
 
-
-KLType klBType_Func =
-{
-		KlObject(),
-		"func",
-		0,
-		sizeof(KLFunction),
-		kfunc_instantiator,
-		nullptr,
-		kfunc_destructor
-};
+KLType klBType_Func = KLBASIC_TYPE("fn", KLFunction, kfunc_instantiator, kfunc_destructor)};

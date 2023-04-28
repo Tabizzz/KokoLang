@@ -492,32 +492,12 @@ KlObject* kbool_tostr(KlObject* obj)
 
 KLType klBType_Bool =
 {
-		KlObject(),
-		"bit",
-		0,
-		sizeof(kl_bool),
-		nullptr,
-		nullptr,
-		nullptr,
-		kbool_tostr,
-		nullptr,
-		nullptr,
-		klself_return,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		MetaMap(),
-		MetaMap(),
-		MetaMap(),
-		KLTYPE_FLAG_NOINSTANCE				// cannot instance
+		KLTYPEHEAD,
+		.name = "bit",
+		.size = sizeof(kl_bool),
+		.toString = kbool_tostr,
+		.toBool = klself_return,
+		.flags = KLTYPE_FLAG_NOINSTANCE		// cannot instance
 };
 
 #pragma endregion bool
@@ -698,11 +678,9 @@ KLType klBType_String =
 		nullptr,
 		nullptr,
 		kstring_clone,
-		nullptr,
 };
 
 #pragma endregion string
-
 
 void kptr_init(KlObject* obj) {
 	auto ptr = KLCAST(kl_ptr, obj);
@@ -750,58 +728,19 @@ KLType klBType_Arr =
 
 KLType klBType_Type =
 {
-	KlObject(),
-	"type",
-	0,
-	sizeof (KLType),
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	MetaMap(),
-	MetaMap(),
-	MetaMap(),
-	KLTYPE_FLAG_NOINSTANCE
+	KLTYPEHEAD,
+	.name = "type",
+	.size =	sizeof (KLType),
+	.flags = KLTYPE_FLAG_NOINSTANCE
 };
 
 KLType klBType_Reg =
 {
-		KlObject(),
-		"reg",
-		0,
-		sizeof (kl_int),
-		kint_init,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		kint_copy,
+		KLTYPEHEAD,
+		.name = "reg",
+		.size = sizeof (kl_int),
+		.initializer = kint_init,
+		.copy = kint_copy,
 };
 
 CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {

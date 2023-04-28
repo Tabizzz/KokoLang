@@ -6,6 +6,14 @@
 
 #define KLTYPE_FLAG_NOINSTANCE 1
 #define KLTYPE_IS_STATIC(x) (x->flags & KLTYPE_FLAG_NOINSTANCE)
+#define KLTYPEHEAD .klbase = KlObject()
+#define KLBASIC_TYPE(a, b, c, d)\
+{								\
+KLTYPEHEAD,						\
+.name = a,						\
+.size = sizeof(b),				\
+.initializer = c,				\
+.finalizer = d
 
 struct CPPAPI KLType {
 	KLOBJECTHEAD
@@ -14,7 +22,7 @@ struct CPPAPI KLType {
 	size_t size;				// the size to allocate this an object of this type
 	kltypefunc initializer;		// the initializer to this type
 	KlObject* constructor;		// the constructor of the type
-	kltypefunc finalizer;      // the finalizer to this type
+	kltypefunc finalizer;     	// the finalizer to this type
 
 	klunaryop toString;			// return the string representation of the type
 	klunaryop toInt;			// return the int representation of the type
