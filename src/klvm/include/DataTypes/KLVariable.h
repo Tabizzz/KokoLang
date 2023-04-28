@@ -36,6 +36,16 @@ struct CPPAPI KLVariable
 		 */
 		struct {
 			/**
+			 * @brief Default value of the variable.
+			 *
+			 * By default is null, that is, when an new instance of an object is created this variable will be set to null.
+			 */
+			KlObject* defaultValue;
+			/**
+			 * @brief This byte is always 0 in type variable.
+			 */
+			kbyte type;
+			/**
 			 * @brief The offset of the variable.
 			 *
 			 * An offset of 0 indicates that the variable is in memory just after the object header.
@@ -43,13 +53,7 @@ struct CPPAPI KLVariable
 			 * the pointers have a size of 4 bytes and in 64bits systems it is 8 bytes, the offset is measured by pointer
 			 * size and not by bytes.
 			 */
-			size_t offset;
-			/**
-			 * @brief Default value of the variable.
-			 *
-			 * By default is null, that is, when an new instance of an object is created this variable will be set to null.
-			 */
-			KlObject* defaultValue;
+			kbyte offset;
 		} typevar;
 		/**
 		 * @brief Save the info for a package variable.
@@ -61,6 +65,10 @@ struct CPPAPI KLVariable
 			 * This is not set on creation and can contain any value while undefined.
 			 */
 			KlObject* value;
+			/**
+			 * @brief This byte is always 1 in package variable.
+			 */
+			kbyte type;
 			/**
 			 * @brief Indicates that the variable is defined and have a valid value.
 			 */
