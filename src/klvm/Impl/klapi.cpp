@@ -62,16 +62,12 @@ CAPI void klInit()
 	STDREGTYPE(klBType_Package)
 	STDREGTYPE(klBType_Variable)
 
-	// manually increment the ins-count due to global package
-	klBType_Package.inscount++;
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NullDereference"
 	globalPackage->name = KLSTR("global");
 #pragma clang diagnostic pop
 
 	packages = new map<string, KLPackage*>();
-
-	klRegisterPackage(globalPackage);
 }
 
 CAPI void klEnd() {
@@ -79,6 +75,8 @@ CAPI void klEnd() {
 		klDestroyPackage(pack.second);
 	}
 	delete packages;
+	klBType_Package.finalizer(KLWRAP(globalPackage));
+	delete globalPackage;
 	globalPackage = nullptr;
 
 	// check instance counts
