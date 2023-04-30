@@ -19,7 +19,16 @@ void kvar_destructor(KlObject* obj) {
 }
 
 void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
+	if(variable->data.packvar.type) {
+		// directly copy the value to the var
+		klCopy(value, &variable->data.packvar.value);
+	} else {
+		// copy the value to the address given by the offset.
+		// we skip the header of KLObject with target + 1, then apply the offset
+		//					  |		header				   |		offset					|
+		klCopy(value, KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
 
+	}
 }
 
 KLType klBType_Variable = KLBASIC_TYPE("var", KLVariable, kvar_instantiator, kvar_destructor)};
