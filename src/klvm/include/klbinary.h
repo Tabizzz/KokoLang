@@ -3,6 +3,9 @@
 #include "DataTypes/KLPackage.h"
 #include <iostream>
 
+#define KLPROGRAM_NAME "/program\\"
+#define KLENTRY_NAME "/main\\"
+
 CAPI
 /**
  * Load a package from a binary file.

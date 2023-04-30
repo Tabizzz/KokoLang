@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "klvm.h"
 #include "DataTypes/KLFunctionImpl.h"
-#include "klresolverImpl.h"
 
 using namespace std;
 

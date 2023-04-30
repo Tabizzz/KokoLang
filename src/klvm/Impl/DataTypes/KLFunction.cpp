@@ -122,6 +122,11 @@ inline void klFunction_reallocateLabels(KLFunction* function) {
 
 void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 
+	auto flag = 0;
+	if(KSTRING(func->name) == KLENTRY_NAME || KSTRING(package->name) == KLPROGRAM_NAME) {
+		flag = KLRESOLVE_GLOBAL;
+	}
+
 	for (auto instruction : *func->body) {
 		klFunction_setInstructionCall(instruction);
 		// replace identifiers with pointers
@@ -130,7 +135,7 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 			case KLOpcode::get:
 				if (instruction->operands[0]->type == &klBType_String) {
                     auto current = instruction->operands[0];
-					klMove(KokoLang::KLDefaultResolvers::getVariableResolver()(current, package, type, func, true),
+					klMove(klGetResolver()(current, package, type, func, KLRESOLVE_VARIABLE | flag),
 						   &instruction->operands[0]);
                 }
                 break;
@@ -144,7 +149,7 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 			case KLOpcode::ins:
 				if (instruction->operands[0]->type == &klBType_String) {
 					auto current = instruction->operands[0];
-					klMove(KokoLang::KLDefaultResolvers::getTypeResolver()(current, package, type, func, true),
+					klMove(klGetResolver()(current, package, type, func, KLRESOLVE_TYPE),
 						   &instruction->operands[0]);
 				}
 				break;
@@ -152,7 +157,7 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 			case KLOpcode::calla:
 				if (instruction->operands[0]->type == &klBType_String) {
 					auto current = instruction->operands[0];
-					klMove(KokoLang::KLDefaultResolvers::getFunctionResolver()(current, package, type, func, true),
+					klMove(klGetResolver()(current, package, type, func, KLRESOLVE_FUNCTION),
 						   &instruction->operands[0]);
 				}
 				break;

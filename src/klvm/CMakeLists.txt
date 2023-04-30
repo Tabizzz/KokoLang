@@ -20,7 +20,7 @@ set(include_files
         "include/Binary/KLDefinitionType.h"
         "include/DataTypes/KLType.h"
         "include/DataTypes/KLVariable.h"
-        "include/klresolver.h" Impl/klresolverImpl.h)
+        "include/klresolver.h")
 #source files
 set(source_files
         "Impl/klapi.cpp"

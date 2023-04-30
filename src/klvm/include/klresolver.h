@@ -6,6 +6,12 @@
 
 #include "DataTypes/KLRuntime.h"
 
+#define KLRESOLVE_PACKAGE 	0b00001
+#define KLRESOLVE_VARIABLE 	0b00010
+#define KLRESOLVE_FUNCTION 	0b00100
+#define KLRESOLVE_TYPE		0b01000
+#define KLRESOLVE_GLOBAL	0b10000
+
 /**
  * @brief A method used to resolve a reference to a target definition by name.
  *
@@ -36,25 +42,10 @@ typedef KlObject*(*klresolver)(
 		kbyte mode);
 
 CAPI
-/**
- * Change the resolvers used by klruntime to search packages, if a null is passed that resolver is not changed.
- *
- * @param package Resolver for find packages, if mode is true, the resolver should load a package if it not already loaded in the runtime,
- * otherwise the resolver must only return a package already loaded.
- *
- */
-void klConfigureResolvers(klresolver package, klresolver type, klresolver function, klresolver variable);
+void klRestoreResolver();
 
-namespace KokoLang {
-	class KLDefaultResolvers {
-	public:
-		static klresolver getPackageResolver();
+CAPI
+void klSetResolver(klresolver resolver);
 
-		static klresolver getTypeResolver();
-
-		static klresolver getFunctionResolver();
-
-		static klresolver getVariableResolver();
-
-	};
-}
+CAPI
+klresolver klGetResolver();

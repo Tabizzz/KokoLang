@@ -1,131 +1,150 @@
 #include "klvm_internal.h"
 #include "klresolver.h"
 
-static klresolver packageResolver;
-static klresolver typeResolver;
-static klresolver functionResolver;
-static klresolver variableResolver;
+static klresolver resolver;
 
-KlObject* defaultPackageResolver(const KlObject* fullname,
-								 const KLPackage* package,
-								 const KLType* type,
-								 const KLFunction* function,
-								 kbyte mode)
-{
-	auto str = KSTRING(fullname);
-	if (str == "global"){
-		return KLWRAP(klGlobalPackage());
+inline void split(vector<string> &vector, const string &source, char separator) {
+	string::size_type start = 0;
+	string::size_type index;
+	while ((index = source.find(separator, start)) != string::npos) {
+		vector.push_back(source.substr(start, index));
+		start = index + 1;
 	}
-
-	for (const auto& p : *kliRootPackages()) {
-		if (klBType_String.equal(KLWRAP(fullname), p.second->name)) {
-            return KLWRAP(p.second);
-        }
-	}
-
-	if(mode) {
-		// todo: load packages from native or .kll files
-		// search order is:
-		// - working dir.
-		// - entry file dir.
-		// - runtime dir.
-		// - KL_EXTRA_PACKAGE_DIR path.
-	}
-
-	throw runtime_error("unknown package " + str);
+	vector.push_back(source.substr(start, index));
 }
 
-KlObject* defaultTypeResolver(const KlObject* fullname,
-							  const KLPackage* package,
-							  const KLType* type,
-							  const KLFunction* function,
-							  kbyte mode)
-{
+template<typename T>
+inline T mapfind(map<string, T> *map, string &find) {
+	auto varfind = map->find(find);
+	return varfind != map->end() ? varfind->second : nullptr;
+}
+
+inline KlObject *internalPackageResolver(const string &str) {
+	if (str == "global") return KLWRAP(klGlobalPackage());
+	vector<string> list;
+	split(list, str, '.');
+
+	KLPackage *pack = nullptr;
+
+	for (auto p: list) {
+		if (pack == nullptr) {
+			pack = mapfind(kliRootPackages(), p);
+			if (pack == nullptr) return nullptr;
+		} else {
+			pack = KLCAST(KLPackage, mapfind(pack->packs, p));
+			if (pack == nullptr) return nullptr;
+		}
+	}
+
+	return KLWRAP(pack);
+}
+
+inline KlObject *defaultPackageResolver(const KlObject *fullname) {
+	return internalPackageResolver(KSTRING(fullname));
+}
+
+inline KlObject *defaultTypeResolver(const KlObject *fullname,
+									 const KLPackage *package,
+									 kbyte mode) {
+	auto str = KSTRING(fullname);
+	auto index = str.rfind('.');
+
+	if (index == string::npos) {
+		auto pack = mode ? klGlobalPackage() : package;
+		auto var = mapfind(pack->types, str);
+		if (var) return var;
+	} else {
+		auto packname = str.substr(0, index);
+		auto varname = str.substr(index + 1);
+
+		auto pack = KLCAST(KLPackage, internalPackageResolver(packname));
+		if (pack == nullptr) return nullptr;
+
+		auto var = mapfind(pack->types, str);
+		if (var) return var;
+	}
 	return nullptr;
 }
 
-KlObject* defaultFunctionResolver(const KlObject* fullname,
-								  const KLPackage* package,
-								  const KLType* type,
-								  const KLFunction* function,
-								  kbyte mode)
-{
+inline KlObject *defaultFunctionResolver(const KlObject *fullname,
+										 const KLPackage *package,
+										 kbyte mode) {
+	auto str = KSTRING(fullname);
+	auto index = str.rfind('.');
+
+	if (index == string::npos) {
+		auto pack = mode ? klGlobalPackage() : package;
+		auto var = mapfind(pack->functions, str);
+		if (var) return var;
+	} else {
+		auto packname = str.substr(0, index);
+		auto varname = str.substr(index + 1);
+
+		auto pack = KLCAST(KLPackage, internalPackageResolver(packname));
+		if (pack == nullptr) return nullptr;
+
+		auto var = mapfind(pack->functions, str);
+		if (var) return var;
+	}
 	return nullptr;
 }
 
-inline KlObject* getVariable(const KLPackage* package, string& name)
-{
-	auto varfind = package->variables->find(name);
-	return varfind != package->variables->end() ? varfind->second : nullptr;
-}
-
-KlObject* defaultVariableResolver(const KlObject* fullname,
-								  const KLPackage* package,
-								  const KLType* type,
-								  const KLFunction* function,
-								  kbyte mode)
-{
+inline KlObject *defaultVariableResolver(const KlObject *fullname,
+										 const KLPackage *package,
+										 kbyte mode) {
 	auto str = KSTRING(fullname);
-	auto find = str.find(':');
-	auto varname = str.substr(find + 1, str.size());
-	KLPackage* source = nullptr;
-	// if not package separator we need to find on the global var or in the package.
-	if(find == std::string::npos) {
-		auto varfind = getVariable(package, varname);
-		if (varfind) return varfind;
+	auto index = str.rfind('.');
 
-		varfind = getVariable(klGlobalPackage(), varname);
-		if (varfind) return varfind;
+	if (index == string::npos) {
+		auto pack = mode ? klGlobalPackage() : package;
+		auto var = mapfind(pack->variables, str);
+		if (var) return var;
+		var = klIns(&klBType_Variable);
+		pack->variables->insert(MetaPair(str, var));
+		return var;
+	} else {
+		auto packname = str.substr(0, index);
+		auto varname = str.substr(index + 1);
 
-		if(mode) {
-			auto var = klIns(&klBType_Variable);
-			package->variables->insert(MetaPair(varname, var));
-			return var;
-		}
-		throw std::runtime_error("Undefined variable " + varname);
-	}
-	else {
-		auto packname = KLSTR(str.substr(0, find));
-		source = KLCAST(KLPackage, KokoLang::KLDefaultResolvers::getPackageResolver()(packname, package, type, function, mode));
-		klDestroy(packname);
+		auto pack = KLCAST(KLPackage, internalPackageResolver(packname));
+		if (pack == nullptr) return nullptr;
 
-		auto varfind = getVariable(source, varname);
-		if (varfind != nullptr) return varfind;
-
-
-		if (mode) {
-			auto var = klIns(&klBType_Variable);
-			source->variables->insert(MetaPair(varname, var));
-			return var;
-		}
-		throw std::runtime_error("Undefined variable " + varname);
-
+		auto var = mapfind(pack->variables, str);
+		if (var) return var;
+		var = klIns(&klBType_Variable);
+		pack->variables->insert(MetaPair(str, var));
+		return var;
 	}
 }
 
-void kliSetDefaultResolvers() {
-	klConfigureResolvers(defaultPackageResolver, defaultTypeResolver, defaultFunctionResolver, defaultVariableResolver);
+KlObject *defaultResolver(const KlObject *fullname,
+						  const KLPackage *package,
+						  [[maybe_unused]] const KLType *type,
+						  [[maybe_unused]] const KLFunction *function,
+						  kbyte mode) {
+	if (mode & KLRESOLVE_VARIABLE) {
+		return defaultVariableResolver(fullname, package, mode & KLRESOLVE_GLOBAL);
+	}
+	if (mode & KLRESOLVE_PACKAGE) {
+		return defaultPackageResolver(fullname);
+	}
+	if (mode & KLRESOLVE_FUNCTION) {
+		return defaultFunctionResolver(fullname, package, mode & KLRESOLVE_GLOBAL);
+	}
+	if (mode & KLRESOLVE_TYPE) {
+		return defaultTypeResolver(fullname, package, mode & KLRESOLVE_GLOBAL);
+	}
+	return nullptr;
 }
 
-void klConfigureResolvers(klresolver package, klresolver type, klresolver function, klresolver variable) {
-	if(package) packageResolver = package;
-	if(type) typeResolver = type;
-	if(function) functionResolver = function;
-	if(variable) variableResolver = variable;
+void klRestoreResolver() {
+	resolver = defaultResolver;
 }
 
-klresolver KokoLang::KLDefaultResolvers::getPackageResolver() {
-	return packageResolver;
+void klSetResolver(klresolver toset) {
+	resolver = toset;
 }
 
-klresolver KokoLang::KLDefaultResolvers::getTypeResolver() {
-	return typeResolver;
-}
-
-klresolver KokoLang::KLDefaultResolvers::getFunctionResolver() {
-	return functionResolver;
-}
-
-klresolver KokoLang::KLDefaultResolvers::getVariableResolver() {
-	return variableResolver;
+klresolver klGetResolver() {
+	return resolver;
 }

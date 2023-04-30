@@ -19,7 +19,7 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 			cout << "ignoring repeat function definition: " << name << endl;
 		}
 	}
-	program->name = KLSTR("+program");
+	program->name = KLSTR(KLPROGRAM_NAME);
 	return program;
 }
 
