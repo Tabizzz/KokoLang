@@ -13,7 +13,7 @@ typedef vector<KlObject *>::reference vecref;
 #pragma ide diagnostic ignored "UnusedParameter"
 
 inline bool getBool(KlObject *obj, KLCall &call) {
-	GETREG(obj);
+	GETREG(obj)
 	if (obj) {
 		if (obj->type == &klBType_Bool) {
 			return KASBOOL(obj);
@@ -37,6 +37,88 @@ inline bool getBool(KlObject *obj, KLCall &call) {
 }
 
 void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
+
+void opcode_mod(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[2])
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+	vecref regis = call.st.at(reg);
+
+	if (first && first->type->opMod) { // first support op
+		first->type->opMod(first, second, &regis);
+	} else if (first && second) {
+		throw runtime_error("operation mod not supported on types " + string(first->type->name) + " and " + second->type->name);
+	} else if (first) {
+		throw runtime_error("modulo by null not handled by type " + string(first->type->name));
+	} else if (second) {
+		klCopy(nullptr, &regis);
+	} else {
+		throw runtime_error("modulo of null by null is not allowed");
+	}
+}
+
+void opcode_div(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[2])
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+	vecref regis = call.st.at(reg);
+
+	if (first && first->type->opDiv) { // first support op
+		first->type->opDiv(first, second, &regis);
+	} else if (first && second) {
+		throw runtime_error("operation div not supported on types " + string(first->type->name) + " and " + second->type->name);
+	} else if (first) {
+		throw runtime_error("division by null not handled by type " + string(first->type->name));
+	} else if (second) {
+		klCopy(nullptr, &regis);
+	} else {
+		throw runtime_error("division of null by null is not allowed");
+	}
+}
+
+void opcode_mul(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[2])
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+	vecref regis = call.st.at(reg);
+
+	if (first && first->type->opMul) { // first support op
+		first->type->opMul(first, second, &regis);
+	} else if (second && second->type->opMul) { // second support op
+		second->type->opMul(second, first, &regis);
+	} else if (first && second) {
+		throw runtime_error("operation mul not supported on types " + string(first->type->name) + " and " + second->type->name);
+	} else {
+		klCopy(nullptr, &regis);
+	}
+}
+
+void opcode_sub(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[2])
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+	vecref regis = call.st.at(reg);
+
+	if (first && first->type->opSub) { // first support op
+		first->type->opSub(first, second, &regis);
+	} else if (first && second) {
+		throw runtime_error("operation sub not supported on types " + string(first->type->name) + " and " + second->type->name);
+	} else if (first) {
+		klCopy(first, &regis);
+	} else if (second) {
+		throw runtime_error("operation sub not supported on null and type " + string(second->type->name));
+	} else {
+		klCopy(nullptr, &regis);
+	}
+}
 
 void opcode_opne(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto first = argv[0];
@@ -271,10 +353,16 @@ void opcode_add(const KlObject *caller, KLCall &call, KlObject *argv[], size_t a
 	GETREG(second)
 	vecref regis = call.st.at(reg);
 
-	if (first->type->opAdd) {
+	if (first && first->type->opAdd) { // first support op
 		first->type->opAdd(first, second, &regis);
+	} else if (second && second->type->opAdd) { // second support op
+		second->type->opAdd(second, first, &regis);
+	} else if (first && second) {
+		throw runtime_error("operation add not supported on types " + string(first->type->name) + " and " + second->type->name);
+	} else if (first) {
+		klCopy(first, &regis);
 	} else {
-		throw invalid_argument("Invalid object to operation add");
+		klCopy(second, &regis);
 	}
 }
 
@@ -387,12 +475,16 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_add;
 			break;
 		case KLOpcode::sub:
+			instruction->call = opcode_sub;
 			break;
 		case KLOpcode::mul:
+			instruction->call = opcode_mul;
 			break;
 		case KLOpcode::div:
+			instruction->call = opcode_div;
 			break;
 		case KLOpcode::mod:
+			instruction->call = opcode_mod;
 			break;
 		case KLOpcode::tstr:
 			break;
