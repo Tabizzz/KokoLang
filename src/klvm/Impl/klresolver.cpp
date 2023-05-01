@@ -1,7 +1,7 @@
 #include "klvm_internal.h"
 #include "klresolver.h"
 
-static klresolver resolver;
+klresolver resolver;
 
 inline void split(vector<string> &vector, const string &source, char separator) {
 	string::size_type start = 0;

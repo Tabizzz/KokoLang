@@ -38,6 +38,93 @@ inline bool getBool(KlObject *obj, KLCall &call) {
 
 void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+void opcode_opne(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+
+	int8_t operation;
+	if (first && first->type->equal) {
+		operation = first->type->equal(first, second);
+	} else if (second && second->type->equal) {
+		operation = second->type->equal(second, first);
+	} else {
+		operation = first == second ? 1 : 0;
+	}
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, !operation);
+}
+
+void opcode_opeq(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+
+	int8_t operation;
+	if (first && first->type->equal) {
+		operation = first->type->equal(first, second);
+	} else if (second && second->type->equal) {
+		operation = second->type->equal(second, first);
+	} else {
+		operation = first == second ? 1 : 0;
+	}
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation);
+}
+
+void opcode_opge(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+
+	int8_t operation = 0;
+	if (first && first->type->comparer) {
+		operation = first->type->comparer(first, second);
+	} else if (second && second->type->comparer) {
+		operation = second->type->comparer(second, first);
+		operation *= -1;
+	}
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation <= 0);
+}
+
+void opcode_opgt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+
+	int8_t operation = 0;
+	if (first && first->type->comparer) {
+		operation = first->type->comparer(first, second);
+	} else if (second && second->type->comparer) {
+		operation = second->type->comparer(second, first);
+		operation *= -1;
+	}
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation < 0);
+}
+
+void opcode_ople(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto first = argv[0];
+	GETREG(first)
+	auto second = argv[1];
+	GETREG(second)
+
+	int8_t operation = 0;
+	if (first && first->type->comparer) {
+		operation = first->type->comparer(first, second);
+	} else if (second && second->type->comparer) {
+		operation = second->type->comparer(second, first);
+		operation *= -1;
+	}
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation >= 0);
+}
+
 void opcode_xor(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto a = getBool(argv[0], call);
 	auto b = getBool(argv[1], call);
@@ -205,10 +292,15 @@ void opcode_oplt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t 
 	auto second = argv[1];
 	GETREG(second)
 
-	auto operation = first->type->comparer(first, second);
+	int8_t operation = 0;
+	if (first && first->type->comparer) {
+		operation = first->type->comparer(first, second);
+	} else if (second && second->type->comparer) {
+		operation = second->type->comparer(second, first);
+		operation *= -1;
+	}
 
-	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation == 1);
-
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation > 0);
 }
 
 void opcode_push(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
@@ -277,14 +369,19 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_oplt;
 			break;
 		case KLOpcode::ople:
+			instruction->call = opcode_ople;
 			break;
 		case KLOpcode::opgt:
+			instruction->call = opcode_opgt;
 			break;
 		case KLOpcode::opge:
+			instruction->call = opcode_opge;
 			break;
 		case KLOpcode::opeq:
+			instruction->call = opcode_opeq;
 			break;
 		case KLOpcode::opne:
+			instruction->call = opcode_opne;
 			break;
 		case KLOpcode::add:
 			instruction->call = opcode_add;
