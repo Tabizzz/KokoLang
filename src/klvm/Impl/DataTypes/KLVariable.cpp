@@ -2,7 +2,7 @@
 #include "DataTypes/KLVariable.h"
 
 
-void kvar_instantiator(KlObject* obj) {
+void kvar_instantiator(KlObject *obj) {
 	auto var = KLCAST(KLVariable, obj);
 	var->data.packvar.value = nullptr;
 	var->data.packvar.type = true;
@@ -10,7 +10,7 @@ void kvar_instantiator(KlObject* obj) {
 	var->metadata = new MetaMap();
 }
 
-void kvar_destructor(KlObject* obj) {
+void kvar_destructor(KlObject *obj) {
 	auto var = KLCAST(KLVariable, obj);
 
 	kliDerefAndDeleteMap(var->metadata);
@@ -19,7 +19,9 @@ void kvar_destructor(KlObject* obj) {
 }
 
 void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
-	if(variable->data.packvar.type) {
+	if (variable->data.packvar.type) {
+		// mark var as defined
+		variable->data.packvar.defined = true;
 		// directly copy the value to the var
 		klCopy(value, &variable->data.packvar.value);
 	} else {
@@ -28,6 +30,17 @@ void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
 		//					  |		header				   |		offset					|
 		klCopy(value, KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
 
+	}
+}
+
+KlObject *klGetVariable(KLVariable *variable, KlObject *target) {
+	if (variable->data.packvar.type) {
+		if (variable->data.packvar.defined) {
+			return variable->data.packvar.value;
+		}
+		throw runtime_error("Unable to read undefined variable");
+	} else {
+		return KLWRAP(KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
 	}
 }
 

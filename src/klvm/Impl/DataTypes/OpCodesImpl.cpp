@@ -7,13 +7,31 @@ if(y && y->type == &klBType_Reg) { \
 y = x.st.at(KASINT(y));}
 #define REGORRET(x) if(!x) return; auto reg = KASINT(x);
 
-typedef vector<KlObject*>::reference vecref;
+typedef vector<KlObject *>::reference vecref;
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnusedParameter"
-void opcode_noc(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {}
 
-void opcode_set(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_noc(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {}
+
+void opcode_get(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
+	if (argv[0]->type == &klBType_String) {
+		// maybe try to check if variable exists now?
+		throw runtime_error("Unable to resolve variable " + KSTRING(argv[0]));
+	}
+	auto var = KLCAST(KLVariable, argv[0]);
+	REGORRET(argv[1])
+	vecref current = call.st.at(reg);
+	// we are working with a package variable
+	auto value = klGetVariable(var, nullptr);
+	klCopy(value, &current);
+}
+
+void opcode_set(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
+	if (argv[0]->type == &klBType_String) {
+		// maybe try to check if variable exists now?
+		throw runtime_error("Unable to resolve variable " + KSTRING(argv[0]));
+	}
 	auto var = KLCAST(KLVariable, argv[0]);
 	REGORRET(argv[1])
 	vecref current = call.st.at(reg);
@@ -21,7 +39,7 @@ void opcode_set(const KlObject& caller, KLCall& call, KlObject* argv[], size_t a
 	klSetVariable(var, nullptr, current);
 }
 
-void opcode_lflag(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_lflag(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto index = KASINT(argv[0]);
 	auto val = CALL_HAS_FLAG(call, index);
@@ -30,21 +48,21 @@ void opcode_lflag(const KlObject& caller, KLCall& call, KlObject* argv[], size_t
 	klCopy(KLBOOL(val), &current);
 }
 
-void opcode_pop(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_pop(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref current = call.st.at(reg);
 	klDeref(current);
 	current = nullptr;
 }
 
-void opcode_goif(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_goif(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto op = CALL_HAS_FLAG(call, CALL_FLAG_CHECK);
-	if(op) {
+	if (op) {
 		call.next = KASINT(argv[0]);
 	}
 }
 
-void opcode_cl(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_cl(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	GETREG(call, obj)
@@ -53,7 +71,7 @@ void opcode_cl(const KlObject& caller, KLCall& call, KlObject* argv[], size_t ar
 	klClone(obj, &current);
 }
 
-void opcode_mv(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_mv(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	GETREG(call, obj)
@@ -62,7 +80,7 @@ void opcode_mv(const KlObject& caller, KLCall& call, KlObject* argv[], size_t ar
 	klMove(obj, &current);
 }
 
-void opcode_cp(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_cp(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	GETREG(call, obj)
@@ -71,27 +89,27 @@ void opcode_cp(const KlObject& caller, KLCall& call, KlObject* argv[], size_t ar
 	klCopy(obj, &current);
 }
 
-void opcode_ret(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_ret(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(call, first)
 	klCopy(first, &call.ret);
 	CALL_SET_FLAG(call, CALL_FLAG_EXIT, true);
 }
 
-void opcode_call(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_call(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto reg = argv[2];
 	GETREG(call, reg)
-	if(reg->type == &klBType_Int)
+	if (reg->type == &klBType_Int)
 		cout << KASINT(reg) << endl;
 	else if (reg->type == &klBType_Float)
 		cout << KASFLOAT(reg) << endl;
 }
 
-void opcode_go(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_go(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	call.next = KASINT(argv[0]);
 }
 
-void opcode_add(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_add(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
 	GETREG(call, first)
@@ -99,23 +117,22 @@ void opcode_add(const KlObject& caller, KLCall& call, KlObject* argv[], size_t a
 	GETREG(call, second)
 	vecref regis = call.st.at(reg);
 
-	if(first->type->opAdd) {
+	if (first->type->opAdd) {
 		first->type->opAdd(first, second, &regis);
 	} else {
 		throw invalid_argument("Invalid object to operation add");
 	}
 }
 
-void opcode_goifn(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc)
-{
+void opcode_goifn(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto op = CALL_HAS_FLAG(call, CALL_FLAG_CHECK);
-	if(!op) {
+	if (!op) {
 		call.next = KASINT(argv[0]);
 	}
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, !op);
 }
 
-void opcode_oplt(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_oplt(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(call, first)
 	auto second = argv[1];
@@ -127,7 +144,7 @@ void opcode_oplt(const KlObject& caller, KLCall& call, KlObject* argv[], size_t 
 
 }
 
-void opcode_push(const KlObject& caller, KLCall& call, KlObject* argv[], size_t argc) {
+void opcode_push(const KlObject &caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	vecref current = call.st.at(reg);
@@ -145,7 +162,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_go;
 			break;
 		case KLOpcode::goif:
-			instruction->call= opcode_goif;
+			instruction->call = opcode_goif;
 			break;
 		case KLOpcode::goifn:
 			instruction->call = opcode_goifn;
@@ -172,6 +189,7 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_set;
 			break;
 		case KLOpcode::get:
+			instruction->call = opcode_get;
 			break;
 		case KLOpcode::starg:
 			break;

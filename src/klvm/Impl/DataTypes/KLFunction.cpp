@@ -2,18 +2,15 @@
 #include "DataTypes/KLFunction.h"
 #include "KLFunctionImpl.h"
 
-KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
-{
+KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	auto func = KLCAST(KLFunction, caller);
-	if(passedArgs < func->margs){
+	if (passedArgs < func->margs) {
 		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
-		" expected  at least" << (int)func->margs << " argv but received " << passedArgs << endl;
+			 " expected  at least" << (int) func->margs << " argv but received " << passedArgs << endl;
 		exit(1);
-	}
-	else if(func->args >= 0 && passedArgs > func->args)
-	{
+	} else if (func->args >= 0 && passedArgs > func->args) {
 		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
-		" expected maximum " << (int)func->args << " argv but received " << passedArgs << endl;
+			 " expected maximum " << (int) func->args << " argv but received " << passedArgs << endl;
 		exit(1);
 	}
 	auto argc = func->args == -1 ? passedArgs : func->args;
@@ -40,8 +37,7 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
 	}
 
 	// execute the code
-	while (!CALL_HAS_FLAG(call, CALL_FLAG_EXIT))
-	{
+	while (!CALL_HAS_FLAG(call, CALL_FLAG_EXIT)) {
 		auto ins = (*func->body)[call.next++];
 
 		ins->call(*caller, call, ins->operands, ins->operandc);
@@ -54,8 +50,7 @@ KlObject* kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
 	return call.ret;
 }
 
-void kfunc_instantiator(KlObject * obj)
-{
+void kfunc_instantiator(KlObject *obj) {
 	auto func = KLCAST(KLFunction, obj);
 	func->external = false;
 	func->name = nullptr;
@@ -65,15 +60,14 @@ void kfunc_instantiator(KlObject * obj)
 	func->margs = 0;
 	func->size = 0;
 	func->body = nullptr;
-	func->metadata = new std::map<std::string, KlObject*>();
+	func->metadata = new std::map<std::string, KlObject *>();
 
 }
 
-void kfunc_destructor(KlObject* obj)
-{
+void kfunc_destructor(KlObject *obj) {
 	auto func = KLCAST(KLFunction, obj);
 	klDeref(func->name);
-	if(!func->external) {
+	if (!func->external) {
 		for (auto ins: *func->body) {
 			klDeref(KLWRAP(ins));
 		}
@@ -82,13 +76,11 @@ void kfunc_destructor(KlObject* obj)
 	kliDerefAndDeleteMap(func->metadata);
 }
 
-inline void klFunction_reallocateLabels(KLFunction* function) {
+inline void klFunction_reallocateLabels(KLFunction *function) {
 	auto olsize = function->size;
-	for (int i = 0; i < function->body->size(); i++)
-	{
+	for (int i = 0; i < function->body->size(); i++) {
 		auto instruction = (*function->body)[i];
-		if(instruction->opcode == KLOpcode::noc)
-		{
+		if (instruction->opcode == KLOpcode::noc) {
 			for (auto ref: *function->body) {
 				auto reflabel = false;
 				switch (ref->opcode) {
@@ -100,9 +92,8 @@ inline void klFunction_reallocateLabels(KLFunction* function) {
 					default:
 						break;
 				}
-				if(reflabel && ref->operands[0]->type == &klBType_String) {
-					if(klBType_String.equal(ref->operands[0], instruction->label))
-					{
+				if (reflabel && ref->operands[0]->type == &klBType_String) {
+					if (klBType_String.equal(ref->operands[0], instruction->label)) {
 						klDeref(ref->operands[0]);
 						ref->operands[0] = KLINT(i);
 					}
@@ -115,30 +106,31 @@ inline void klFunction_reallocateLabels(KLFunction* function) {
 	}
 	function->size = function->body->size();
 	// resize the body if we delete instructions
-	if(function->size < olsize) function->body->shrink_to_fit();
+	if (function->size < olsize) function->body->shrink_to_fit();
 
 	function->invokable = kliFunctionImpl;
 }
 
-void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
+void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 
 	auto flag = 0;
-	if(KSTRING(func->name) == KLENTRY_NAME || KSTRING(package->name) == KLPROGRAM_NAME) {
+	if (KSTRING(func->name) == KLENTRY_NAME || KSTRING(package->name) == KLPROGRAM_NAME) {
 		flag = KLRESOLVE_GLOBAL;
 	}
 
-	for (auto instruction : *func->body) {
+	for (auto instruction: *func->body) {
 		klFunction_setInstructionCall(instruction);
 		// replace identifiers with pointers
 		switch (instruction->opcode) {
 			case KLOpcode::set:
 			case KLOpcode::get:
 				if (instruction->operands[0]->type == &klBType_String) {
-                    auto current = instruction->operands[0];
-					klMove(klGetResolver()(current, package, type, func, KLRESOLVE_VARIABLE | flag),
-						   &instruction->operands[0]);
-                }
-                break;
+					auto current = instruction->operands[0];
+					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_VARIABLE | flag);
+					if (toset)
+						klMove(toset, &instruction->operands[0]);
+				}
+				break;
 			case KLOpcode::tobj:
 			case KLOpcode::cast:
 			case KLOpcode::type:
@@ -149,16 +141,18 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func) {
 			case KLOpcode::ins:
 				if (instruction->operands[0]->type == &klBType_String) {
 					auto current = instruction->operands[0];
-					klMove(klGetResolver()(current, package, type, func, KLRESOLVE_TYPE),
-						   &instruction->operands[0]);
+					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_TYPE | flag);
+					if (toset)
+						klMove(toset, &instruction->operands[0]);
 				}
 				break;
 			case KLOpcode::call:
 			case KLOpcode::calla:
 				if (instruction->operands[0]->type == &klBType_String) {
 					auto current = instruction->operands[0];
-					klMove(klGetResolver()(current, package, type, func, KLRESOLVE_FUNCTION),
-						   &instruction->operands[0]);
+					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_FUNCTION | flag);
+					if (toset)
+						klMove(toset, &instruction->operands[0]);
 				}
 				break;
 			default:
