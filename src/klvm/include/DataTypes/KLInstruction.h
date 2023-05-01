@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-typedef void (*opcodecall)(const KlObject& caller, KLCall& call, KlObject* operands[], size_t operandc);
+typedef void (*opcodecall)(const KlObject* caller, KLCall& call, KlObject* operands[], size_t operandc);
 
 /*
  * A part of a function which operate on the stack.

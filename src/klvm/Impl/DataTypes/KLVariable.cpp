@@ -41,7 +41,7 @@ KlObject *klGetVariable(KLVariable *variable, KlObject *target) {
 		}
 		throw runtime_error("Unable to read undefined variable");
 	} else {
-		return KLWRAP(KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
+		return *(KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
 	}
 }
 

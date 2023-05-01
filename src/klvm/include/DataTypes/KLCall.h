@@ -27,7 +27,11 @@ struct CPPAPI KLCall
 	/**
 	 * The amount of args slots the function have.
 	 */
-	unsigned int argc;
+	unsigned short argc;
+	/**
+	 * The amount of local slots the function have.
+	 */
+	unsigned short locs;
 	/**
 	 * The flags of the call.
 	 * the bits are:

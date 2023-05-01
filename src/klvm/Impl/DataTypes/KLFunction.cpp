@@ -20,6 +20,7 @@ KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	call.next = 0;
 	call.st.reserve(argc + func->locals + CALL_REG_COUNT);
 	call.argc = argc;
+	call.locs = func->locals;
 	call.st.push_back(KLINT(0));
 	call.st.push_back(KLFLOAT(0));
 	// locals by default to null
@@ -40,7 +41,7 @@ KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	while (!CALL_HAS_FLAG(call, CALL_FLAG_EXIT)) {
 		auto ins = (*func->body)[call.next++];
 
-		ins->call(*caller, call, ins->operands, ins->operandc);
+		ins->call(caller, call, ins->operands, ins->operandc);
 	}
 	// final cleanup
 	for (auto reg: call.st) {
