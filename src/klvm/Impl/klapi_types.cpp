@@ -7,7 +7,7 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnreachableCode"
 
-KlObject* klself_return(KlObject* base) {
+KlObject *klself_return(KlObject *base) {
 	klRef(base);
 	return base;
 }
@@ -17,15 +17,15 @@ KlObject* klself_return(KlObject* base) {
 // static object used to temporary store the value of the operations
 static kl_int temp_int = {
 	KlObject{
-			&klBType_Int,
-			1
+		&klBType_Int,
+		1
 	},
 	0
 };
 static kl_float temp_float = {
 	KlObject{
-			&klBType_Float,
-			1
+		&klBType_Float,
+		1
 	},
 	0
 };
@@ -33,17 +33,19 @@ static kl_float temp_float = {
 #pragma endregion
 
 #pragma region int
-void kint_init(KlObject* obj) {
+
+void kint_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_int, obj);
 	ptr->value = 0;
 }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantFunctionResult"
-int8_t kint_comparer(KlObject* x, KlObject* y) {
+
+int8_t kint_comparer(KlObject *x, KlObject *y) {
 	int64_t first = KASINT(x);
 	int64_t second = 0;
-	if(y) {
+	if (y) {
 		if (y->type == &klBType_Int) {
 			second = KASINT(y);
 		} else if (y->type->toInt) {
@@ -53,19 +55,18 @@ int8_t kint_comparer(KlObject* x, KlObject* y) {
 		}
 	}
 
-	if(first < second) {
+	if (first < second) {
 		return 1;
-	}
-	else if(second < first) {
+	} else if (second < first) {
 		return -1;
 	}
 	return 0;
 }
+
 #pragma clang diagnostic pop
 
-int8_t kint_equal(KlObject* x, KlObject* y) {
-	if(y)
-	{
+int8_t kint_equal(KlObject *x, KlObject *y) {
+	if (y) {
 		if (y->type == &klBType_Int) {
 			return KASINT(x) == KASINT(y);
 		} else if (y->type->toInt) {
@@ -79,36 +80,32 @@ int8_t kint_equal(KlObject* x, KlObject* y) {
 	return KASINT(x) == 0;
 }
 
-KlObject* kint_clone(KlObject* base) {
+KlObject *kint_clone(KlObject *base) {
 	return KLINT(KASINT(base));
 }
 
-void kint_copy(KlObject* a, KlObject* b) {
+void kint_copy(KlObject *a, KlObject *b) {
 	KASINT(b) = KASINT(a);
 }
 
-KlObject* klint_tostr(KlObject* base)
-{
+KlObject *klint_tostr(KlObject *base) {
 	auto val = KASINT(base);
 	return KLSTR(to_string(val));
 }
 
-KlObject* klint_toflt(KlObject* base)
-{
+KlObject *klint_toflt(KlObject *base) {
 	auto val = KASINT(base);
 	return KLFLOAT(val);
 }
 
-KlObject* klint_tobit(KlObject* base)
-{
+KlObject *klint_tobit(KlObject *base) {
 	auto val = KASINT(base);
 	return KLBOOL(val);
 }
 
-void kint_add(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
-		if(second->type == &klBType_Float) {
+void kint_add(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
+		if (second->type == &klBType_Float) {
 			temp_float.value = KASINT(first);
 			klBType_Float.opAdd(KLWRAP(&temp_float), second, target);
 			return;
@@ -129,10 +126,9 @@ void kint_add(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kint_sub(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
-		if(second->type == &klBType_Float) {
+void kint_sub(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
+		if (second->type == &klBType_Float) {
 			temp_float.value = KASINT(first);
 			klBType_Float.opSub(KLWRAP(&temp_float), second, target);
 			return;
@@ -153,10 +149,9 @@ void kint_sub(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kint_mul(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
-		if(second->type == &klBType_Float) {
+void kint_mul(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
+		if (second->type == &klBType_Float) {
 			klBType_Float.opMul(second, first, target);
 			return;
 		}
@@ -177,10 +172,9 @@ void kint_mul(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kint_div(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
-		if(second->type == &klBType_Float) {
+void kint_div(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
+		if (second->type == &klBType_Float) {
 			temp_float.value = KASINT(first);
 			klBType_Float.opDiv(KLWRAP(&temp_float), second, target);
 			return;
@@ -203,10 +197,9 @@ void kint_div(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kint_mod(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
-		if(second->type == &klBType_Float) {
+void kint_mod(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
+		if (second->type == &klBType_Float) {
 			temp_float.value = KASINT(first);
 			klBType_Float.opMod(KLWRAP(&temp_float), second, target);
 			return;
@@ -229,46 +222,46 @@ void kint_mod(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-KLType klBType_Int =
-{
-		KlObject(),
-		"int",
-		0,
-		sizeof(kl_int),
-		kint_init,
-		nullptr,
-		nullptr,
-		klint_tostr,
-		klself_return,
-		klint_toflt,
-		klint_tobit,
-		nullptr,
-		nullptr,
-		kint_comparer,
-		kint_equal,
-		kint_add,
-		kint_sub,
-		kint_mul,
-		kint_div,
-		kint_mod,
-		kint_clone,
-		kint_copy
+KLType klBType_Int = {
+	KlObject(),
+	"int",
+	0,
+	sizeof(kl_int),
+	kint_init,
+	nullptr,
+	nullptr,
+	klint_tostr,
+	klself_return,
+	klint_toflt,
+	klint_tobit,
+	nullptr,
+	nullptr,
+	kint_comparer,
+	kint_equal,
+	kint_add,
+	kint_sub,
+	kint_mul,
+	kint_div,
+	kint_mod,
+	kint_clone,
+	kint_copy
 };
 #pragma endregion int
 
 #pragma region float
 
-void kfloat_init(KlObject* obj) {
+void kfloat_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_float, obj);
 	ptr->value = 0;
 }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantFunctionResult"
-int8_t kfloat_comparer(KlObject* x, KlObject* y) {
+
+int8_t kfloat_comparer(KlObject *x, KlObject *y) {
 	double_t first = KASFLOAT(x);
 	double_t second = 0;
-	if(y) {
+	if (y) {
 		if (y->type == &klBType_Float) {
 			second = KASFLOAT(y);
 		} else if (y->type == &klBType_Int) {
@@ -280,19 +273,18 @@ int8_t kfloat_comparer(KlObject* x, KlObject* y) {
 		}
 	}
 
-	if(first < second) {
+	if (first < second) {
 		return 1;
-	}
-	else if(second < first) {
+	} else if (second < first) {
 		return -1;
 	}
 	return 0;
 }
+
 #pragma clang diagnostic pop
 
-int8_t kfloat_equal(KlObject* x, KlObject* y) {
-	if(y)
-	{
+int8_t kfloat_equal(KlObject *x, KlObject *y) {
+	if (y) {
 		if (y->type == &klBType_Float) {
 			return KASFLOAT(x) == KASFLOAT(y);
 		} else if (y->type == &klBType_Int) {
@@ -308,16 +300,15 @@ int8_t kfloat_equal(KlObject* x, KlObject* y) {
 	return KASFLOAT(x) == 0;
 }
 
-KlObject* kfloat_clone(KlObject* base) {
+KlObject *kfloat_clone(KlObject *base) {
 	return KLFLOAT(KASFLOAT(base));
 }
 
-void kfloat_copy(KlObject* a, KlObject* b) {
+void kfloat_copy(KlObject *a, KlObject *b) {
 	KASFLOAT(b) = KASFLOAT(a);
 }
 
-KlObject* kfloat_tostr(KlObject* base)
-{
+KlObject *kfloat_tostr(KlObject *base) {
 	auto val = KASFLOAT(base);
 	std::ostringstream stream;
 	auto max = std::numeric_limits<double_t>::digits10 + 1;
@@ -326,28 +317,25 @@ KlObject* kfloat_tostr(KlObject* base)
 	return KLSTR(stream.str());
 }
 
-KlObject* kfloat_toint(KlObject* base)
-{
+KlObject *kfloat_toint(KlObject *base) {
 	auto val = KASFLOAT(base);
-	return KLINT((int64_t)val);
+	return KLINT((int64_t) val);
 }
 
-KlObject* kfloat_tobit(KlObject* base)
-{
+KlObject *kfloat_tobit(KlObject *base) {
 	auto val = KASFLOAT(base);
 	return KLBOOL(val);
 }
 
-void kfloat_add(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
+void kfloat_add(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
 		auto x = KASFLOAT(first);
 		double y = 0;
 		if (second->type == &klBType_Float) {
 			y = KASFLOAT(second);
 		} else if (second->type == &klBType_Int) {
 			y = KASINT(second);
-		}  else if (second->type->toFloat) {
+		} else if (second->type->toFloat) {
 			auto frees = second->type->toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
@@ -359,16 +347,15 @@ void kfloat_add(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kfloat_sub(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
+void kfloat_sub(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
 		auto x = KASFLOAT(first);
 		double y = 0;
 		if (second->type == &klBType_Float) {
 			y = KASFLOAT(second);
 		} else if (second->type == &klBType_Int) {
 			y = KASINT(second);
-		}  else if (second->type->toFloat) {
+		} else if (second->type->toFloat) {
 			auto frees = second->type->toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
@@ -380,16 +367,15 @@ void kfloat_sub(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kfloat_mul(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
+void kfloat_mul(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
 		auto x = KASFLOAT(first);
 		double y = 0;
 		if (second->type == &klBType_Float) {
 			y = KASFLOAT(second);
 		} else if (second->type == &klBType_Int) {
 			y = KASINT(second);
-		}  else if (second->type->toFloat) {
+		} else if (second->type->toFloat) {
 			auto frees = second->type->toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
@@ -402,16 +388,15 @@ void kfloat_mul(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kfloat_div(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
+void kfloat_div(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
 		auto x = KASFLOAT(first);
 		double y = 0;
 		if (second->type == &klBType_Float) {
 			y = KASFLOAT(second);
 		} else if (second->type == &klBType_Int) {
 			y = KASINT(second);
-		}  else if (second->type->toFloat) {
+		} else if (second->type->toFloat) {
 			auto frees = second->type->toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
@@ -425,16 +410,15 @@ void kfloat_div(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-void kfloat_mod(KlObject* first, KlObject* second, KlObject** target)
-{
-	if(second) {
+void kfloat_mod(KlObject *first, KlObject *second, KlObject **target) {
+	if (second) {
 		auto x = KASFLOAT(first);
 		double y = 0;
 		if (second->type == &klBType_Float) {
 			y = KASFLOAT(second);
 		} else if (second->type == &klBType_Int) {
 			y = KASINT(second);
-		}  else if (second->type->toFloat) {
+		} else if (second->type->toFloat) {
 			auto frees = second->type->toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
@@ -448,91 +432,81 @@ void kfloat_mod(KlObject* first, KlObject* second, KlObject** target)
 	}
 }
 
-KLType klBType_Float =
-{
-		KlObject(),
-		"flt",
-		0,
-		sizeof(kl_float),
-		kfloat_init,
-		nullptr,
-		nullptr,
-		kfloat_tostr,
-		kfloat_toint,
-		klself_return,
-		kfloat_tobit,
-		nullptr,
-		nullptr,
-		kfloat_comparer,
-		kfloat_equal,
-		kfloat_add,
-		kfloat_sub,
-		kfloat_mul,
-		kfloat_div,
-		kfloat_mod,
-		kfloat_clone,
-		kfloat_copy,
+KLType klBType_Float = {
+	KlObject(),
+	"flt",
+	0,
+	sizeof(kl_float),
+	kfloat_init,
+	nullptr,
+	nullptr,
+	kfloat_tostr,
+	kfloat_toint,
+	klself_return,
+	kfloat_tobit,
+	nullptr,
+	nullptr,
+	kfloat_comparer,
+	kfloat_equal,
+	kfloat_add,
+	kfloat_sub,
+	kfloat_mul,
+	kfloat_div,
+	kfloat_mod,
+	kfloat_clone,
+	kfloat_copy,
 };
 
 #pragma endregion float
 
 #pragma region bool
 
-KlObject* kbool_tostr(KlObject* obj)
-{
-	if(KASBOOL(obj))
-	{
+KlObject *kbool_tostr(KlObject *obj) {
+	if (KASBOOL(obj)) {
 		return KLSTR("true");
-	}
-	else
-	{
+	} else {
 		return KLSTR("false");
 	}
 }
 
 KLType klBType_Bool =
-{
+	{
 		KLTYPEHEAD,
 		.name = "bit",
 		.size = sizeof(kl_bool),
 		.toString = kbool_tostr,
 		.toBool = klself_return,
-		.flags = KLTYPE_FLAG_NOINSTANCE		// cannot instance
-};
+		.flags = KLTYPE_FLAG_NOINSTANCE        // cannot instance
+	};
 
 #pragma endregion bool
 
 #pragma region string
 
-void kstring_init(KlObject* obj) {
+void kstring_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	ptr->value = nullptr;
 	ptr->size = 0;
 }
 
-void kstring_end(KlObject* obj) {
+void kstring_end(KlObject *obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	delete[] ptr->value;
 }
 
-int8_t kstring_compare(KlObject* x, KlObject* y)
-{
+int8_t kstring_compare(KlObject *x, KlObject *y) {
 	auto first = KLCAST(kl_string, x);
-	kl_string* second = nullptr;
+	kl_string *second = nullptr;
 	bool flag = false;
-	if(y)
-	{
-		if(y->type == &klBType_String)
-		{
+	if (y) {
+		if (y->type == &klBType_String) {
 			second = KLCAST(kl_string, y);
-		}
-		else if(y->type->toString)
-		{
+		} else if (y->type->toString) {
 			flag = true;
 			second = KLCAST(kl_string, y->type->toString(y));
 		}
 	}
-	if(!second) {
+	if (!second) {
 		if (first->size == 0) {
 			// first is empty and second is null, we consider that case equal.
 			return 0;
@@ -544,27 +518,24 @@ int8_t kstring_compare(KlObject* x, KlObject* y)
 
 	int8_t dev = strncmp(first->value, second->value, min(first->size, second->size)) * -1; // NOLINT(cppcoreguidelines-narrowing-conversions)
 
-	if(dev == 0 && first->size != second->size)
-	{
-		if(first->size < second->size)
+	if (dev == 0 && first->size != second->size) {
+		if (first->size < second->size)
 			dev = 1;
 		else
 			dev = -1;
 	}
 
-	if(flag)
-	{
+	if (flag) {
 		klDeref(KLWRAP(second));
 	}
 	return dev;
 }
 
-int8_t kstring_equals(KlObject* x, KlObject* y)
-{
+int8_t kstring_equals(KlObject *x, KlObject *y) {
 	auto first = KLCAST(kl_string, x);
-	kl_string* second = nullptr;
+	kl_string *second = nullptr;
 	bool flag = false;
-	if(y) {
+	if (y) {
 		if (y->type == &klBType_String) {
 			second = KLCAST(kl_string, y);
 		} else if (y->type->toString) {
@@ -572,7 +543,7 @@ int8_t kstring_equals(KlObject* x, KlObject* y)
 			second = KLCAST(kl_string, y->type->toString(y));
 		}
 	}
-	if(!second) {
+	if (!second) {
 		if (first->size == 0) {
 			// first is empty and second is null, we consider that case equal.
 			return 1;
@@ -583,24 +554,21 @@ int8_t kstring_equals(KlObject* x, KlObject* y)
 	}
 	int8_t dev = false;
 
-	if(first->size == second->size)
-	{
+	if (first->size == second->size) {
 		dev = strncmp(first->value, second->value, min(first->size, second->size)) == 0 ? 1 : 0;
 	}
 
-	if(flag)
-	{
+	if (flag) {
 		klDeref(KLWRAP(second));
 	}
 	return dev;
 }
 
-void kstring_add(KlObject* x, KlObject* y, KlObject** target)
-{
+void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
 	auto first = KLCAST(kl_string, x);
-	kl_string* second = nullptr;
+	kl_string *second = nullptr;
 	bool flag = false;
-	if(y) {
+	if (y) {
 		if (y->type == &klBType_String) {
 			second = KLCAST(kl_string, y);
 		} else if (y->type->toString) {
@@ -608,24 +576,21 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 			second = KLCAST(kl_string, y->type->toString(y));
 		}
 	}
-	if(!second) {
+	if (!second) {
 		// second is null, so the resulting string is equals to first
 		klClone(x, target);
 		return;
 	}
 
-	if(first->size == 0)
-	{
+	if (first->size == 0) {
 		// first is empty, so directly clone second
 		klClone(KLWRAP(second), target);
-		if(flag) klDeref(KLWRAP(second));
+		if (flag) klDeref(KLWRAP(second));
 		return;
-	}
-	else if(second->size == 0)
-	{
+	} else if (second->size == 0) {
 		// second is empty, so directly clone first
 		klClone(x, target);
-		if(flag) klDeref(KLWRAP(second));
+		if (flag) klDeref(KLWRAP(second));
 		return;
 	}
 
@@ -644,111 +609,99 @@ void kstring_add(KlObject* x, KlObject* y, KlObject** target)
 	klDeref(*target);
 	*target = dev;
 
-	if(flag)
-	{
+	if (flag) {
 		klDeref(KLWRAP(second));
 	}
 }
 
-KlObject* kstring_clone(KlObject* obj)
-{
+KlObject *kstring_clone(KlObject *obj) {
 	return KLSTR(KSTRING(obj));
 }
 
-KLType klBType_String =
-{
-		KlObject(),
-		"str",
-		0,
-		sizeof(kl_string),
-		kstring_init,
-		nullptr,
-		kstring_end,
-		klself_return,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		kstring_compare,
-		kstring_equals,
-		kstring_add,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		kstring_clone,
+KLType klBType_String = {
+	KlObject(),
+	"str",
+	0,
+	sizeof(kl_string),
+	kstring_init,
+	nullptr,
+	kstring_end,
+	klself_return,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	kstring_compare,
+	kstring_equals,
+	kstring_add,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	kstring_clone,
 };
 
 #pragma endregion string
 
-void kptr_init(KlObject* obj) {
+void kptr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_ptr, obj);
 	ptr->value = nullptr;
 }
 
-void koptr_init(KlObject* obj) {
+void koptr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_optr, obj);
 	ptr->value = nullptr;
 }
 
-void karr_init(KlObject* obj) {
+void karr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_arr, obj);
 	ptr->dimension = 0;
 	ptr->size = 0;
 	ptr->content = nullptr;
 }
 
-KLType klBType_Ptr =
-{
-		KlObject(),
-		"ptr",
-		0,
-		sizeof (kl_ptr),
-		kptr_init,
+KLType klBType_Ptr = {
+	KlObject(),
+	"ptr",
+	0,
+	sizeof(kl_ptr),
+	kptr_init,
 };
 
-KLType klBType_OPtr =
-{
-		KlObject(),
-		"weak",
-		0,
-		sizeof (kl_optr),
-		koptr_init,
+KLType klBType_OPtr = {
+	KlObject(),
+	"weak",
+	0,
+	sizeof(kl_optr),
+	koptr_init,
 };
 
-KLType klBType_Arr =
-{
-		KlObject(),
-		"arr",
-		0,
-		sizeof (kl_arr),
-		karr_init,
+KLType klBType_Arr = {
+	KlObject(),
+	"arr",
+	0,
+	sizeof(kl_arr),
+	karr_init,
 };
 
-KLType klBType_Type =
-{
+KLType klBType_Type = {
 	KLTYPEHEAD,
 	.name = "type",
-	.size =	sizeof (KLType),
+	.size =    sizeof(KLType),
 	.flags = KLTYPE_FLAG_NOINSTANCE
 };
 
-KLType klBType_Reg =
-{
-		KLTYPEHEAD,
-		.name = "reg",
-		.size = sizeof (kl_int),
-		.initializer = kint_init,
-		.copy = kint_copy,
+KLType klBType_Reg = {
+	KLTYPEHEAD,
+	.name = "reg",
+	.size = sizeof(kl_int),
+	.initializer = kint_init,
+	.copy = kint_copy,
 };
 
-CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
-	return nullptr;
-}
-
 CAPI KlObject *klIns(KLType *type) {
-	if(KLTYPE_IS_STATIC(type)) {
+	if (KLTYPE_IS_STATIC(type)) {
 		throw runtime_error("Unable to instance not instantiable type");
 	}
 	auto size = type->size;
@@ -761,27 +714,49 @@ CAPI KlObject *klIns(KLType *type) {
 	return space;
 }
 
-CAPI void klDeref(KlObject* object) {
-	if(!object) return;
-	if( KLTYPE_IS_STATIC(object->type)) return;
+CAPI void klDeref(KlObject *object) {
+	if (!object) return;
+	if (KLTYPE_IS_STATIC(object->type)) return;
 
 	assert(object->refs > 0);
 	assert(object->type->inscount > 0);
 	object->refs--;
-	if(object->refs == 0) {
+	if (object->refs == 0) {
 		klDestroy(object);
 	}
 }
 
 CAPI void klDestroy(KlObject *object) {
-	if(!object) return;
+	if (!object) return;
 	object->type->inscount--;
 	// call finalizer
 	KLINVOKE(object->type->finalizer)(object);
 	free(object);
 }
 
+inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {
+	// implement call stack:
+	// add the function to the call stack
+	return func->invokable(KLWRAP(func), argv, argc);
+}
+
+CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
+	return nullptr;
+}
+
 CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
+	if (!target) return nullptr;
+	if (target->type == &klBType_Func) {
+		auto func = KLCAST(KLFunction, target);
+		return klInvokeCore(func, argv, argc);
+	} else if (target->type == &klBType_Type) {
+		return klNew(KLCAST(KLType, target), argv, argc);
+	} else {
+		auto find = target->type->functions.find("call");
+		if (find != target->type->functions.end()) {
+			return klInvokeCore(KLCAST(KLFunction, find->second), argv, argc);
+		}
+	}
 	return nullptr;
 }
 

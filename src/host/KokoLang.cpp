@@ -33,6 +33,19 @@ nowide::cout << termcolor::yellow <<                                 	\
 (x) << termcolor::reset << durations.count() << "s" << std::endl;		\
 }}}
 
+KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
+{
+	auto val = argv[0];
+	if (val->type == &klBType_Int)
+		nowide::cout << KASINT(val) << std::endl;
+	else if (val->type == &klBType_Float)
+		nowide::cout << KASFLOAT(val) << std::endl;
+	else if (val->type == &klBType_String)
+		nowide::cout << KSTRING(val) << std::endl;
+
+	return nullptr;
+}
+
 int main(int argc, const char* argv[])
 {
 	if(termcolor::_internal::is_atty(std::cout))
@@ -56,6 +69,14 @@ int main(int argc, const char* argv[])
 		klInit();
 		
 		MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))
+
+		auto out = KLCAST(KLFunction, klIns(&klBType_Func));
+		out->external = true;
+		out->invokable = outImpl;
+		out->args = 1;
+		out->margs = 1;
+		klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
+
 		int exit = EXIT_SUCCESS;
 		if(program) {
 			klRegisterPackage(program);

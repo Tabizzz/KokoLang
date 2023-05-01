@@ -57,7 +57,7 @@ void kfunc_instantiator(KlObject *obj) {
 	func->name = nullptr;
 	func->invokable = nullptr;
 	func->locals = 0;
-	func->args = 0;
+	func->args = -1;
 	func->margs = 0;
 	func->size = 0;
 	func->body = nullptr;
@@ -114,6 +114,7 @@ inline void klFunction_reallocateLabels(KLFunction *function) {
 
 void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 
+	if(func->external) return;
 	auto flag = 0;
 	if (KSTRING(func->name) == KLENTRY_NAME || KSTRING(package->name) == KLPROGRAM_NAME) {
 		flag = KLRESOLVE_GLOBAL;

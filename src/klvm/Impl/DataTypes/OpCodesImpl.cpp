@@ -425,14 +425,26 @@ void opcode_ret(const KlObject *caller, KLCall &call, KlObject *argv[], size_t a
 }
 
 void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	auto reg = argv[2];
-	GETREG(reg)
-	if (reg->type == &klBType_Int)
-		cout << KASINT(reg) << endl;
-	else if (reg->type == &klBType_Float)
-		cout << KASFLOAT(reg) << endl;
-	else if (reg->type == &klBType_String)
-		cout << KSTRING(reg) << endl;
+	if (argv[0]->type == &klBType_String) {
+		// maybe try to check if function exists now?
+		throw runtime_error("Unable to resolve function " + KSTRING(argv[0]));
+	}
+	auto reg = argv[1] ? KASINT(argv[1]) : -1;
+	auto val = argv[2];
+	GETREG(val)
+	vector<KlObject *> args;
+	args.reserve(argc - 2);
+	for (int i = 2; i < argc; ++i) {
+		args.push_back(call.st.at(KASINT(argv[i])));
+	}
+	auto ret = klInvoke(argv[0], args.data(), args.size());
+	if (reg >= 0) {
+		vecref save = call.st.at(reg);
+		klTransfer(&ret, &save);
+	} else {
+		// dismiss return value
+		klDeref(ret);
+	}
 }
 
 void opcode_go(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
