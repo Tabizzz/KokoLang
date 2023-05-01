@@ -56,6 +56,14 @@ void klDefType(KLType* type);
 
 CAPI
 /**
+ * @brief Transfer a object with a strong reference to another object.
+ *
+ * This function will try to copy or move the object, dont clone.
+ */
+void klTransfer(KlObject ** src, KlObject** dest);
+
+CAPI
+/**
  * @brief Main object copy operation.
  *
  * This function will try to copy objects

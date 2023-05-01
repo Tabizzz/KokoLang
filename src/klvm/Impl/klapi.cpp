@@ -13,25 +13,22 @@ STDCHECKTYPE(x)
 #define STDCHECKTYPE(x) if(x.inscount) cout << "type "<< x.name << " still has " << x.inscount << " instances in memory" << endl;
 #endif
 
-static KLPackage* globalPackage = nullptr;
-static map<string, KLPackage*>* packages;
+static KLPackage *globalPackage = nullptr;
+static map<string, KLPackage *> *packages;
 
-map<string, KLPackage*>* kliRootPackages()
-{
+map<string, KLPackage *> *kliRootPackages() {
 	return packages;
 }
 
-void kliBuildGlobalPackage()
-{
+void kliBuildGlobalPackage() {
 	globalPackage = new KLPackage();
 	globalPackage->klbase.type = &klBType_Package;
 	klBType_Package.initializer(KLWRAP(globalPackage));
 }
 
-CAPI void klInit()
-{
+CAPI void klInit() {
 	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value),
-			"kl_int and kl_float dont have the same size.");
+				  "kl_int and kl_float dont have the same size.");
 
 	klRestoreResolver();
 
@@ -67,11 +64,11 @@ CAPI void klInit()
 	globalPackage->name = KLSTR("global");
 #pragma clang diagnostic pop
 
-	packages = new map<string, KLPackage*>();
+	packages = new map<string, KLPackage *>();
 }
 
 CAPI void klEnd() {
-	for (const auto& pack: *packages) {
+	for (const auto &pack: *packages) {
 		klDestroyPackage(pack.second);
 	}
 	delete packages;
@@ -96,50 +93,45 @@ CAPI void klEnd() {
 	STDCHECKTYPE(klBType_Variable)
 }
 
-CAPI KLPackage* klGlobalPackage() {
+CAPI KLPackage *klGlobalPackage() {
 	return globalPackage;
 }
 
-CAPI KLPackage** klRootPackages() {
+CAPI KLPackage **klRootPackages() {
 	auto size = packages->size() + 1;
-	auto dev = new KLPackage*[size];
-	dev[size-1] = nullptr;
+	auto dev = new KLPackage *[size];
+	dev[size - 1] = nullptr;
 	size_t index = 0;
-	for ( const auto &p : *packages)
-	{
+	for (const auto &p: *packages) {
 		dev[index++] = p.second;
 	}
 	return dev;
 }
 
 CAPI void klRegisterPackage(KLPackage *klPackage) {
-	if(!klPackage->name || KLCAST(kl_string, klPackage->name)->size == 0)
-	{
+	if (!klPackage->name || KLCAST(kl_string, klPackage->name)->size == 0) {
 		throw runtime_error("Types must have a name");
 	}
 	string name = KSTRING(klPackage->name);
 	auto find = packages->find(name);
-	if(find == packages->end())
-	{
-		packages->insert(pair<string, KLPackage*>(name, klPackage));
+	if (find == packages->end()) {
+		packages->insert(pair<string, KLPackage *>(name, klPackage));
 		return;
 	}
 	throw invalid_argument("trying to add a package but another package with the same name already exists");
 }
 
 CAPI void klDefType(KLType *type) {
-	if(!type->name || strlen(type->name) == 0)
-	{
+	if (!type->name || strlen(type->name) == 0) {
 		throw runtime_error("Types must have a name");
 	}
-	if(strchr(type->name, '.') || strchr(type->name, ':') || strchr(type->name, '%'))
-	{
+	if (strchr(type->name, '.') || strchr(type->name, ':') || strchr(type->name, '%')) {
 		throw runtime_error("Types cant contain the following characters in name: '.', ':' and '%'");
 	}
 	// set the type
 	type->klbase.type = &klBType_Type;
 	// increase the instance count of type
-	klBType_Type.inscount ++;
+	klBType_Type.inscount++;
 	// the type is defined, so it only have one ref.
 	type->klbase.refs = 1;
 	type->inscount = 0;
@@ -157,7 +149,7 @@ void inline kliCopyA(KlObject **dest) {
  * src is not null, dest is null
  */
 void inline kliCopyB(KlObject *src, KlObject **dest) {
-	if(src->type->clone) {
+	if (src->type->clone) {
 		// no need to deref dest because is null
 		*dest = src->type->clone(src);
 	} else {
@@ -168,10 +160,10 @@ void inline kliCopyB(KlObject *src, KlObject **dest) {
 }
 
 void inline kliCopyD(KlObject *src, KlObject **dest) {
-	if((src->type == (*dest)->type) && src->type->copy) {
+	if ((src->type == (*dest)->type) && src->type->copy) {
 		src->type->copy(src, *dest);
 		return;
-	} else if(src->type->clone) {
+	} else if (src->type->clone) {
 		klDeref(*dest);
 		*dest = src->type->clone(src);
 		return;
@@ -185,30 +177,27 @@ void inline kliCopyD(KlObject *src, KlObject **dest) {
 
 CAPI void klCopy(KlObject *src, KlObject **dest) {
 	THROW_ON_NO_VALID_TARGET
-	if(!src && *dest) {
+	if (!src && *dest) {
 		kliCopyA(dest);
 	} else if (src && !*dest) {
 		kliCopyB(src, dest);
-	} else if(src && *dest) {
+	} else if (src && *dest) {
 		kliCopyD(src, dest);
 	}
 }
 
 CAPI void klClone(KlObject *src, KlObject **dest) {
 	THROW_ON_NO_VALID_TARGET
-	if(!src && *dest) {
+	if (!src && *dest) {
 		kliCopyA(dest);
 	} else if (src && !*dest) {
 		kliCopyB(src, dest);
-	} else if(src && *dest) {
+	} else if (src && *dest) {
 		klDeref(*dest);
-		if(src->type->clone)
-		{
+		if (src->type->clone) {
 			// no need to ref src, we are creating a new instance on clone.
 			*dest = src->type->clone(src);
-		}
-		else
-		{
+		} else {
 			klRef(src);
 			*dest = src;
 		}
@@ -220,4 +209,26 @@ CAPI void klMove(KlObject *src, KlObject **dest) {
 	klDeref(*dest);
 	klRef(src);
 	*dest = src;
+}
+
+CAPI void klTransfer(KlObject **src, KlObject **dest) {
+	THROW_ON_NO_VALID_TARGET
+	auto val = src ? *src : nullptr;
+
+	if (!val && dest) {
+		kliCopyA(dest);
+	} else if (val && !*dest) {
+		*dest = val;
+		*src = nullptr;
+	} else if (val && *dest) {
+		if ((val->type == (*dest)->type) && val->type->copy) {
+			val->type->copy(val, *dest);
+			klDeref(val);
+			*src = nullptr;
+		} else {
+			klDeref(*dest);
+			*dest = val;
+			*src = nullptr;
+		}
+	}
 }

@@ -288,20 +288,20 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
-#pragma region 1any 1reg
+#pragma region 1any_no_id 1reg
 		case KLOpcode::tstr:
 		case KLOpcode::tint:
 		case KLOpcode::tflt:
 		case KLOpcode::tbit:
-			SETOPERAND(0, kliCheckAny);
+			SETOPERAND(0, kliCheckAnyNoId);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
-#pragma region 3reg
+#pragma region 1id 1any_no_id 1reg
 		case KLOpcode::tobj:
 		case KLOpcode::cast:
-			SETOPERAND(0, kliCheckReg);
-			SETOPERAND(1, kliCheckReg);
+			SETOPERAND(0, kliCheckIdentifier);
+			SETOPERAND(1, kliCheckAnyNoId);
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion

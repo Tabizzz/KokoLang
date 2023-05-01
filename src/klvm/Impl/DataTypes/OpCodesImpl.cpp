@@ -38,6 +38,100 @@ inline bool getBool(KlObject *obj, KLCall &call) {
 
 void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+void opcode_cast(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	if (argv[0]->type == &klBType_String) {
+		// maybe try to check if type exists now?
+		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
+	}
+	auto type = KLCAST(KLType, argv[0]);
+	auto val = argv[1];
+	GETREG(val)
+	REGORRET(argv[2])
+	vecref regis = call.st.at(reg);
+
+	if (type->cast) {
+		auto str = type->cast(val);
+		klTransfer(&str, &regis);
+	} else {
+		klMove(nullptr, &regis);
+	}
+}
+
+void opcode_tobj(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	if (argv[0]->type == &klBType_String) {
+		// maybe try to check if type exists now?
+		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
+	}
+	auto val = argv[1];
+	GETREG(val)
+	REGORRET(argv[2])
+	vecref regis = call.st.at(reg);
+
+	if (val && val->type->toType) {
+		auto str = val->type->toType(val, argv[0]);
+		klTransfer(&str, &regis);
+	} else {
+		klMove(nullptr, &regis);
+	}
+}
+
+void opcode_tbit(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto val = argv[0];
+	GETREG(val)
+	REGORRET(argv[1])
+	vecref regis = call.st.at(reg);
+	if (val && val->type->toBool) {
+		auto str = val->type->toBool(val);
+		klMove(str, &regis);
+	} else {
+		klMove(nullptr, &regis);
+	}
+}
+
+void opcode_tflt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto val = argv[0];
+	GETREG(val)
+	REGORRET(argv[1])
+	vecref regis = call.st.at(reg);
+	if (val && val->type->toFloat) {
+		auto str = val->type->toFloat(val);
+		klTransfer(&str, &regis);
+	} else {
+		klMove(nullptr, &regis);
+	}
+}
+
+void opcode_tint(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto val = argv[0];
+	GETREG(val)
+	REGORRET(argv[1])
+	vecref regis = call.st.at(reg);
+	if (val && val->type->toInt) {
+		auto str = val->type->toInt(val);
+		klTransfer(&str, &regis);
+	} else {
+		klMove(nullptr, &regis);
+	}
+}
+
+void opcode_tstr(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto val = argv[0];
+	GETREG(val)
+	REGORRET(argv[1])
+	vecref regis = call.st.at(reg);
+	if (val && val->type->toString) {
+		auto str = val->type->toString(val);
+		klTransfer(&str, &regis);
+	} else if (val) {
+		klMove(nullptr, &regis);
+	} else {
+		auto str = KLSTR("null");
+		klMove(str, &regis);
+		str->refs--;
+	}
+
+}
+
 void opcode_mod(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
@@ -487,16 +581,22 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_mod;
 			break;
 		case KLOpcode::tstr:
+			instruction->call = opcode_tstr;
 			break;
 		case KLOpcode::tint:
+			instruction->call = opcode_tint;
 			break;
 		case KLOpcode::tflt:
+			instruction->call = opcode_tflt;
 			break;
 		case KLOpcode::tbit:
+			instruction->call = opcode_tbit;
 			break;
 		case KLOpcode::tobj:
+			instruction->call = opcode_tobj;
 			break;
 		case KLOpcode::cast:
+			instruction->call = opcode_cast;
 			break;
 		case KLOpcode::ivk:
 			break;
