@@ -737,6 +737,19 @@ CAPI void klDestroy(KlObject *object) {
 inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {
 	// implement call stack:
 	// add the function to the call stack
+	if (argc < func->margs) {
+		throw runtime_error(string_format("Error calling function %s, expected at least %i args but received %i",
+										  KSTRING(func->name).c_str(),
+										  func->margs,
+										  argc
+		));
+	} else if (func->args >= 0 && argc > func->args) {
+		throw runtime_error(string_format("Error calling function %s, expected maximum %i args but received %i",
+										  KSTRING(func->name).c_str(),
+										  func->args,
+										  argc
+		));
+	}
 	return func->invokable(KLWRAP(func), argv, argc);
 }
 

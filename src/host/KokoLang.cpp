@@ -75,6 +75,7 @@ int main(int argc, const char* argv[])
 		out->invokable = outImpl;
 		out->args = 1;
 		out->margs = 1;
+		out->name = KLSTR("out");
 		klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
 
 		int exit = EXIT_SUCCESS;

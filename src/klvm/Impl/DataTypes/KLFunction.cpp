@@ -4,15 +4,6 @@
 
 KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	auto func = KLCAST(KLFunction, caller);
-	if (passedArgs < func->margs) {
-		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
-			 " expected  at least" << (int) func->margs << " argv but received " << passedArgs << endl;
-		exit(1);
-	} else if (func->args >= 0 && passedArgs > func->args) {
-		cout << "Error calling function " << KLCAST(kl_string, func->name)->value <<
-			 " expected maximum " << (int) func->args << " argv but received " << passedArgs << endl;
-		exit(1);
-	}
 	auto argc = func->args == -1 ? passedArgs : func->args;
 
 	// the call of this function
