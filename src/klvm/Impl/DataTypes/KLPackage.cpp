@@ -28,17 +28,6 @@ void kpack_end(KlObject* pack)
 	klDeref(ins->name);
 	kliDerefAndDeleteMap(ins->functions);
 
-	/*
-	 * Look for all defined variables on this package and deref all.
-	 */
-	for (const auto& var : *ins->variables) {
-		auto variable = KLCAST(KLVariable, var.second);
-		if(variable->data.packvar.defined)
-		{
-			klDeref(variable->data.packvar.value);
-		}
-	}
-
 	kliDerefAndDeleteMap(ins->variables);
 	kliDerefAndDeleteMap(ins->packs);
 	kliDerefAndDeleteMap(ins->metadata);

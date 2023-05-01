@@ -15,6 +15,7 @@ void kvar_destructor(KlObject *obj) {
 
 	kliDerefAndDeleteMap(var->metadata);
 
+	// we deref the current value or the default value in type vars
 	klDeref(var->data.packvar.value);
 }
 
