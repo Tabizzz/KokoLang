@@ -2,9 +2,9 @@
 #include "../klvm_internal.h"
 #include "KLFunctionImpl.h"
 
-#define GETREG(x, y) \
+#define GETREG(y) \
 if(y && y->type == &klBType_Reg) { \
-y = x.st.at(KASINT(y));}
+y = call.st.at(KASINT(y));}
 #define REGORRET(x) if(!x) return; auto reg = KASINT(x);
 
 typedef vector<KlObject *>::reference vecref;
@@ -12,7 +12,52 @@ typedef vector<KlObject *>::reference vecref;
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnusedParameter"
 
+inline bool getBool(KlObject *obj, KLCall &call) {
+	GETREG(obj);
+	if (obj) {
+		if (obj->type == &klBType_Bool) {
+			return KASBOOL(obj);
+		}
+		if (obj->type == &klBType_String) {
+			return KASSTRSIZE(obj);
+		}
+		if (obj->type == &klBType_Int) {
+			return KASINT(obj);
+		}
+		if (obj->type == &klBType_Float) {
+			return KASFLOAT(obj);
+		}
+		if (obj->type->toBool) {
+			return KASBOOL(obj->type->toBool(obj));
+		}
+
+		return true;
+	}
+	return false;
+}
+
 void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
+
+void opcode_xor(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto a = getBool(argv[0], call);
+	auto b = getBool(argv[1], call);
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a != b);
+}
+
+void opcode_or(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto a = getBool(argv[0], call);
+	auto b = getBool(argv[1], call);
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a || b);
+}
+
+void opcode_and(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto a = getBool(argv[0], call);
+	auto b = getBool(argv[1], call);
+
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a && b);
+}
 
 void opcode_ldarg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto st = KASINT(argv[0]);
@@ -26,8 +71,8 @@ void opcode_ldarg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t
 
 void opcode_starg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto obj = argv[1];
-	GETREG(call, obj)
-	
+	GETREG(obj)
+
 	auto st = KASINT(argv[0]);
 	vecref current = call.st.at(st + CALL_REG_COUNT + call.locs);
 
@@ -85,7 +130,7 @@ void opcode_goif(const KlObject *caller, KLCall &call, KlObject *argv[], size_t 
 void opcode_cl(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
-	GETREG(call, obj)
+	GETREG(obj)
 	vecref current = call.st.at(reg);
 
 	klClone(obj, &current);
@@ -94,7 +139,7 @@ void opcode_cl(const KlObject *caller, KLCall &call, KlObject *argv[], size_t ar
 void opcode_mv(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
-	GETREG(call, obj)
+	GETREG(obj)
 	vecref current = call.st.at(reg);
 
 	klMove(obj, &current);
@@ -103,7 +148,7 @@ void opcode_mv(const KlObject *caller, KLCall &call, KlObject *argv[], size_t ar
 void opcode_cp(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
-	GETREG(call, obj)
+	GETREG(obj)
 	vecref current = call.st.at(reg);
 
 	klCopy(obj, &current);
@@ -111,14 +156,14 @@ void opcode_cp(const KlObject *caller, KLCall &call, KlObject *argv[], size_t ar
 
 void opcode_ret(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto first = argv[0];
-	GETREG(call, first)
+	GETREG(first)
 	klCopy(first, &call.ret);
 	CALL_SET_FLAG(call, CALL_FLAG_EXIT, true);
 }
 
 void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto reg = argv[2];
-	GETREG(call, reg)
+	GETREG(reg)
 	if (reg->type == &klBType_Int)
 		cout << KASINT(reg) << endl;
 	else if (reg->type == &klBType_Float)
@@ -134,9 +179,9 @@ void opcode_go(const KlObject *caller, KLCall &call, KlObject *argv[], size_t ar
 void opcode_add(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
-	GETREG(call, first)
+	GETREG(first)
 	auto second = argv[1];
-	GETREG(call, second)
+	GETREG(second)
 	vecref regis = call.st.at(reg);
 
 	if (first->type->opAdd) {
@@ -156,9 +201,9 @@ void opcode_goifn(const KlObject *caller, KLCall &call, KlObject *argv[], size_t
 
 void opcode_oplt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto first = argv[0];
-	GETREG(call, first)
+	GETREG(first)
 	auto second = argv[1];
-	GETREG(call, second)
+	GETREG(second)
 
 	auto operation = first->type->comparer(first, second);
 
@@ -220,10 +265,13 @@ void klFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_ldarg;
 			break;
 		case KLOpcode::andi:
+			instruction->call = opcode_and;
 			break;
 		case KLOpcode::ori:
+			instruction->call = opcode_or;
 			break;
 		case KLOpcode::xori:
+			instruction->call = opcode_xor;
 			break;
 		case KLOpcode::oplt:
 			instruction->call = opcode_oplt;
