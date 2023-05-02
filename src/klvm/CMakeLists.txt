@@ -31,7 +31,7 @@ set(source_files
         "Impl/klapi_builtins.cpp"
         "Impl/DataTypes/OpCodesImpl.cpp"
         "Impl/klbinary.cpp"
-        "Impl/DataTypes/KLVariable.cpp" Impl/klresolver.cpp)
+        "Impl/DataTypes/KLVariable.cpp" Impl/klresolver.cpp Impl/klapi_methods.cpp)
 
 add_library(klvm SHARED
         ${source_files}

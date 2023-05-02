@@ -117,19 +117,11 @@ struct CPPAPI kl_optr {
 struct CPPAPI kl_arr {
 	KLOBJECTHEAD
 	/**
-	 * @brief The dimension of this array.
-	 *
-	 * The dimension refers how many arrays levels have this array.
-	 * For example, an array with dimension 1 indicates that it is an array in which all elements are arrays of dimension 0
-	 * whose elements are of any type.
-	 */
-	uint32_t dimension;
-	/**
 	 * @brief The number of elements of the array.
 	 */
 	uint32_t size;
 	/**
-	 * @brief The native array containing the objects.s
+	 * @brief The native array containing the objects.
 	 */
 	KlObject** content;
 };

@@ -48,6 +48,16 @@ CAPI KLType klBType_OPtr;
 CAPI KLType klBType_Arr;
 
 /**
+ * Builtin list type.
+ */
+CAPI KLType klBType_List;
+
+/**
+ * Builtin map type.
+ */
+CAPI KLType klBType_Map;
+
+/**
  * Builtin type type.
  */
 CAPI KLType klBType_Type;
@@ -57,34 +67,39 @@ CAPI KLType klBType_Type;
  */
 CAPI KLType klBType_Reg;
 
+CAPI
 /**
  * Create a new object calling the constructor of the type.
  */
-CAPI KlObject* klNew(KLType* type, KlObject** args, kbyte argc);
+KlObject* klNew(KLType* type, KlObject** args, kbyte argc);
 
+CAPI
 /**
  * Create a new instance of an object only calling the initializer but not the
  * constructor.
  */
-CAPI KlObject* klIns(KLType* type);
+KlObject* klIns(KLType* type);
 
+CAPI
 /**
  * Increase the ref count of an object.
  */
-CAPI inline void klRef(KlObject *object) {
+inline void klRef(KlObject *object) {
 	if(object && !KLTYPE_IS_STATIC(object->type)) object->refs++;
 }
 
+CAPI
 /**
  * Decrease the refcount of an object.
  * If the refcount is now 0 the object is destroyed.
  */
-CAPI void klDeref(KlObject* object);
+void klDeref(KlObject* object);
 
+CAPI
 /**
  * Destroy an object, this call the finalizer and free the memory.
  */
-CAPI void klDestroy(KlObject* object);
+void klDestroy(KlObject* object);
 
 CAPI
 /**
