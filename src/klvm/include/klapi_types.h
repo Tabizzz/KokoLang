@@ -13,6 +13,11 @@
 #define KLWRAP(x) ((KlObject*)(x))
 
 /**
+ * Builtin type type.
+ */
+CAPI KLType* kltype_t;
+
+/**
  * Builtin type int.
  */
 CAPI KLType* klint_t;
@@ -25,47 +30,37 @@ CAPI KLType* klfloat_t;
 /**
  * Builtin type bit.
  */
-CAPI KLType klbool_t;
+CAPI KLType* klbool_t;
 
 /**
  * Builtin type str.
  */
-CAPI KLType klstring_t;
+CAPI KLType* klstring_t;
 
 /**
  * Builtin type ptr.
  */
-CAPI KLType klptr_t;
-
-/**
- * Builtin type object ptr.
- */
-CAPI KLType kloptr_t;
+CAPI KLType* klptr_t;
 
 /**
  * Builtin type arr.
  */
-CAPI KLType klarray_t;
+CAPI KLType* klarray_t;
 
 /**
  * Builtin list type.
  */
-CAPI KLType kllist_t;
+CAPI KLType* kllist_t;
 
 /**
  * Builtin map type.
  */
-CAPI KLType klmap_t;
-
-/**
- * Builtin type type.
- */
-CAPI KLType* kltype_t;
+CAPI KLType* klmap_t;
 
 /**
  * Builtin type register.
  */
-CAPI KLType klreg_t;
+CAPI KLType* klreg_t;
 
 CAPI
 /**

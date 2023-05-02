@@ -19,6 +19,8 @@ static kl_float temp_float = {
 
 KLType *klint_t = nullptr;
 
+KLType *klreg_t = nullptr;
+
 static void kint_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_int, obj);
 	ptr->value = 0;
@@ -237,6 +239,17 @@ void global_klint_t() {
 		new MetaMap(),
 		new MetaMap(),
 		new MetaMap(),
+	};
+
+	klreg_t = new KLType{
+		.klbase = {
+			.flags = KLOBJ_FLAG_USE_DELETE
+		},
+		.name = "reg",
+		.size = sizeof(kl_int),
+		.initializer = kint_init,
+		.copy = kint_copy,
+		KLTYPE_METADATA
 	};
 
 	temp_int.klbase.type = klint_t;

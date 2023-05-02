@@ -4,15 +4,6 @@
 #include <stdexcept>
 #include <cstring>
 
-#define  STDREGTYPE(x) klDefType(&x); klPackageRegType(globalPackage, &x);
-
-
-#if _NDEGUG
-STDCHECKTYPE(x)
-#else
-#define STDCHECKTYPE(x) if(x.inscount) cout << "type "<< x.name << " still has " << x.inscount << " instances in memory" << endl;
-#endif
-
 KLPackage *globalPackage = nullptr;
 map<string, KLPackage *> *packages;
 
@@ -28,21 +19,7 @@ CAPI void klInit() {
 
 	globalPackage = kliBuildGlobalPackage();
 
-	// define builtin types
-	STDREGTYPE(klbool_t)
-	STDREGTYPE(klstring_t)
-	STDREGTYPE(klptr_t)
-	STDREGTYPE(kloptr_t)
-	STDREGTYPE(klarray_t)
-	STDREGTYPE(klreg_t)
-
-	// define runtime specific types
-	STDREGTYPE(klinstruction_t)
-	STDREGTYPE(klfunc_t)
-	STDREGTYPE(klpack_t)
-	STDREGTYPE(klvar_t)
-
-	// we need to
+	// we need to set the name after types definition
 	globalPackage->name = KLSTR("global");
 
 	packages = new map<string, KLPackage *>();
@@ -56,21 +33,21 @@ CAPI void klEnd() {
 	klDestroyPackage(globalPackage);
 	globalPackage = nullptr;
 
-	// check instance counts
-	//STDCHECKTYPE(klint_t)
-	//STDCHECKTYPE(klfloat_t)
-	STDCHECKTYPE(klbool_t)
-	STDCHECKTYPE(klstring_t)
-	STDCHECKTYPE(klptr_t)
-	STDCHECKTYPE(kloptr_t)
-	STDCHECKTYPE(klarray_t)
-	STDCHECKTYPE(klreg_t)
+	klDestroy(KLWRAP(kltype_t));
 
-	// define runtime specific types
-	STDCHECKTYPE(klinstruction_t)
-	STDCHECKTYPE(klfunc_t)
-	STDCHECKTYPE(klpack_t)
-	STDCHECKTYPE(klvar_t)
+	// reset all lib types
+	kltype_t = nullptr;
+	klint_t = nullptr;
+	klfloat_t = nullptr;
+	klbool_t = nullptr;
+	klstring_t = nullptr;
+	klarray_t = nullptr;
+	klptr_t = nullptr;
+	kllist_t = nullptr;
+	klmap_t = nullptr;
+	klfunc_t = nullptr;
+	klpack_t = nullptr;
+	klinstruction_t = nullptr;
 }
 
 CAPI KLPackage *klGlobalPackage() {

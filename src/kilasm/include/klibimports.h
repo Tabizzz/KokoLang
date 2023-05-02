@@ -20,6 +20,6 @@
 #define KLIBAPI EXTERN LIBEXPORT
 
 #define SWITCH_TYPE(x, y, z)	\
-y.inscount--;			\
-z.inscount++;			\
-x->type = &z;
+y->inscount--;			\
+z->inscount++;			\
+x->type = z;

@@ -10,7 +10,7 @@ TEST_CASE("klapi_types.h","[klapi_types]")
 	{
 		SECTION("Throws on not instantiable types")
 		{
-			REQUIRE_THROWS(klIns(&klbool_t));
+			REQUIRE_THROWS(klIns(klbool_t));
 		}
 		SECTION("Check type"){
 			auto val = klIns(klfloat_t);

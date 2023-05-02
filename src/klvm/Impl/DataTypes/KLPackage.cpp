@@ -31,13 +31,12 @@ static void kpack_end(KlObject* pack)
 	kliDerefAndDeleteMap(ins->variables);
 	kliDerefAndDeleteMap(ins->packs);
 	kliDerefAndDeleteMap(ins->metadata);
-	//kliDerefAndDeleteMap(ins->types);
-	delete ins->types;
+	kliDerefAndDeleteMap(ins->types);
 }
 
 CAPI KLPackage* klCreatePackage()
 {
-	auto ins = KLCAST(KLPackage, klIns(&klpack_t));
+	auto ins = KLCAST(KLPackage, klIns(klpack_t));
 	return ins;
 }
 
@@ -99,7 +98,7 @@ CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]) {
 			}
 			delete[] args;
 			if(ret && ret->type == klint_t) dev = KASINT(ret);
-			if(ret && ret->type == &klbool_t && !KASBOOL(ret)) dev = EXIT_FAILURE;
+			if(ret && ret->type == klbool_t && !KASBOOL(ret)) dev = EXIT_FAILURE;
 			klDeref(ret);
 			return dev;
 		}
@@ -121,4 +120,18 @@ void klPackageRegType(KLPackage *klPackage, KLType *type) {
 	throw invalid_argument("trying to define a type but another type with the same name already exists");
 }
 
-KLType klpack_t = KLBASIC_TYPE("pack", KLPackage, kpack_init, kpack_end)};
+KLType* klpack_t = nullptr;
+
+void global_klpack_t()
+{
+	klpack_t = new KLType {
+		.klbase = {
+			.flags = KLOBJ_FLAG_USE_DELETE
+		},
+		.name = "pack",
+		.size = sizeof(KLPackage),
+		.initializer = kpack_init,
+		.finalizer = kpack_end,
+		KLTYPE_METADATA
+	};
+}

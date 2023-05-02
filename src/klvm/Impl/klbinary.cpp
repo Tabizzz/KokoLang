@@ -67,7 +67,7 @@ static void readMetadata(std::istream &stream, std::map<std::string, KlObject*>*
 			case KLMetaType::string:
 				stream.read((char*)&keyl, 1);
 				CHECKSTREAM(,)
-				value = klIns(&klstring_t);
+				value = klIns(klstring_t);
 				KLCAST(kl_string, value)->size = keyl;
 				auto valuebuff = new char[keyl + 1];
 				valuebuff[keyl] = 0;
@@ -110,7 +110,7 @@ static KlObject* readObject(std::istream &stream)
 		case KLMetaType::reg:
 			int16_t ivalue;
 			stream.read((char*)&ivalue, sizeof(int16_t));
-			value = klIns(&klreg_t);
+			value = klIns(klreg_t);
 			KLCAST(kl_int, value)->value = ivalue;
 			break;
 		case KLMetaType::number:
@@ -122,7 +122,7 @@ static KlObject* readObject(std::istream &stream)
 			kbyte keyl;
 			stream.read((char*)&keyl, 1);
 			CHECKSTREAM(nullptr,)
-			value = klIns(&klstring_t);
+			value = klIns(klstring_t);
 			KLCAST(kl_string, value)->size = keyl;
 			auto valuebuff = new char[keyl + 1];
 			valuebuff[keyl] = 0;
@@ -137,7 +137,7 @@ static KlObject* readObject(std::istream &stream)
 }
 
 static inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type) {
-	auto var = KLCAST(KLVariable, klIns(&klvar_t));
+	auto var = KLCAST(KLVariable, klIns(klvar_t));
 	kbyte namesize;
 	bool hasdefaultvalue;
 	kbyte offset;
@@ -181,13 +181,13 @@ static vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 		stream.read((char*)&count, 2);
 		stream.read((char*)&labelsize, 1);
 		CHECKSTREAM(dev, )
-		auto ins = KLCAST(KLInstruction, klIns(&klinstruction_t));
+		auto ins = KLCAST(KLInstruction, klIns(klinstruction_t));
 		if(labelsize) {
 			auto namebuff = new char[labelsize + 1];
 			namebuff[labelsize] = 0;
 			stream.read(namebuff, labelsize);
 			CHECKSTREAM(dev, delete[] namebuff;klDeref(KLWRAP(ins));)
-			ins->label = klIns(&klstring_t);
+			ins->label = klIns(klstring_t);
 			KLCAST(kl_string, ins->label)->value = namebuff;
 			KLCAST(kl_string, ins->label)->size = labelsize;
 		}
@@ -216,8 +216,8 @@ static inline void readFunctionDefinition(map<string, KlObject *> *target, istre
 	stream.read(namebuff, read[0]);
 	CHECKSTREAM(, delete [] namebuff;)
 
-	auto func = KLCAST(KLFunction, klIns(&klfunc_t));
-	func->name = klIns(&klstring_t);
+	auto func = KLCAST(KLFunction, klIns(klfunc_t));
+	func->name = klIns(klstring_t);
 	KLCAST(kl_string, func->name)->value = namebuff;
 	KLCAST(kl_string, func->name)->size = read[0];
 	func->body = readFuntionBody(stream, size);
@@ -329,8 +329,8 @@ static inline void readPackageDefinition(map<string, KlObject *> *target, istrea
 	namebuff[namesize] = 0;
 	stream.read(namebuff, namesize);
 	CHECKSTREAM(, delete [] namebuff;)
-	auto package = KLCAST(KLPackage, klIns(&klpack_t));
-	package->name = klIns(&klstring_t);
+	auto package = KLCAST(KLPackage, klIns(klpack_t));
+	package->name = klIns(klstring_t);
 	KLCAST(kl_string, package->name)->value = namebuff;
 	KLCAST(kl_string, package->name)->size = namesize;
 	readMetadata(stream, package->metadata);
@@ -364,7 +364,7 @@ static KLPackage* createBasePackage(std::istream &stream)
 		namebuff[read[4]] = 0;
 		stream.read(namebuff, read[4]);
 		// create a new empty instance and set the values
-		dev->name = klIns(&klstring_t);
+		dev->name = klIns(klstring_t);
 		KLCAST(kl_string, dev->name)->size = read[4];
 		KLCAST(kl_string, dev->name)->value = namebuff;
 
@@ -375,7 +375,7 @@ static KLPackage* createBasePackage(std::istream &stream)
 			namebuff[read[5]] = 0;
 			stream.read(namebuff, read[5]);
 			// create a new empty instance and set the values
-			authorname = klIns(&klstring_t);
+			authorname = klIns(klstring_t);
 			KLCAST(kl_string, authorname)->size = read[4];
 			KLCAST(kl_string, authorname)->value = namebuff;
 		}

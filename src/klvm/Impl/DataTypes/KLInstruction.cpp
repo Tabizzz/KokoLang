@@ -20,4 +20,18 @@ static void kins_end(KlObject* pack)
 	delete[] ins->operands;
 }
 
-KLType klinstruction_t = KLBASIC_TYPE("instruction", KLInstruction, kins_init, kins_end)};
+KLType* klinstruction_t = nullptr;
+
+void global_klinstruction_t()
+{
+	klinstruction_t = new KLType {
+		.klbase = {
+			.flags = KLOBJ_FLAG_USE_DELETE
+		},
+		.name = "instruction",
+		.size = sizeof(KLInstruction),
+		.initializer = kins_init,
+		.finalizer = kins_end,
+		KLTYPE_METADATA
+	};
+}

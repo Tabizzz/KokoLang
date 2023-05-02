@@ -40,7 +40,7 @@ KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
 		nowide::cout << KASINT(val) << std::endl;
 	else if (val->type == klfloat_t)
 		nowide::cout << KASFLOAT(val) << std::endl;
-	else if (val->type == &klstring_t)
+	else if (val->type == klstring_t)
 		nowide::cout << KSTRING(val) << std::endl;
 
 	return nullptr;
@@ -70,7 +70,7 @@ int main(int argc, const char* argv[])
 		
 		MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))
 
-		auto out = KLCAST(KLFunction, klIns(&klfunc_t));
+		auto out = KLCAST(KLFunction, klIns(klfunc_t));
 		out->external = true;
 		out->invokable = outImpl;
 		out->args = 1;

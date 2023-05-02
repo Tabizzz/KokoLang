@@ -99,7 +99,7 @@ static inline KlObject *defaultVariableResolver(const KlObject *fullname,
 		auto pack = mode ? klGlobalPackage() : package;
 		auto var = mapfind(pack->variables, str);
 		if (var) return var;
-		var = klIns(&klvar_t);
+		var = klIns(klvar_t);
 		pack->variables->insert(MetaPair(str, var));
 		return var;
 	} else {
@@ -111,7 +111,7 @@ static inline KlObject *defaultVariableResolver(const KlObject *fullname,
 
 		auto var = mapfind(pack->variables, str);
 		if (var) return var;
-		var = klIns(&klvar_t);
+		var = klIns(klvar_t);
 		pack->variables->insert(MetaPair(str, var));
 		return var;
 	}

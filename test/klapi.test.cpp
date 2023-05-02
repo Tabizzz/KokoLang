@@ -183,7 +183,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A not null src with copy and without clone")
 		{
-			auto src = klIns(&klreg_t);
+			auto src = klIns(klreg_t);
 
 			WHEN( "dest is null" )
 			{
@@ -198,7 +198,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null and the same type of src" )
 			{
-				KlObject* dest = klIns(&klreg_t);
+				KlObject* dest = klIns(klreg_t);
 				KASINT(dest) = 1;
 				REQUIRE(src->refs == 1);
 				REQUIRE(dest->refs == 1);
@@ -394,7 +394,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A not null src without clone")
 		{
-			auto src = klIns(&klreg_t);
+			auto src = klIns(klreg_t);
 
 			WHEN( "dest is null" )
 			{

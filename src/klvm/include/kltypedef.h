@@ -97,19 +97,6 @@ struct CPPAPI kl_ptr {
 };
 
 /**
- * @brief Kokolang's builtin weak pointer structure.
- *
- * This struct is used to hold a reference to another object without changing the refcount.
- */
-struct CPPAPI kl_optr {
-	KLOBJECTHEAD
-	/**
-	 * @brief Referenced object
-	 */
-	KlObject* value;
-};
-
-/**
  *  @brief Kokolang's builtin array structure.
  *
  * An array has a fixed size and can have multiple dimensions, any array with dimension greater than 0 only contain other arrays.
@@ -123,7 +110,7 @@ struct CPPAPI kl_arr {
 	/**
 	 * @brief The native array containing the objects.
 	 */
-	KlObject** content;
+	void* content;
 };
 
 #ifdef __cplusplus

@@ -113,4 +113,4 @@ CAPI
 /**
  * @brief Type for variables.
  */
-KLType klvar_t;
+KLType* klvar_t;

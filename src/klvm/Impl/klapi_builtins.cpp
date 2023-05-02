@@ -16,30 +16,8 @@ CAPI KlObject *klBuiltinFloat(kfloat val) {
 	return base;
 }
 
-static kl_bool kl_bool_true = {
-		KlObject{
-				&klbool_t,
-				1,
-				KLOBJ_FLAG_IGNORE_REF
-		},
-		true
-};
-
-static kl_bool kl_bool_false = {
-		KlObject{
-				&klbool_t,
-				1,
-				KLOBJ_FLAG_IGNORE_REF
-		},
-		false
-};
-
-CAPI KlObject *klBuiltinBool(char val) {
-	return KLWRAP(val ? &kl_bool_true : &kl_bool_false);
-}
-
 CPPAPI KlObject *klBuiltinString(const string &val) {
-	auto base = klIns(&klstring_t);
+	auto base = klIns(klstring_t);
 	auto obj = KLCAST(kl_string , base);
 	obj->size = val.size();
 	obj->value = new char[obj->size];
@@ -48,7 +26,7 @@ CPPAPI KlObject *klBuiltinString(const string &val) {
 }
 
 KlObject* klBuiltinMultiArr(uint32_t dimensions, uint32_t* sizes) {
-	auto base = klIns(&klarray_t);
+	auto base = klIns(klarray_t);
 
 	return base;
 }
