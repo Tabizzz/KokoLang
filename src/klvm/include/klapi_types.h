@@ -60,7 +60,7 @@ CAPI KLType klmap_t;
 /**
  * Builtin type type.
  */
-CAPI KLType kltype_t;
+CAPI KLType* kltype_t;
 
 /**
  * Builtin type register.
@@ -85,7 +85,7 @@ CAPI
  * Increase the ref count of an object.
  */
 inline void klRef(KlObject *object) {
-	if(object && !KLTYPE_IS_STATIC(object->type)) object->refs++;
+	if(object && !KLTYPE_IS_STATIC(object->type) && !(object->flags & KLOBJ_FLAG_IGNORE_REF)) object->refs++;
 }
 
 CAPI

@@ -26,6 +26,10 @@ extern "C" {
  * @brief Use to not change the inscount of the type on destroy.
  */
 #define KLOBJ_FLAG_NO_INSCOUNT 2
+/**
+ * @brief Ignored reference counting or this object.
+ */
+#define KLOBJ_FLAG_IGNORE_REF 4
 
 struct KLType;
 

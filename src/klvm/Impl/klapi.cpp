@@ -28,15 +28,6 @@ CAPI void klInit() {
 
 	globalPackage = kliBuildGlobalPackage();
 
-	// the ref count of types is always 1, and you should never call
-	// deref with a type as this will try to destroy it but types are
-	// not freeable
-
-	// first init the base type.
-	kltype_t.klbase.refs = 1;
-	kltype_t.klbase.type = &kltype_t;
-	kltype_t.inscount = 1;
-
 	// define builtin types
 	STDREGTYPE(klint_t)
 	STDREGTYPE(klfloat_t)
@@ -53,10 +44,8 @@ CAPI void klInit() {
 	STDREGTYPE(klpack_t)
 	STDREGTYPE(klvar_t)
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "NullDereference"
+	// we need to
 	globalPackage->name = KLSTR("global");
-#pragma clang diagnostic pop
 
 	packages = new map<string, KLPackage *>();
 }
@@ -122,9 +111,9 @@ CAPI void klDefType(KLType *type) {
 		throw runtime_error("Types cant contain the following characters in name: '.', ':' and '%'");
 	}
 	// set the type
-	type->klbase.type = &kltype_t;
+	type->klbase.type = kltype_t;
 	// increase the instance count of type
-	kltype_t.inscount++;
+	kltype_t->inscount++;
 	// the type is defined, so it only have one ref.
 	type->klbase.refs = 1;
 	type->inscount = 0;

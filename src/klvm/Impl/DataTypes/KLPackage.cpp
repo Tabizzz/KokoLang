@@ -31,8 +31,7 @@ void kpack_end(KlObject* pack)
 	kliDerefAndDeleteMap(ins->variables);
 	kliDerefAndDeleteMap(ins->packs);
 	kliDerefAndDeleteMap(ins->metadata);
-	//types are no destroyed
-	delete ins->types;
+	kliDerefAndDeleteMap(ins->types);
 }
 
 CAPI KLPackage* klCreatePackage()

@@ -20,6 +20,7 @@ CAPI KlObject *klIns(KLType *type) {
 CAPI void klDeref(KlObject *object) {
 	if (!object) return;
 	if (KLTYPE_IS_STATIC(object->type)) return;
+	if (object->flags & KLOBJ_FLAG_IGNORE_REF) return;
 
 	assert(object->refs > 0);
 	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT))
@@ -71,7 +72,7 @@ CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
 	if (target->type == &klfunc_t) {
 		auto func = KLCAST(KLFunction, target);
 		return klInvokeCore(func, argv, argc);
-	} else if (target->type == &kltype_t) {
+	} else if (target->type == kltype_t) {
 		return klNew(KLCAST(KLType, target), argv, argc);
 	} else {
 		auto find = target->type->functions->find("call");

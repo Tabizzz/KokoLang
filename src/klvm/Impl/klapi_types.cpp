@@ -683,13 +683,6 @@ KLType klarray_t = {
 	karr_init,
 };
 
-KLType kltype_t = {
-	KLTYPEHEAD,
-	.name = "type",
-	.size =    sizeof(KLType),
-	.flags = KLTYPE_FLAG_NOINSTANCE
-};
-
 KLType klreg_t = {
 	KLTYPEHEAD,
 	.name = "reg",

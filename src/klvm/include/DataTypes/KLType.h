@@ -15,6 +15,11 @@ KLTYPEHEAD,                        \
 .initializer = c,                \
 .finalizer = d
 
+#define KLTYPE_METADATA 		\
+.functions = new MetaMap(),		\
+.variables = new MetaMap(),		\
+.metadata = new MetaMap(),
+
 struct CPPAPI KLType {
 	KLOBJECTHEAD
 	const char *name;            // the name of the types
