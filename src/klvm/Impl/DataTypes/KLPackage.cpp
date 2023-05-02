@@ -56,7 +56,7 @@ CAPI void klBuildPackage(KLPackage *klPackage, kbyte recursive) // NOLINT(misc-n
 	// build functions in types
 	for (const auto& typer: *klPackage->types) {
 		auto type = KLCAST(KLType, typer.second);
-		for (const auto& func: type->functions) {
+		for (const auto& func: *type->functions) {
 			klBuildFunction(klPackage, type, KLCAST(KLFunction, func.second));
 		}
 	}

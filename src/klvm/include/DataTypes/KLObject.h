@@ -18,6 +18,15 @@ extern "C" {
  */
 #define KLINVOKE(x) if(x) x
 
+/**
+ * @brief Use delete instead of free() to destroy the pointer of this object.
+ */
+#define KLOBJ_FLAG_USE_DELETE 1
+/**
+ * @brief Use to not change the inscount of the type on destroy.
+ */
+#define KLOBJ_FLAG_NO_INSCOUNT 2
+
 struct KLType;
 
 /**
@@ -39,9 +48,9 @@ struct CPPAPI KlObject {
 	 */
 	uint32_t refs;
 	/**
-	 * @brief reserved field.
+	 * @brief flags field.
 	 */
-	uint32_t reserved; // to be used as flags for garbage collection.
+	uint32_t flags; // to be used as flags for garbage collection.
 };
 
 #ifdef __cplusplus

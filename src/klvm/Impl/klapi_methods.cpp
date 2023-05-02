@@ -10,6 +10,7 @@ CAPI KlObject *klIns(KLType *type) {
 	auto space = KLWRAP(malloc(size));
 	space->type = type;
 	space->refs = 1;
+	space->flags = 0;
 	type->inscount++;
 	// call the initializer
 	KLINVOKE(type->initializer)(space);
@@ -21,7 +22,8 @@ CAPI void klDeref(KlObject *object) {
 	if (KLTYPE_IS_STATIC(object->type)) return;
 
 	assert(object->refs > 0);
-	assert(object->type->inscount > 0);
+	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT))
+		assert(object->type->inscount > 0);
 	object->refs--;
 	if (object->refs == 0) {
 		klDestroy(object);
@@ -30,10 +32,15 @@ CAPI void klDeref(KlObject *object) {
 
 CAPI void klDestroy(KlObject *object) {
 	if (!object) return;
-	object->type->inscount--;
+	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT))
+		object->type->inscount--;
 	// call finalizer
 	KLINVOKE(object->type->finalizer)(object);
-	free(object);
+	if (object->flags & KLOBJ_FLAG_USE_DELETE) {
+		::operator delete(object);
+	} else {
+		free(object);
+	}
 }
 
 inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {
@@ -67,8 +74,8 @@ CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
 	} else if (target->type == &kltype_t) {
 		return klNew(KLCAST(KLType, target), argv, argc);
 	} else {
-		auto find = target->type->functions.find("call");
-		if (find != target->type->functions.end()) {
+		auto find = target->type->functions->find("call");
+		if (find != target->type->functions->end()) {
 			return klInvokeCore(KLCAST(KLFunction, find->second), argv, argc);
 		}
 	}

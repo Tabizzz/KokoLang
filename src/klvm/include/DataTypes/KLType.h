@@ -55,7 +55,7 @@ struct CPPAPI KLType {
 	 */
 	kbyte flags;
 
-	MetaMap functions;            // the functions defined in the type
-	MetaMap variables;            // the globals var of the type.
-	MetaMap metadata;        // metadata of the type
+	MetaMap* functions;            // the functions defined in the type
+	MetaMap* variables;            // the globals var of the type.
+	MetaMap* metadata;        		// metadata of the type
 };

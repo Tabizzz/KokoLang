@@ -261,7 +261,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 			0,
 			sizeof(KlObject)
 	};
-	readMetadata(stream, &type->metadata);
+	readMetadata(stream, type->metadata);
 	KLDefinitionType def;
 	do
 	{
@@ -271,10 +271,10 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 		switch (def) {
 
 			case KLDefinitionType::variable:
-				readVariableDefinition(&type->variables, stream, false);
+				readVariableDefinition(type->variables, stream, false);
 				break;
 			case KLDefinitionType::function:
-				readFunctionDefinition(&type->functions, stream, false);
+				readFunctionDefinition(type->functions, stream, false);
 				break;
 			case KLDefinitionType::close:
 			case KLDefinitionType::type:
@@ -283,7 +283,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 		}
 		CHECKSTREAM(, delete type;)
 	} while (def == KLDefinitionType::variable || def == KLDefinitionType::function);
-	type->size += type->variables.size() * sizeof(KlObject*);
+	type->size += type->variables->size() * sizeof(KlObject*);
 	// todo: convert functions in the type to builtin operations
 	klDefType(type);
 	klPackageRegType(parent, type);

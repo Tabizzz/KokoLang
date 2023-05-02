@@ -13,8 +13,8 @@ STDCHECKTYPE(x)
 #define STDCHECKTYPE(x) if(x.inscount) cout << "type "<< x.name << " still has " << x.inscount << " instances in memory" << endl;
 #endif
 
-static KLPackage *globalPackage = nullptr;
-static map<string, KLPackage *> *packages;
+KLPackage *globalPackage = nullptr;
+map<string, KLPackage *> *packages;
 
 map<string, KLPackage *> *kliRootPackages() {
 	return packages;
