@@ -13,7 +13,7 @@ KlObject *klself_return(KlObject *base) {
 
 #pragma region bool
 
-KlObject *kbool_tostr(KlObject *obj) {
+static KlObject *kbool_tostr(KlObject *obj) {
 	if (KASBOOL(obj)) {
 		return KLSTR("true");
 	} else {
@@ -35,18 +35,18 @@ KLType klbool_t =
 
 #pragma region string
 
-void kstring_init(KlObject *obj) {
+static void kstring_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	ptr->value = nullptr;
 	ptr->size = 0;
 }
 
-void kstring_end(KlObject *obj) {
+static void kstring_end(KlObject *obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	delete[] ptr->value;
 }
 
-int8_t kstring_compare(KlObject *x, KlObject *y) {
+static int8_t kstring_compare(KlObject *x, KlObject *y) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -83,7 +83,7 @@ int8_t kstring_compare(KlObject *x, KlObject *y) {
 	return dev;
 }
 
-int8_t kstring_equals(KlObject *x, KlObject *y) {
+static int8_t kstring_equals(KlObject *x, KlObject *y) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -116,7 +116,7 @@ int8_t kstring_equals(KlObject *x, KlObject *y) {
 	return dev;
 }
 
-void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
+static void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -166,7 +166,7 @@ void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
 	}
 }
 
-KlObject *kstring_clone(KlObject *obj) {
+static KlObject *kstring_clone(KlObject *obj) {
 	return KLSTR(KSTRING(obj));
 }
 
@@ -196,17 +196,17 @@ KLType klstring_t = {
 
 #pragma endregion string
 
-void kptr_init(KlObject *obj) {
+static void kptr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_ptr, obj);
 	ptr->value = nullptr;
 }
 
-void koptr_init(KlObject *obj) {
+static void koptr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_optr, obj);
 	ptr->value = nullptr;
 }
 
-void karr_init(KlObject *obj) {
+static void karr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_arr, obj);
 	ptr->size = 0;
 	ptr->content = nullptr;

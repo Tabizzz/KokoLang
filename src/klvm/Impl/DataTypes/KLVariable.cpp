@@ -2,7 +2,7 @@
 #include "DataTypes/KLVariable.h"
 
 
-void kvar_instantiator(KlObject *obj) {
+static void kvar_instantiator(KlObject *obj) {
 	auto var = KLCAST(KLVariable, obj);
 	var->data.packvar.value = nullptr;
 	var->data.packvar.type = true;
@@ -10,7 +10,7 @@ void kvar_instantiator(KlObject *obj) {
 	var->metadata = new MetaMap();
 }
 
-void kvar_destructor(KlObject *obj) {
+static void kvar_destructor(KlObject *obj) {
 	auto var = KLCAST(KLVariable, obj);
 
 	kliDerefAndDeleteMap(var->metadata);

@@ -44,7 +44,7 @@ CAPI void klDestroy(KlObject *object) {
 	}
 }
 
-inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {
+static inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {
 	// implement call stack:
 	// add the function to the call stack
 	if (argc < func->margs) {

@@ -2,7 +2,7 @@
 #include "DataTypes/KLFunction.h"
 #include "KLFunctionImpl.h"
 
-KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
+static KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	auto func = KLCAST(KLFunction, caller);
 	auto argc = func->args == -1 ? passedArgs : func->args;
 
@@ -42,7 +42,7 @@ KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	return call.ret;
 }
 
-void kfunc_instantiator(KlObject *obj) {
+static void kfunc_instantiator(KlObject *obj) {
 	auto func = KLCAST(KLFunction, obj);
 	func->external = false;
 	func->name = nullptr;
@@ -56,7 +56,7 @@ void kfunc_instantiator(KlObject *obj) {
 
 }
 
-void kfunc_destructor(KlObject *obj) {
+static void kfunc_destructor(KlObject *obj) {
 	auto func = KLCAST(KLFunction, obj);
 	klDeref(func->name);
 	if (!func->external) {
@@ -68,7 +68,7 @@ void kfunc_destructor(KlObject *obj) {
 	kliDerefAndDeleteMap(func->metadata);
 }
 
-inline void klFunction_reallocateLabels(KLFunction *function) {
+static inline void klFunction_reallocateLabels(KLFunction *function) {
 	auto olsize = function->size;
 	for (int i = 0; i < function->body->size(); i++) {
 		auto instruction = (*function->body)[i];
@@ -112,7 +112,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 	}
 
 	for (auto instruction: *func->body) {
-		klFunction_setInstructionCall(instruction);
+		kliFunction_setInstructionCall(instruction);
 		// replace identifiers with pointers
 		switch (instruction->opcode) {
 			case KLOpcode::set:

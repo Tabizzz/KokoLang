@@ -2,4 +2,4 @@
 
 #include "DataTypes/KLInstruction.h"
 
-void klFunction_setInstructionCall(KLInstruction* instruction);
+void kliFunction_setInstructionCall(KLInstruction* instruction);

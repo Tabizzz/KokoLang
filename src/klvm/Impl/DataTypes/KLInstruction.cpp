@@ -1,6 +1,6 @@
 ﻿#include "../klvm_internal.h"
 
-void kins_init(KlObject* pack)
+static void kins_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLInstruction, pack);
 	ins->label = nullptr;
@@ -10,7 +10,7 @@ void kins_init(KlObject* pack)
 	ins->call = nullptr;
 }
 
-void kins_end(KlObject* pack)
+static void kins_end(KlObject* pack)
 {
 	auto ins = KLCAST(KLInstruction, pack);
 	klDeref(ins->label);

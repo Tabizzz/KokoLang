@@ -8,7 +8,7 @@
 
 #define CHECKSTREAM(x,y) if(stream.fail() || stream.eof() || stream.bad()) { y return x; }
 
-inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream);
+static inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream);
 
 using namespace std;
 
@@ -20,7 +20,7 @@ KLPackage *klCreatePackageFromFile(const char *filename) {
 	return pack;
 }
 
-void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metadata)
+static void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metadata)
 {
 	kshort size;
 	kbyte count;
@@ -85,7 +85,7 @@ void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metada
 	}
 }
 
-KlObject* readObject(std::istream &stream)
+static KlObject* readObject(std::istream &stream)
 {
 	KlObject* value = nullptr;
 	KLMetaType type;
@@ -136,7 +136,7 @@ KlObject* readObject(std::istream &stream)
 	return value;
 }
 
-inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type) {
+static inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type) {
 	auto var = KLCAST(KLVariable, klIns(&klvar_t));
 	kbyte namesize;
 	bool hasdefaultvalue;
@@ -171,7 +171,7 @@ inline void readVariableDefinition(std::map<std::string, KlObject*>* target, ist
 	}
 }
 
-vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
+static vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 	auto dev = new vector<KLInstruction*>();
 	while (size--) {
 		KLOpcode opcode;
@@ -204,7 +204,7 @@ vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 	return dev;
 }
 
-inline void readFunctionDefinition(map<string, KlObject *> *target, istream &stream, bool type) {
+static inline void readFunctionDefinition(map<string, KlObject *> *target, istream &stream, bool type) {
 	kbyte read[4];
 	kshort size;
 	stream.read((char*)&read, 4);
@@ -247,7 +247,7 @@ inline void readFunctionDefinition(map<string, KlObject *> *target, istream &str
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "DanglingPointer"
-inline void readTypeDefinition(istream &stream, KLPackage *parent) {
+static inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 	kbyte namesize;
 	stream.read((char*)&namesize, 1);
 	CHECKSTREAM(,)
@@ -290,7 +290,7 @@ inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 }
 #pragma clang diagnostic pop
 
-KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
+static KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 	KLDefinitionType def;
 
 	do
@@ -321,7 +321,7 @@ KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 	return pPackage;
 }
 
-inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream) {
+static inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream) {
 	kbyte namesize;
 	stream.read((char*)&namesize, 1);
 	CHECKSTREAM(,)
@@ -347,7 +347,7 @@ inline void readPackageDefinition(map<string, KlObject *> *target, istream &stre
 
 }
 
-KLPackage* createBasePackage(std::istream &stream)
+static KLPackage* createBasePackage(std::istream &stream)
 {
 	kbyte read[6];
 	stream.read((char*)read, 6);

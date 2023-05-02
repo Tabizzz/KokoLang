@@ -1,6 +1,6 @@
 #include "global.h"
 
-kl_int temp_int = {
+static kl_int temp_int = {
 	KlObject{
 		nullptr,
 		1,
@@ -8,7 +8,7 @@ kl_int temp_int = {
 	},
 	0
 };
-kl_float aux_float = {
+static kl_float temp_float = {
 	KlObject{
 		nullptr,
 		1,
@@ -19,7 +19,7 @@ kl_float aux_float = {
 
 KLType *klint_t = nullptr;
 
-void kint_init(KlObject *obj) {
+static void kint_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_int, obj);
 	ptr->value = 0;
 }
@@ -27,7 +27,7 @@ void kint_init(KlObject *obj) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantFunctionResult"
 
-int8_t kint_comparer(KlObject *x, KlObject *y) {
+static int8_t kint_comparer(KlObject *x, KlObject *y) {
 	int64_t first = KASINT(x);
 	int64_t second = 0;
 	if (y) {
@@ -50,7 +50,7 @@ int8_t kint_comparer(KlObject *x, KlObject *y) {
 
 #pragma clang diagnostic pop
 
-int8_t kint_equal(KlObject *x, KlObject *y) {
+static int8_t kint_equal(KlObject *x, KlObject *y) {
 	if (y) {
 		if (y->type == klint_t) {
 			return KASINT(x) == KASINT(y);
@@ -65,34 +65,34 @@ int8_t kint_equal(KlObject *x, KlObject *y) {
 	return KASINT(x) == 0;
 }
 
-KlObject *kint_clone(KlObject *base) {
+static KlObject *kint_clone(KlObject *base) {
 	return KLINT(KASINT(base));
 }
 
-void kint_copy(KlObject *a, KlObject *b) {
+static void kint_copy(KlObject *a, KlObject *b) {
 	KASINT(b) = KASINT(a);
 }
 
-KlObject *klint_tostr(KlObject *base) {
+static KlObject *klint_tostr(KlObject *base) {
 	auto val = KASINT(base);
 	return KLSTR(to_string(val));
 }
 
-KlObject *klint_toflt(KlObject *base) {
+static KlObject *klint_toflt(KlObject *base) {
 	auto val = KASINT(base);
 	return KLFLOAT(val);
 }
 
-KlObject *klint_tobit(KlObject *base) {
+static KlObject *klint_tobit(KlObject *base) {
 	auto val = KASINT(base);
 	return KLBOOL(val);
 }
 
-void kint_add(KlObject *first, KlObject *second, KlObject **target) {
+static void kint_add(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			aux_float.value = KASINT(first);
-			klfloat_t->opAdd(KLWRAP(&aux_float), second, target);
+			temp_float.value = KASINT(first);
+			klfloat_t->opAdd(KLWRAP(&temp_float), second, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -111,11 +111,11 @@ void kint_add(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-void kint_sub(KlObject *first, KlObject *second, KlObject **target) {
+static void kint_sub(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			aux_float.value = KASINT(first);
-			klfloat_t->opSub(KLWRAP(&aux_float), second, target);
+			temp_float.value = KASINT(first);
+			klfloat_t->opSub(KLWRAP(&temp_float), second, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -134,7 +134,7 @@ void kint_sub(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-void kint_mul(KlObject *first, KlObject *second, KlObject **target) {
+static void kint_mul(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		if (second->type == klfloat_t) {
 			klfloat_t->opMul(second, first, target);
@@ -157,11 +157,11 @@ void kint_mul(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-void kint_div(KlObject *first, KlObject *second, KlObject **target) {
+static void kint_div(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			aux_float.value = KASINT(first);
-			klfloat_t->opDiv(KLWRAP(&aux_float), second, target);
+			temp_float.value = KASINT(first);
+			klfloat_t->opDiv(KLWRAP(&temp_float), second, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -182,11 +182,11 @@ void kint_div(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-void kint_mod(KlObject *first, KlObject *second, KlObject **target) {
+static void kint_mod(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			aux_float.value = KASINT(first);
-			klfloat_t->opMod(KLWRAP(&aux_float), second, target);
+			temp_float.value = KASINT(first);
+			klfloat_t->opMod(KLWRAP(&temp_float), second, target);
 			return;
 		}
 		auto x = KASINT(first);
@@ -232,9 +232,13 @@ void global_klint_t() {
 		kint_div,
 		kint_mod,
 		kint_clone,
-		kint_copy
+		kint_copy,
+		0,
+		new MetaMap(),
+		new MetaMap(),
+		new MetaMap(),
 	};
 
 	temp_int.klbase.type = klint_t;
-	aux_float.klbase.type = klfloat_t;
+	temp_float.klbase.type = klfloat_t;
 }

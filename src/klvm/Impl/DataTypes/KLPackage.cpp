@@ -2,7 +2,7 @@
 #include "../klvm_internal.h"
 #include "DataTypes/KLPackage.h"
 
-void kpack_init(KlObject* pack)
+static void kpack_init(KlObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
 	ins->name = nullptr;
@@ -22,7 +22,7 @@ void kliDerefAndDeleteMap(MetaMap* pMap)
 	delete pMap;
 }
 
-void kpack_end(KlObject* pack)
+static void kpack_end(KlObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
 	klDeref(ins->name);
@@ -70,7 +70,7 @@ CAPI void klBuildPackage(KLPackage *klPackage, kbyte recursive) // NOLINT(misc-n
 
 }
 
-inline KlObject** argstoobject(const char **pString, int i)
+static inline KlObject** argstoobject(const char **pString, int i)
 {
 	auto ret = new KlObject* [i];
 

@@ -3,7 +3,7 @@
 
 klresolver resolver;
 
-inline void split(vector<string> &vector, const string &source, char separator) {
+static inline void split(vector<string> &vector, const string &source, char separator) {
 	string::size_type start = 0;
 	string::size_type index;
 	while ((index = source.find(separator, start)) != string::npos) {
@@ -14,12 +14,12 @@ inline void split(vector<string> &vector, const string &source, char separator) 
 }
 
 template<typename T>
-inline T mapfind(map<string, T> *map, string &find) {
+static inline T mapfind(map<string, T> *map, string &find) {
 	auto varfind = map->find(find);
 	return varfind != map->end() ? varfind->second : nullptr;
 }
 
-inline KlObject *internalPackageResolver(const string &str) {
+static inline KlObject *internalPackageResolver(const string &str) {
 	if (str == "global") return KLWRAP(klGlobalPackage());
 	vector<string> list;
 	split(list, str, '.');
@@ -39,11 +39,11 @@ inline KlObject *internalPackageResolver(const string &str) {
 	return KLWRAP(pack);
 }
 
-inline KlObject *defaultPackageResolver(const KlObject *fullname) {
+static inline KlObject *defaultPackageResolver(const KlObject *fullname) {
 	return internalPackageResolver(KSTRING(fullname));
 }
 
-inline KlObject *defaultTypeResolver(const KlObject *fullname,
+static inline KlObject *defaultTypeResolver(const KlObject *fullname,
 									 const KLPackage *package,
 									 kbyte mode) {
 	auto str = KSTRING(fullname);
@@ -66,7 +66,7 @@ inline KlObject *defaultTypeResolver(const KlObject *fullname,
 	return nullptr;
 }
 
-inline KlObject *defaultFunctionResolver(const KlObject *fullname,
+static inline KlObject *defaultFunctionResolver(const KlObject *fullname,
 										 const KLPackage *package,
 										 kbyte mode) {
 	auto str = KSTRING(fullname);
@@ -89,7 +89,7 @@ inline KlObject *defaultFunctionResolver(const KlObject *fullname,
 	return nullptr;
 }
 
-inline KlObject *defaultVariableResolver(const KlObject *fullname,
+static inline KlObject *defaultVariableResolver(const KlObject *fullname,
 										 const KLPackage *package,
 										 kbyte mode) {
 	auto str = KSTRING(fullname);
@@ -117,7 +117,7 @@ inline KlObject *defaultVariableResolver(const KlObject *fullname,
 	}
 }
 
-KlObject *defaultResolver(const KlObject *fullname,
+static KlObject *defaultResolver(const KlObject *fullname,
 						  const KLPackage *package,
 						  [[maybe_unused]] const KLType *type,
 						  [[maybe_unused]] const KLFunction *function,
