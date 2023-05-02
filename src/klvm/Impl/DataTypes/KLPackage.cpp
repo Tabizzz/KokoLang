@@ -37,7 +37,7 @@ void kpack_end(KlObject* pack)
 
 CAPI KLPackage* klCreatePackage()
 {
-	auto ins = KLCAST(KLPackage, klIns(&klBType_Package));
+	auto ins = KLCAST(KLPackage, klIns(&klpack_t));
 	return ins;
 }
 
@@ -121,4 +121,4 @@ void klPackageRegType(KLPackage *klPackage, KLType *type) {
 	throw invalid_argument("trying to define a type but another type with the same name already exists");
 }
 
-KLType klBType_Package = KLBASIC_TYPE("pack", KLPackage, kpack_init, kpack_end)};
+KLType klpack_t = KLBASIC_TYPE("pack", KLPackage, kpack_init, kpack_end)};

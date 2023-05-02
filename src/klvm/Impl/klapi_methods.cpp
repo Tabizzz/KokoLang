@@ -68,7 +68,7 @@ CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
 
 CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
 	if (!target) return nullptr;
-	if (target->type == &klBType_Func) {
+	if (target->type == &klfunc_t) {
 		auto func = KLCAST(KLFunction, target);
 		return klInvokeCore(func, argv, argc);
 	} else if (target->type == &kltype_t) {

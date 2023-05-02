@@ -20,19 +20,13 @@ map<string, KLPackage *> *kliRootPackages() {
 	return packages;
 }
 
-void kliBuildGlobalPackage() {
-	globalPackage = new KLPackage();
-	globalPackage->klbase.type = &klBType_Package;
-	klBType_Package.initializer(KLWRAP(globalPackage));
-}
-
 CAPI void klInit() {
 	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value),
 				  "kl_int and kl_float dont have the same size.");
 
 	klRestoreResolver();
 
-	kliBuildGlobalPackage();
+	globalPackage = kliBuildGlobalPackage();
 
 	// the ref count of types is always 1, and you should never call
 	// deref with a type as this will try to destroy it but types are
@@ -54,10 +48,10 @@ CAPI void klInit() {
 	STDREGTYPE(klreg_t)
 
 	// define runtime specific types
-	STDREGTYPE(klBType_Instruction)
-	STDREGTYPE(klBType_Func)
-	STDREGTYPE(klBType_Package)
-	STDREGTYPE(klBType_Variable)
+	STDREGTYPE(klinstruction_t)
+	STDREGTYPE(klfunc_t)
+	STDREGTYPE(klpack_t)
+	STDREGTYPE(klvar_t)
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NullDereference"
@@ -72,8 +66,7 @@ CAPI void klEnd() {
 		klDestroyPackage(pack.second);
 	}
 	delete packages;
-	klBType_Package.finalizer(KLWRAP(globalPackage));
-	delete globalPackage;
+	klDestroyPackage(globalPackage);
 	globalPackage = nullptr;
 
 	// check instance counts
@@ -87,10 +80,10 @@ CAPI void klEnd() {
 	STDCHECKTYPE(klreg_t)
 
 	// define runtime specific types
-	STDCHECKTYPE(klBType_Instruction)
-	STDCHECKTYPE(klBType_Func)
-	STDCHECKTYPE(klBType_Package)
-	STDCHECKTYPE(klBType_Variable)
+	STDCHECKTYPE(klinstruction_t)
+	STDCHECKTYPE(klfunc_t)
+	STDCHECKTYPE(klpack_t)
+	STDCHECKTYPE(klvar_t)
 }
 
 CAPI KLPackage *klGlobalPackage() {

@@ -70,7 +70,7 @@ int main(int argc, const char* argv[])
 		
 		MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))
 
-		auto out = KLCAST(KLFunction, klIns(&klBType_Func));
+		auto out = KLCAST(KLFunction, klIns(&klfunc_t));
 		out->external = true;
 		out->invokable = outImpl;
 		out->args = 1;

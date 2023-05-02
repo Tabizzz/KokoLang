@@ -137,7 +137,7 @@ KlObject* readObject(std::istream &stream)
 }
 
 inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type) {
-	auto var = KLCAST(KLVariable, klIns(&klBType_Variable));
+	auto var = KLCAST(KLVariable, klIns(&klvar_t));
 	kbyte namesize;
 	bool hasdefaultvalue;
 	kbyte offset;
@@ -181,7 +181,7 @@ vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 		stream.read((char*)&count, 2);
 		stream.read((char*)&labelsize, 1);
 		CHECKSTREAM(dev, )
-		auto ins = KLCAST(KLInstruction, klIns(&klBType_Instruction));
+		auto ins = KLCAST(KLInstruction, klIns(&klinstruction_t));
 		if(labelsize) {
 			auto namebuff = new char[labelsize + 1];
 			namebuff[labelsize] = 0;
@@ -216,7 +216,7 @@ inline void readFunctionDefinition(map<string, KlObject *> *target, istream &str
 	stream.read(namebuff, read[0]);
 	CHECKSTREAM(, delete [] namebuff;)
 
-	auto func = KLCAST(KLFunction, klIns(&klBType_Func));
+	auto func = KLCAST(KLFunction, klIns(&klfunc_t));
 	func->name = klIns(&klstring_t);
 	KLCAST(kl_string, func->name)->value = namebuff;
 	KLCAST(kl_string, func->name)->size = read[0];
@@ -329,7 +329,7 @@ inline void readPackageDefinition(map<string, KlObject *> *target, istream &stre
 	namebuff[namesize] = 0;
 	stream.read(namebuff, namesize);
 	CHECKSTREAM(, delete [] namebuff;)
-	auto package = KLCAST(KLPackage, klIns(&klBType_Package));
+	auto package = KLCAST(KLPackage, klIns(&klpack_t));
 	package->name = klIns(&klstring_t);
 	KLCAST(kl_string, package->name)->value = namebuff;
 	KLCAST(kl_string, package->name)->size = namesize;

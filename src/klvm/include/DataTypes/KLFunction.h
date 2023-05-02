@@ -55,4 +55,4 @@ void klBuildFunction(KLPackage* package, KLType* type, KLFunction* func);
  *
  * This type is defined when call klInit.
  */
-CAPI KLType klBType_Func;
+CAPI KLType klfunc_t;

@@ -58,4 +58,4 @@ CAPI void klBuildPackage(KLPackage* klPackage, kbyte recursive = 1);
  */
 CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]);
 
-CAPI KLType klBType_Package;
+CAPI KLType klpack_t;

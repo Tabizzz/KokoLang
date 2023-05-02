@@ -45,4 +45,4 @@ KlObject *klGetVariable(KLVariable *variable, KlObject *target) {
 	}
 }
 
-KLType klBType_Variable = KLBASIC_TYPE("var", KLVariable, kvar_instantiator, kvar_destructor)};
+KLType klvar_t = KLBASIC_TYPE("var", KLVariable, kvar_instantiator, kvar_destructor)};

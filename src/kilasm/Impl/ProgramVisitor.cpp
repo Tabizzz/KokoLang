@@ -42,7 +42,7 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 {
 	auto name = ctx->Id()->getText();
 	auto body = ctx->funcblock();
-	auto function = KLCAST(KLFunction, klIns(&klBType_Func));
+	auto function = KLCAST(KLFunction, klIns(&klfunc_t));
 	function->name = KLSTR(name);
 	function->body = new vector<KLInstruction*>();
 
@@ -59,7 +59,7 @@ any ProgramVisitor::visitFunction(KokoLangParser::FunctionContext* ctx)
 any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 	auto opcodectx = ctx->opcode();
 	string name;
-	auto instruction = KLCAST(KLInstruction, klIns(&klBType_Instruction));
+	auto instruction = KLCAST(KLInstruction, klIns(&klinstruction_t));
 
 	if(!opcodectx)
 	{

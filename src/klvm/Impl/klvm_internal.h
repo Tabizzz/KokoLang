@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "klvm.h"
 #include "DataTypes/KLFunctionImpl.h"
+#include <memory>
+#include <string>
+#include <stdexcept>
 
 using namespace std;
 
@@ -10,9 +13,7 @@ void kliDerefAndDeleteMap(MetaMap* pMap);
 
 map<string, KLPackage*>* kliRootPackages();
 
-#include <memory>
-#include <string>
-#include <stdexcept>
+KLPackage* kliBuildGlobalPackage();
 
 template<typename ... Args>
 std::string string_format( const std::string& format, Args ... args )
