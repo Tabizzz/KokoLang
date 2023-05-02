@@ -15,57 +15,57 @@
 /**
  * Builtin type int.
  */
-CAPI KLType klBType_Int;
+CAPI KLType klint_t;
 
 /**
  * Builtin type flt.
  */
-CAPI KLType klBType_Float;
+CAPI KLType klfloat_t;
 
 /**
  * Builtin type bit.
  */
-CAPI KLType klBType_Bool;
+CAPI KLType klbool_t;
 
 /**
  * Builtin type str.
  */
-CAPI KLType klBType_String;
+CAPI KLType klstring_t;
 
 /**
  * Builtin type ptr.
  */
-CAPI KLType klBType_Ptr;
+CAPI KLType klptr_t;
 
 /**
  * Builtin type object ptr.
  */
-CAPI KLType klBType_OPtr;
+CAPI KLType kloptr_t;
 
 /**
  * Builtin type arr.
  */
-CAPI KLType klBType_Arr;
+CAPI KLType klarray_t;
 
 /**
  * Builtin list type.
  */
-CAPI KLType klBType_List;
+CAPI KLType kllist_t;
 
 /**
  * Builtin map type.
  */
-CAPI KLType klBType_Map;
+CAPI KLType klmap_t;
 
 /**
  * Builtin type type.
  */
-CAPI KLType klBType_Type;
+CAPI KLType kltype_t;
 
 /**
  * Builtin type register.
  */
-CAPI KLType klBType_Reg;
+CAPI KLType klreg_t;
 
 CAPI
 /**

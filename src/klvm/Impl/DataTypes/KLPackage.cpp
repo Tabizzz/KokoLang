@@ -98,8 +98,8 @@ CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]) {
 				klDeref(args[i]);
 			}
 			delete[] args;
-			if(ret && ret->type == &klBType_Int) dev = KASINT(ret);
-			if(ret && ret->type == &klBType_Bool && !KASBOOL(ret)) dev = EXIT_FAILURE;
+			if(ret && ret->type == &klint_t) dev = KASINT(ret);
+			if(ret && ret->type == &klbool_t && !KASBOOL(ret)) dev = EXIT_FAILURE;
 			klDeref(ret);
 			return dev;
 		}

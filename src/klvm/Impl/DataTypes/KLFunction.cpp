@@ -84,8 +84,8 @@ inline void klFunction_reallocateLabels(KLFunction *function) {
 					default:
 						break;
 				}
-				if (reflabel && ref->operands[0]->type == &klBType_String) {
-					if (klBType_String.equal(ref->operands[0], instruction->label)) {
+				if (reflabel && ref->operands[0]->type == &klstring_t) {
+					if (klstring_t.equal(ref->operands[0], instruction->label)) {
 						klDeref(ref->operands[0]);
 						ref->operands[0] = KLINT(i);
 					}
@@ -117,7 +117,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 		switch (instruction->opcode) {
 			case KLOpcode::set:
 			case KLOpcode::get:
-				if (instruction->operands[0]->type == &klBType_String) {
+				if (instruction->operands[0]->type == &klstring_t) {
 					auto current = instruction->operands[0];
 					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_VARIABLE | flag);
 					if (toset)
@@ -132,7 +132,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 			case KLOpcode::newa:
 			case KLOpcode::sizeofi:
 			case KLOpcode::ins:
-				if (instruction->operands[0]->type == &klBType_String) {
+				if (instruction->operands[0]->type == &klstring_t) {
 					auto current = instruction->operands[0];
 					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_TYPE | flag);
 					if (toset)
@@ -141,7 +141,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 				break;
 			case KLOpcode::call:
 			case KLOpcode::calla:
-				if (instruction->operands[0]->type == &klBType_String) {
+				if (instruction->operands[0]->type == &klstring_t) {
 					auto current = instruction->operands[0];
 					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_FUNCTION | flag);
 					if (toset)

@@ -3,7 +3,7 @@
 #include "KLFunctionImpl.h"
 
 #define GETREG(y) \
-if(y && y->type == &klBType_Reg) { \
+if(y && y->type == &klreg_t) { \
 y = call.st.at(KASINT(y));}
 #define REGORRET(x) if(!x) return; auto reg = KASINT(x);
 
@@ -15,16 +15,16 @@ typedef vector<KlObject *>::reference vecref;
 inline bool getBool(KlObject *obj, KLCall &call) {
 	GETREG(obj)
 	if (obj) {
-		if (obj->type == &klBType_Bool) {
+		if (obj->type == &klbool_t) {
 			return KASBOOL(obj);
 		}
-		if (obj->type == &klBType_String) {
+		if (obj->type == &klstring_t) {
 			return KASSTRSIZE(obj);
 		}
-		if (obj->type == &klBType_Int) {
+		if (obj->type == &klint_t) {
 			return KASINT(obj);
 		}
-		if (obj->type == &klBType_Float) {
+		if (obj->type == &klfloat_t) {
 			return KASFLOAT(obj);
 		}
 		if (obj->type->toBool) {
@@ -39,7 +39,7 @@ inline bool getBool(KlObject *obj, KLCall &call) {
 void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
 void opcode_cast(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	if (argv[0]->type == &klBType_String) {
+	if (argv[0]->type == &klstring_t) {
 		// maybe try to check if type exists now?
 		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
 	}
@@ -58,7 +58,7 @@ void opcode_cast(const KlObject *caller, KLCall &call, KlObject *argv[], size_t 
 }
 
 void opcode_tobj(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	if (argv[0]->type == &klBType_String) {
+	if (argv[0]->type == &klstring_t) {
 		// maybe try to check if type exists now?
 		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
 	}
@@ -343,7 +343,7 @@ void opcode_starg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t
 }
 
 void opcode_get(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	if (argv[0]->type == &klBType_String) {
+	if (argv[0]->type == &klstring_t) {
 		// maybe try to check if variable exists now?
 		throw runtime_error("Unable to resolve variable " + KSTRING(argv[0]));
 	}
@@ -356,7 +356,7 @@ void opcode_get(const KlObject *caller, KLCall &call, KlObject *argv[], size_t a
 }
 
 void opcode_set(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	if (argv[0]->type == &klBType_String) {
+	if (argv[0]->type == &klstring_t) {
 		// maybe try to check if variable exists now?
 		throw runtime_error("Unable to resolve variable " + KSTRING(argv[0]));
 	}
@@ -425,7 +425,7 @@ void opcode_ret(const KlObject *caller, KLCall &call, KlObject *argv[], size_t a
 }
 
 void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	if (argv[0]->type == &klBType_String) {
+	if (argv[0]->type == &klstring_t) {
 		// maybe try to check if function exists now?
 		throw runtime_error("Unable to resolve function " + KSTRING(argv[0]));
 	}

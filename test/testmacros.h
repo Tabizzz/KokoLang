@@ -4,7 +4,7 @@
 #include "klvm.h"
 #include "segvcatch.h"
 
-#define STR_EQUALS(x, y) klBType_String.equal(x, y)
+#define STR_EQUALS(x, y) klstring_t.equal(x, y)
 #define STR_NOT_EQUALS(x, y) (KLCAST(kl_string, x)->size != KLCAST(kl_string, y)->size || \
 strncmp(KASSTR(x), KASSTR(y), KLCAST(kl_string, x)->size) != 0)
 
@@ -37,7 +37,7 @@ static inline bool is_valid(KlObject* obj)
 	{
 		if(!obj->type) return false;
 		if(!obj->type->klbase.type) return false;
-		if(obj->type->klbase.type == &klBType_Type) return false;
+		if(obj->type->klbase.type == &kltype_t) return false;
 	}
 	catch (...)
 	{

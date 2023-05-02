@@ -10,14 +10,14 @@ TEST_CASE("klapi_types.h","[klapi_types]")
 	{
 		SECTION("Throws on not instantiable types")
 		{
-			REQUIRE_THROWS(klIns(&klBType_Bool));
+			REQUIRE_THROWS(klIns(&klbool_t));
 		}
 		SECTION("Check type"){
-			auto val = klIns(&klBType_Float);
+			auto val = klIns(&klfloat_t);
 
-			REQUIRE(val->type == &klBType_Float);
+			REQUIRE(val->type == &klfloat_t);
 			REQUIRE(val->refs == 1);
-			REQUIRE(klBType_Float.inscount == 1);
+			REQUIRE(klfloat_t.inscount == 1);
 			klDeref(val);
 		}
 	}

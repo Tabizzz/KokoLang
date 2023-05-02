@@ -9,21 +9,21 @@ TEST_CASE("klapi_builtins.h", "[klapi_builtins]")
 
 	SECTION("klBuiltinInt")
 	{
-		auto oldIns = klBType_Int.inscount;
+		auto oldIns = klint_t.inscount;
 		auto val = klBuiltinInt(10);
 
 		REQUIRE(KASINT(val) == 10);
-		REQUIRE(klBType_Int.inscount == oldIns + 1);
+		REQUIRE(klint_t.inscount == oldIns + 1);
 		klDeref(val);
 	}
 
 	SECTION("klBuiltinFloat")
 	{
-		auto oldIns = klBType_Float.inscount;
+		auto oldIns = klfloat_t.inscount;
 		auto val = klBuiltinFloat(10.23);
 
 		REQUIRE(KASFLOAT(val) == 10.23);
-		REQUIRE(klBType_Float.inscount == oldIns + 1);
+		REQUIRE(klfloat_t.inscount == oldIns + 1);
 		klDeref(val);
 	}
 
@@ -31,11 +31,11 @@ TEST_CASE("klapi_builtins.h", "[klapi_builtins]")
 	{
 		SECTION("Type dont increase inscount and check value")
 		{
-			auto oldIns = klBType_Bool.inscount;
+			auto oldIns = klbool_t.inscount;
 			auto val = klBuiltinBool(true);
 
 			REQUIRE(KASBOOL(val) == true);
-			REQUIRE(klBType_Bool.inscount == oldIns);
+			REQUIRE(klbool_t.inscount == oldIns);
 		}
 		SECTION("All bools are the same instance")
 		{
@@ -54,23 +54,23 @@ TEST_CASE("klapi_builtins.h", "[klapi_builtins]")
 
 	SECTION("klBuiltinString")
 	{
-		auto oldIns = klBType_String.inscount;
+		auto oldIns = klstring_t.inscount;
 		auto val = klBuiltinString("test");
 
 		REQUIRE(strncmp("test", KASSTR(val), KASSTRSIZE(val)) == 0);
 
-		REQUIRE(klBType_String.inscount == oldIns + 1);
+		REQUIRE(klstring_t.inscount == oldIns + 1);
 		klDeref(val);
 	}
 
 	SECTION("klBuiltinString_c")
 	{
-		auto oldIns = klBType_String.inscount;
+		auto oldIns = klstring_t.inscount;
 		auto val = klBuiltinString_c("test");
 
 		REQUIRE(strncmp("test", KASSTR(val), KASSTRSIZE(val)) == 0);
 
-		REQUIRE(klBType_String.inscount == oldIns + 1);
+		REQUIRE(klstring_t.inscount == oldIns + 1);
 		klDeref(val);
 	}
 

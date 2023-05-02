@@ -67,7 +67,7 @@ void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metada
 			case KLMetaType::string:
 				stream.read((char*)&keyl, 1);
 				CHECKSTREAM(,)
-				value = klIns(&klBType_String);
+				value = klIns(&klstring_t);
 				KLCAST(kl_string, value)->size = keyl;
 				auto valuebuff = new char[keyl + 1];
 				valuebuff[keyl] = 0;
@@ -110,7 +110,7 @@ KlObject* readObject(std::istream &stream)
 		case KLMetaType::reg:
 			int16_t ivalue;
 			stream.read((char*)&ivalue, sizeof(int16_t));
-			value = klIns(&klBType_Reg);
+			value = klIns(&klreg_t);
 			KLCAST(kl_int, value)->value = ivalue;
 			break;
 		case KLMetaType::number:
@@ -122,7 +122,7 @@ KlObject* readObject(std::istream &stream)
 			kbyte keyl;
 			stream.read((char*)&keyl, 1);
 			CHECKSTREAM(nullptr,)
-			value = klIns(&klBType_String);
+			value = klIns(&klstring_t);
 			KLCAST(kl_string, value)->size = keyl;
 			auto valuebuff = new char[keyl + 1];
 			valuebuff[keyl] = 0;
@@ -187,7 +187,7 @@ vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 			namebuff[labelsize] = 0;
 			stream.read(namebuff, labelsize);
 			CHECKSTREAM(dev, delete[] namebuff;klDeref(KLWRAP(ins));)
-			ins->label = klIns(&klBType_String);
+			ins->label = klIns(&klstring_t);
 			KLCAST(kl_string, ins->label)->value = namebuff;
 			KLCAST(kl_string, ins->label)->size = labelsize;
 		}
@@ -217,7 +217,7 @@ inline void readFunctionDefinition(map<string, KlObject *> *target, istream &str
 	CHECKSTREAM(, delete [] namebuff;)
 
 	auto func = KLCAST(KLFunction, klIns(&klBType_Func));
-	func->name = klIns(&klBType_String);
+	func->name = klIns(&klstring_t);
 	KLCAST(kl_string, func->name)->value = namebuff;
 	KLCAST(kl_string, func->name)->size = read[0];
 	func->body = readFuntionBody(stream, size);
@@ -330,7 +330,7 @@ inline void readPackageDefinition(map<string, KlObject *> *target, istream &stre
 	stream.read(namebuff, namesize);
 	CHECKSTREAM(, delete [] namebuff;)
 	auto package = KLCAST(KLPackage, klIns(&klBType_Package));
-	package->name = klIns(&klBType_String);
+	package->name = klIns(&klstring_t);
 	KLCAST(kl_string, package->name)->value = namebuff;
 	KLCAST(kl_string, package->name)->size = namesize;
 	readMetadata(stream, package->metadata);
@@ -364,7 +364,7 @@ KLPackage* createBasePackage(std::istream &stream)
 		namebuff[read[4]] = 0;
 		stream.read(namebuff, read[4]);
 		// create a new empty instance and set the values
-		dev->name = klIns(&klBType_String);
+		dev->name = klIns(&klstring_t);
 		KLCAST(kl_string, dev->name)->size = read[4];
 		KLCAST(kl_string, dev->name)->value = namebuff;
 
@@ -375,7 +375,7 @@ KLPackage* createBasePackage(std::istream &stream)
 			namebuff[read[5]] = 0;
 			stream.read(namebuff, read[5]);
 			// create a new empty instance and set the values
-			authorname = klIns(&klBType_String);
+			authorname = klIns(&klstring_t);
 			KLCAST(kl_string, authorname)->size = read[4];
 			KLCAST(kl_string, authorname)->value = namebuff;
 		}

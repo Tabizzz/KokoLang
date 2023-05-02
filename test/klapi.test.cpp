@@ -33,16 +33,16 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			REQUIRE(strncmp(KASSTR(package->name), "global", KASSTRSIZE(package->name)) == 0);
 		}
 
-		SECTION("There must be only one package")
+		SECTION("There must be no packages")
 		{
 			COUNT_ARRAY(count, klRootPackages())
-			REQUIRE(count == 1);
+			REQUIRE(count == 0);
 
 		}
 
-		SECTION("klBType_Type is it own type")
+		SECTION("kltype_t is it own type")
 		{
-			REQUIRE(klBType_Type.klbase.type == &klBType_Type);
+			REQUIRE(kltype_t.klbase.type == &kltype_t);
 		}
 	}
 
@@ -50,7 +50,15 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 	{
 		SECTION("Cant add a package with a repeated name")
 		{
-			REQUIRE_THROWS(klRegisterPackage(klGlobalPackage()));
+			auto pack1 = klCreatePackage();
+			auto pack2 = klCreatePackage();
+
+			pack1->name = KLSTR("testpack");
+			pack2->name = KLSTR("testpack");
+			klRegisterPackage(pack1);
+			REQUIRE_THROWS(klRegisterPackage(pack2));
+			// don't destroy pack1 because is added to the runtime so is destroyed on klEnd
+			klDestroyPackage(pack2);
 		}
 		SECTION("Dont allow empty or null name")
 		{
@@ -77,10 +85,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 	{
 		SECTION("Correctly set the type and inscount")
 		{
-			CHECK(testT.klbase.type != &klBType_Type);
+			CHECK(testT.klbase.type != &kltype_t);
 			klDefType(&testT);
 			REQUIRE(testT.inscount == 0);
-			REQUIRE(testT.klbase.type == &klBType_Type);
+			REQUIRE(testT.klbase.type == &kltype_t);
 		}
 		SECTION("Dont allow names with invalid characters")
 		{
@@ -175,7 +183,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A not null src with copy and without clone")
 		{
-			auto src = klIns(&klBType_Reg);
+			auto src = klIns(&klreg_t);
 
 			WHEN( "dest is null" )
 			{
@@ -190,7 +198,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null and the same type of src" )
 			{
-				KlObject* dest = klIns(&klBType_Reg);
+				KlObject* dest = klIns(&klreg_t);
 				KASINT(dest) = 1;
 				REQUIRE(src->refs == 1);
 				REQUIRE(dest->refs == 1);
@@ -386,7 +394,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A not null src without clone")
 		{
-			auto src = klIns(&klBType_Reg);
+			auto src = klIns(&klreg_t);
 
 			WHEN( "dest is null" )
 			{

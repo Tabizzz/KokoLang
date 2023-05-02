@@ -39,19 +39,19 @@ CAPI void klInit() {
 	// not freeable
 
 	// first init the base type.
-	klBType_Type.klbase.refs = 1;
-	klBType_Type.klbase.type = &klBType_Type;
-	klBType_Type.inscount = 1;
+	kltype_t.klbase.refs = 1;
+	kltype_t.klbase.type = &kltype_t;
+	kltype_t.inscount = 1;
 
 	// define builtin types
-	STDREGTYPE(klBType_Int)
-	STDREGTYPE(klBType_Float)
-	STDREGTYPE(klBType_Bool)
-	STDREGTYPE(klBType_String)
-	STDREGTYPE(klBType_Ptr)
-	STDREGTYPE(klBType_OPtr)
-	STDREGTYPE(klBType_Arr)
-	STDREGTYPE(klBType_Reg)
+	STDREGTYPE(klint_t)
+	STDREGTYPE(klfloat_t)
+	STDREGTYPE(klbool_t)
+	STDREGTYPE(klstring_t)
+	STDREGTYPE(klptr_t)
+	STDREGTYPE(kloptr_t)
+	STDREGTYPE(klarray_t)
+	STDREGTYPE(klreg_t)
 
 	// define runtime specific types
 	STDREGTYPE(klBType_Instruction)
@@ -77,14 +77,14 @@ CAPI void klEnd() {
 	globalPackage = nullptr;
 
 	// check instance counts
-	STDCHECKTYPE(klBType_Int)
-	STDCHECKTYPE(klBType_Float)
-	STDCHECKTYPE(klBType_Bool)
-	STDCHECKTYPE(klBType_String)
-	STDCHECKTYPE(klBType_Ptr)
-	STDCHECKTYPE(klBType_OPtr)
-	STDCHECKTYPE(klBType_Arr)
-	STDCHECKTYPE(klBType_Reg)
+	STDCHECKTYPE(klint_t)
+	STDCHECKTYPE(klfloat_t)
+	STDCHECKTYPE(klbool_t)
+	STDCHECKTYPE(klstring_t)
+	STDCHECKTYPE(klptr_t)
+	STDCHECKTYPE(kloptr_t)
+	STDCHECKTYPE(klarray_t)
+	STDCHECKTYPE(klreg_t)
 
 	// define runtime specific types
 	STDCHECKTYPE(klBType_Instruction)
@@ -110,7 +110,7 @@ CAPI KLPackage **klRootPackages() {
 
 CAPI void klRegisterPackage(KLPackage *klPackage) {
 	if (!klPackage->name || KLCAST(kl_string, klPackage->name)->size == 0) {
-		throw runtime_error("Types must have a name");
+		throw runtime_error("Packages must have a name");
 	}
 	string name = KSTRING(klPackage->name);
 	auto find = packages->find(name);
@@ -129,9 +129,9 @@ CAPI void klDefType(KLType *type) {
 		throw runtime_error("Types cant contain the following characters in name: '.', ':' and '%'");
 	}
 	// set the type
-	type->klbase.type = &klBType_Type;
+	type->klbase.type = &kltype_t;
 	// increase the instance count of type
-	klBType_Type.inscount++;
+	kltype_t.inscount++;
 	// the type is defined, so it only have one ref.
 	type->klbase.refs = 1;
 	type->inscount = 0;

@@ -64,7 +64,7 @@ CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
 	if (target->type == &klBType_Func) {
 		auto func = KLCAST(KLFunction, target);
 		return klInvokeCore(func, argv, argc);
-	} else if (target->type == &klBType_Type) {
+	} else if (target->type == &kltype_t) {
 		return klNew(KLCAST(KLType, target), argv, argc);
 	} else {
 		auto find = target->type->functions.find("call");
