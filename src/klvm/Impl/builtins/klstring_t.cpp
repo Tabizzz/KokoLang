@@ -36,7 +36,7 @@ static int8_t kstring_compare(KlObject *x, KlObject *y) {
 		}
 	}
 
-	int8_t dev = strncmp(first->value, second->value, min(first->size, second->size)) * -1; // NOLINT(cppcoreguidelines-narrowing-conversions)
+	int8_t dev = strncmp(second->value, first->value, min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
 
 	if (dev == 0 && first->size != second->size) {
 		if (first->size < second->size)
