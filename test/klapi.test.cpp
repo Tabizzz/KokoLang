@@ -42,7 +42,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 		SECTION("kltype_t is it own type")
 		{
-			REQUIRE(kltype_t.klbase.type == &kltype_t);
+			REQUIRE(kltype_t->klbase.type == kltype_t);
 		}
 	}
 
@@ -85,10 +85,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 	{
 		SECTION("Correctly set the type and inscount")
 		{
-			CHECK(testT.klbase.type != &kltype_t);
+			CHECK(testT.klbase.type != kltype_t);
 			klDefType(&testT);
 			REQUIRE(testT.inscount == 0);
-			REQUIRE(testT.klbase.type == &kltype_t);
+			REQUIRE(testT.klbase.type == kltype_t);
 		}
 		SECTION("Dont allow names with invalid characters")
 		{

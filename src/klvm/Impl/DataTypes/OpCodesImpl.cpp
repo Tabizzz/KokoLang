@@ -21,10 +21,10 @@ inline bool getBool(KlObject *obj, KLCall &call) {
 		if (obj->type == &klstring_t) {
 			return KASSTRSIZE(obj);
 		}
-		if (obj->type == &klint_t) {
+		if (obj->type == klint_t) {
 			return KASINT(obj);
 		}
-		if (obj->type == &klfloat_t) {
+		if (obj->type == klfloat_t) {
 			return KASFLOAT(obj);
 		}
 		if (obj->type->toBool) {

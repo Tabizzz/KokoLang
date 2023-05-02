@@ -9,21 +9,21 @@ TEST_CASE("klapi_builtins.h", "[klapi_builtins]")
 
 	SECTION("klBuiltinInt")
 	{
-		auto oldIns = klint_t.inscount;
+		auto oldIns = klint_t->inscount;
 		auto val = klBuiltinInt(10);
 
 		REQUIRE(KASINT(val) == 10);
-		REQUIRE(klint_t.inscount == oldIns + 1);
+		REQUIRE(klint_t->inscount == oldIns + 1);
 		klDeref(val);
 	}
 
 	SECTION("klBuiltinFloat")
 	{
-		auto oldIns = klfloat_t.inscount;
+		auto oldIns = klfloat_t->inscount;
 		auto val = klBuiltinFloat(10.23);
 
 		REQUIRE(KASFLOAT(val) == 10.23);
-		REQUIRE(klfloat_t.inscount == oldIns + 1);
+		REQUIRE(klfloat_t->inscount == oldIns + 1);
 		klDeref(val);
 	}
 

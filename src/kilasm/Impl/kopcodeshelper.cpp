@@ -1,7 +1,7 @@
 ﻿#include "kilasm_internal.h"
 #include <stdexcept>
 
-#define INTTOREG(x) SWITCH_TYPE(x, klint_t, klreg_t)
+#define INTTOREG(x) SWITCH_TYPE(x, (*klint_t), klreg_t)
 
 #define SETOPERAND(x,y) operands[x] = y(values[x])
 

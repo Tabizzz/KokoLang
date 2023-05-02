@@ -37,7 +37,7 @@ static inline bool is_valid(KlObject* obj)
 	{
 		if(!obj->type) return false;
 		if(!obj->type->klbase.type) return false;
-		if(obj->type->klbase.type == &kltype_t) return false;
+		if(obj->type->klbase.type == kltype_t) return false;
 	}
 	catch (...)
 	{

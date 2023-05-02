@@ -1,5 +1,7 @@
 #include "global.h"
 
+#define ADD_TYPE(x) global_##x(); klDefType(x); klPackageRegType(dev, x);
+
 KLPackage* kliBuildGlobalPackage() {
 	auto dev = new KLPackage();
 	dev->klbase.refs = 1;
@@ -10,6 +12,9 @@ KLPackage* kliBuildGlobalPackage() {
 
 	global_kltype_t();
 	klPackageRegType(dev, kltype_t);
+
+	ADD_TYPE(klfloat_t);
+	ADD_TYPE(klint_t);
 
 	return dev;
 }

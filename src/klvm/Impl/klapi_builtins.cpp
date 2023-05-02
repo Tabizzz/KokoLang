@@ -3,14 +3,14 @@
 
 CAPI KlObject* klBuiltinInt(kint val)
 {
-	auto base = klIns(&klint_t);
+	auto base = klIns(klint_t);
 	auto obj = KLCAST(kl_int, base);
 	obj->value = val;
 	return base;
 }
 
 CAPI KlObject *klBuiltinFloat(kfloat val) {
-	auto base = klIns(&klfloat_t);
+	auto base = klIns(klfloat_t);
 	auto obj = KLCAST(kl_float , base);
 	obj->value = val;
 	return base;
@@ -19,7 +19,8 @@ CAPI KlObject *klBuiltinFloat(kfloat val) {
 static kl_bool kl_bool_true = {
 		KlObject{
 				&klbool_t,
-				1
+				1,
+				KLOBJ_FLAG_IGNORE_REF
 		},
 		true
 };
@@ -27,7 +28,8 @@ static kl_bool kl_bool_true = {
 static kl_bool kl_bool_false = {
 		KlObject{
 				&klbool_t,
-				1
+				1,
+				KLOBJ_FLAG_IGNORE_REF
 		},
 		false
 };

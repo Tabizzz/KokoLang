@@ -36,9 +36,9 @@ nowide::cout << termcolor::yellow <<                                 	\
 KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs)
 {
 	auto val = argv[0];
-	if (val->type == &klint_t)
+	if (val->type == klint_t)
 		nowide::cout << KASINT(val) << std::endl;
-	else if (val->type == &klfloat_t)
+	else if (val->type == klfloat_t)
 		nowide::cout << KASFLOAT(val) << std::endl;
 	else if (val->type == &klstring_t)
 		nowide::cout << KSTRING(val) << std::endl;

@@ -29,8 +29,6 @@ CAPI void klInit() {
 	globalPackage = kliBuildGlobalPackage();
 
 	// define builtin types
-	STDREGTYPE(klint_t)
-	STDREGTYPE(klfloat_t)
 	STDREGTYPE(klbool_t)
 	STDREGTYPE(klstring_t)
 	STDREGTYPE(klptr_t)
@@ -59,8 +57,8 @@ CAPI void klEnd() {
 	globalPackage = nullptr;
 
 	// check instance counts
-	STDCHECKTYPE(klint_t)
-	STDCHECKTYPE(klfloat_t)
+	//STDCHECKTYPE(klint_t)
+	//STDCHECKTYPE(klfloat_t)
 	STDCHECKTYPE(klbool_t)
 	STDCHECKTYPE(klstring_t)
 	STDCHECKTYPE(klptr_t)

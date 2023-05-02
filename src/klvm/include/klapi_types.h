@@ -15,12 +15,12 @@
 /**
  * Builtin type int.
  */
-CAPI KLType klint_t;
+CAPI KLType* klint_t;
 
 /**
  * Builtin type flt.
  */
-CAPI KLType klfloat_t;
+CAPI KLType* klfloat_t;
 
 /**
  * Builtin type bit.

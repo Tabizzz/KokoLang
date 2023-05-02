@@ -31,7 +31,8 @@ void kpack_end(KlObject* pack)
 	kliDerefAndDeleteMap(ins->variables);
 	kliDerefAndDeleteMap(ins->packs);
 	kliDerefAndDeleteMap(ins->metadata);
-	kliDerefAndDeleteMap(ins->types);
+	//kliDerefAndDeleteMap(ins->types);
+	delete ins->types;
 }
 
 CAPI KLPackage* klCreatePackage()
@@ -97,7 +98,7 @@ CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]) {
 				klDeref(args[i]);
 			}
 			delete[] args;
-			if(ret && ret->type == &klint_t) dev = KASINT(ret);
+			if(ret && ret->type == klint_t) dev = KASINT(ret);
 			if(ret && ret->type == &klbool_t && !KASBOOL(ret)) dev = EXIT_FAILURE;
 			klDeref(ret);
 			return dev;
