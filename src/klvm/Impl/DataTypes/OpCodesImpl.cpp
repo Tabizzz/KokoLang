@@ -435,7 +435,9 @@ static void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	vector<KlObject *> args;
 	args.reserve(argc - 2);
 	for (int i = 2; i < argc; ++i) {
-		args.push_back(call.st.at(KASINT(argv[i])));
+		auto arg = argv[i];
+		GETREG(arg)
+		args.push_back(arg);
 	}
 	auto ret = klInvoke(argv[0], args.data(), args.size());
 	if (reg >= 0) {
