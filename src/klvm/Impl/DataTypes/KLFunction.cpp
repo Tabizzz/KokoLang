@@ -2,12 +2,18 @@
 #include "DataTypes/KLFunction.h"
 #include "KLFunctionImpl.h"
 
+KLCall::~KLCall() {
+	for (auto reg: st) {
+		klDeref(reg);
+	}
+}
+
 static KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	auto func = KLCAST(KLFunction, caller);
 	auto argc = func->args == -1 ? passedArgs : func->args;
 
 	// the call of this function
-	KLCall call{};
+	KLCall call;
 	call.next = 0;
 	call.st.reserve(argc + func->locals + CALL_REG_COUNT);
 	call.argc = argc;
@@ -27,16 +33,11 @@ static KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passed
 	for (int i = 0; i < argc - passedArgs; ++i) {
 		call.st.push_back(nullptr);
 	}
-
 	// execute the code
 	while (!CALL_HAS_FLAG(call, CALL_FLAG_EXIT)) {
 		auto ins = (*func->body)[call.next++];
 
 		ins->call(caller, call, ins->operands, ins->operandc);
-	}
-	// final cleanup
-	for (auto reg: call.st) {
-		klDeref(reg);
 	}
 
 	return call.ret;

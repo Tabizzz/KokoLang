@@ -54,4 +54,6 @@ struct CPPAPI KLCall
 	 * Object returned by the function call.
 	 */
 	KlObject* ret = nullptr;
+
+	~KLCall();
 };
