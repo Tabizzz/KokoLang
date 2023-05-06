@@ -5,7 +5,7 @@ KLType *klfloat_t = nullptr;
 
 // static object used to temporary store the value of the operations
 
-static kl_float temp_float = {
+kl_float temp_float = {
 	KlObject{
 		nullptr,
 		1,

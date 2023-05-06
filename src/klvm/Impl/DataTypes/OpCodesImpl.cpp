@@ -59,6 +59,13 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_argc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[0])
+	temp_int.value = call.argc;
+	vecref regis = call.st.at(reg);
+	klCopy(KLWRAP(&temp_int), &regis);
+}
+
 static void opcode_ivk(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	call_core(call, argv, argc, argv[0]);
 }
@@ -628,6 +635,7 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_call;
 			break;
 		case KLOpcode::argc:
+			instruction->call = opcode_argc;
 			break;
 		case KLOpcode::ret:
 			instruction->call = opcode_ret;

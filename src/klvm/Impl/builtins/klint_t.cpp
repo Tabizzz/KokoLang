@@ -1,14 +1,6 @@
 #include "global.h"
 
-static kl_int temp_int = {
-	KlObject{
-		nullptr,
-		1,
-		KLOBJ_FLAG_IGNORE_REF
-	},
-	0
-};
-static kl_float temp_float = {
+kl_int temp_int = {
 	KlObject{
 		nullptr,
 		1,
@@ -253,5 +245,4 @@ void global_klint_t() {
 	};
 
 	temp_int.klbase.type = klint_t;
-	temp_float.klbase.type = klfloat_t;
 }

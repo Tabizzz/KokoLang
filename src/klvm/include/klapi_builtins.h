@@ -33,8 +33,6 @@
 #define KSTRING(x) std::string(KASSTR(x), KASSTRSIZE(x))
 #define KLPTR(x) klBuiltinPtr(x)
 #define KPTR(x) KLCAST(kl_ptr, KLPTR(x))
-#define KLOPTR(x) klBuiltinOPtr(x)
-#define KOPTR(x) KLCAST(kl_optr, KLOPTR(x))
 #define KLARR(x) klBuiltinArr(x)
 #define KARR(x) KLCAST(kl_arr, KLARR(x))
 
@@ -101,16 +99,6 @@ CAPI
  * @return A ptr object wrapping val.
  */
 KlObject* klBuiltinPtr(void* val);
-
-CAPI
-/**
- * @brief Creates new optr instance
- *
- * @param val The object to wrap on this Optr.
- *
- * @return A new object containing a weak reference to val.
- */
-KlObject* klBuiltinOPtr(KlObject* val);
 
 CAPI
 /**
