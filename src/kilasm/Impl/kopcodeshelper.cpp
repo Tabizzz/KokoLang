@@ -3,148 +3,144 @@
 
 #define INTTOREG(x) SWITCH_TYPE(x, klint_t, klreg_t)
 
-#define SETOPERAND(x,y) operands[x] = y(values[x])
+#define SETOPERAND(x, y) operands[x] = y(values[x])
 
 using namespace std;
 
 KLOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 	auto code = pContext->Id()->getText();
 	// https://stackoverflow.com/a/16388594
-	static const map<string, KLOpcode> optionStrings {
-			{"noc",    KLOpcode::noc	},
-			{"go",     KLOpcode::go		},
-			{"goif",   KLOpcode::goif	},
-			{"goifn",  KLOpcode::goifn	},
-			{"push",   KLOpcode::push	},
-			{"pop",    KLOpcode::pop	},
-			{"cl",     KLOpcode::cl	    },
-			{"cp",     KLOpcode::cp		},
-			{"mv",     KLOpcode::mv		},
-			{"lflag",  KLOpcode::lflag	},
-			{"set",    KLOpcode::set	},
-			{"get",    KLOpcode::get	},
-			{"starg",  KLOpcode::starg	},
-			{"ldarg",  KLOpcode::ldarg	},
-			{"and",    KLOpcode::andi	},
-			{"or",     KLOpcode::ori	},
-			{"xor",    KLOpcode::xori	},
-			{"oplt",   KLOpcode::oplt	},
-			{"ople",   KLOpcode::ople	},
-			{"opgt",   KLOpcode::opgt	},
-			{"opge",   KLOpcode::opge	},
-			{"opeq",   KLOpcode::opeq	},
-			{"opne",   KLOpcode::opne	},
-			{"add",    KLOpcode::add	},
-			{"sub",    KLOpcode::sub	},
-			{"mul",    KLOpcode::mul	},
-			{"div",    KLOpcode::div	},
-			{"mod",    KLOpcode::mod	},
-			{"tstr",   KLOpcode::tstr	},
-			{"tint",   KLOpcode::tint	},
-			{"tflt",   KLOpcode::tflt	},
-			{"tbit",   KLOpcode::tbit	},
-			{"tobj",   KLOpcode::tobj	},
-			{"cast",   KLOpcode::cast	},
-			{"ivk",    KLOpcode::ivk	},
-			{"ivka",   KLOpcode::ivka	},
-			{"call",   KLOpcode::call	},
-			{"calla",  KLOpcode::calla	},
-			{"argc",   KLOpcode::argc	},
-			{"ret",    KLOpcode::ret	},
-			{"aloc",   KLOpcode::aloc	},
-			{"free",   KLOpcode::freei	},
-			{"copy",   KLOpcode::copy	},
-			{"fill",   KLOpcode::fill	},
-			{"arr",    KLOpcode::arr	},
-			{"arl",    KLOpcode::arl	},
-			{"ard",    KLOpcode::ard	},
-			{"lde",    KLOpcode::lde	},
-			{"ste",    KLOpcode::ste	},
-			{"type",   KLOpcode::type	},
-			{"typeof", KLOpcode::typeofi},
-			{"is",     KLOpcode::is		},
-			{"new",    KLOpcode::newi	},
-			{"newa",   KLOpcode::newa	},
-			{"sizeof", KLOpcode::sizeofi},
-			{"stfld",  KLOpcode::stfld	},
-			{"ldfld",  KLOpcode::ldfld	},
-			{"ref",    KLOpcode::ref	},
-			{"deref",  KLOpcode::deref	},
-			{"ins",    KLOpcode::ins	},
-			{"ldfnd",  KLOpcode::ldfnd	},
+	static const map<string, KLOpcode> optionStrings{
+		{"noc",    KLOpcode::noc},
+		{"go",     KLOpcode::go},
+		{"goif",   KLOpcode::goif},
+		{"goifn",  KLOpcode::goifn},
+		{"push",   KLOpcode::push},
+		{"pop",    KLOpcode::pop},
+		{"cl",     KLOpcode::cl},
+		{"cp",     KLOpcode::cp},
+		{"mv",     KLOpcode::mv},
+		{"lflag",  KLOpcode::lflag},
+		{"set",    KLOpcode::set},
+		{"get",    KLOpcode::get},
+		{"starg",  KLOpcode::starg},
+		{"ldarg",  KLOpcode::ldarg},
+		{"and",    KLOpcode::andi},
+		{"or",     KLOpcode::ori},
+		{"xor",    KLOpcode::xori},
+		{"oplt",   KLOpcode::oplt},
+		{"ople",   KLOpcode::ople},
+		{"opgt",   KLOpcode::opgt},
+		{"opge",   KLOpcode::opge},
+		{"opeq",   KLOpcode::opeq},
+		{"opne",   KLOpcode::opne},
+		{"add",    KLOpcode::add},
+		{"sub",    KLOpcode::sub},
+		{"mul",    KLOpcode::mul},
+		{"div",    KLOpcode::div},
+		{"mod",    KLOpcode::mod},
+		{"tstr",   KLOpcode::tstr},
+		{"tint",   KLOpcode::tint},
+		{"tflt",   KLOpcode::tflt},
+		{"tbit",   KLOpcode::tbit},
+		{"tobj",   KLOpcode::tobj},
+		{"cast",   KLOpcode::cast},
+		{"ivk",    KLOpcode::ivk},
+		{"call",   KLOpcode::call},
+		{"argc",   KLOpcode::argc},
+		{"ret",    KLOpcode::ret},
+		{"aloc",   KLOpcode::aloc},
+		{"free",   KLOpcode::freei},
+		{"copy",   KLOpcode::copy},
+		{"fill",   KLOpcode::fill},
+		{"arr",    KLOpcode::arr},
+		{"arl",    KLOpcode::arl},
+		{"ard",    KLOpcode::ard},
+		{"lde",    KLOpcode::lde},
+		{"ste",    KLOpcode::ste},
+		{"type",   KLOpcode::type},
+		{"typeof", KLOpcode::typeofi},
+		{"is",     KLOpcode::is},
+		{"new",    KLOpcode::newi},
+		{"newa",   KLOpcode::newa},
+		{"sizeof", KLOpcode::sizeofi},
+		{"stfld",  KLOpcode::stfld},
+		{"ldfld",  KLOpcode::ldfld},
+		{"ref",    KLOpcode::ref},
+		{"deref",  KLOpcode::deref},
+		{"ins",    KLOpcode::ins},
+		{"ldfnd",  KLOpcode::ldfnd},
 	};
 
 	auto itr = optionStrings.find(code);
-	if( itr != optionStrings.end() ) {
+	if (itr != optionStrings.end()) {
 		return itr->second;
 	}
 
-	throw std::invalid_argument( "invalid opcode in program" );
+	throw std::invalid_argument("invalid opcode in program");
 }
 
-#define RETURN_REG auto reg = ctx->register_();	\
-if(reg) {										\
-auto regtext = reg->Number()->getText();		\
-if(regtext == "-0") return nullptr;				\
-auto base = KLINT(stol(regtext));				\
-INTTOREG(base)									\
-KASINT(base) += CALL_REG_COUNT;					\
-return base;									\
+#define RETURN_REG auto reg = ctx->register_();    \
+if(reg) {                                        \
+auto regtext = reg->Number()->getText();        \
+if(regtext == "-0") return nullptr;                \
+auto base = KLINT(stol(regtext));                \
+INTTOREG(base)                                    \
+KASINT(base) += CALL_REG_COUNT;                    \
+return base;                                    \
 }
 
-#define RETURN_INT auto val = ctx->Number();	\
-if(val) {										\
-return KLINT(stol(val->getText()));				\
+#define RETURN_INT auto val = ctx->Number();    \
+if(val) {                                        \
+return KLINT(stol(val->getText()));                \
 }
 
-#define  RETURN_ID auto id = ctx->identifier();	\
-if(id) {										\
-return KLSTR(id->getText());					\
+#define  RETURN_ID auto id = ctx->identifier();    \
+if(id) {                                        \
+return KLSTR(id->getText());                    \
 }
 
-#define RETURN_ANY_CORE 						\
-auto boolv = ctx->bool_();						\
-if(boolv) {										\
-return KLBOOL(boolv->True()?1:0);				\
-}												\
-auto stringv = ctx->String();					\
-if(stringv) {									\
-auto str = stringv->getText();					\
-auto size = str.size() - 2;						\
-auto vals = str.substr(1, size);				\
-return KLSTR(vals);								\
-}												\
-auto numberv = ctx->Number();					\
-if(numberv) {									\
-auto numt = numberv->getText();					\
-auto isflt = numt.find('.') != string::npos;	\
-if (isflt) {									\
-return KLFLOAT(stod(numt));						\
-} else {										\
-return KLINT(stol(numt));						\
-}}												\
+#define RETURN_ANY_CORE                        \
+auto boolv = ctx->bool_();                        \
+if(boolv) {                                        \
+return KLBOOL(boolv->True()?1:0);                \
+}                                                \
+auto stringv = ctx->String();                    \
+if(stringv) {                                    \
+auto str = stringv->getText();                    \
+auto size = str.size() - 2;                        \
+auto vals = str.substr(1, size);                \
+return KLSTR(vals);                                \
+}                                                \
+auto numberv = ctx->Number();                    \
+if(numberv) {                                    \
+auto numt = numberv->getText();                    \
+auto isflt = numt.find('.') != string::npos;    \
+if (isflt) {                                    \
+return KLFLOAT(stod(numt));                        \
+} else {                                        \
+return KLINT(stol(numt));                        \
+}}                                                \
 
 #pragma region checks
-KlObject* kliCheckInteger(KokoLangParser::ValueContext* ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+
+KlObject *kliCheckInteger(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_INT
-	throw std::invalid_argument( "invalid operand in program" );
+	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject * kliCheckRegOrInt(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+KlObject *kliCheckRegOrInt(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_REG
 	RETURN_INT
-	throw std::invalid_argument( "invalid operand in program" );
+	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject* kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx)
-{
-	if(ctx) {
+KlObject *kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx) {
+	if (ctx) {
 		auto idv = ctx->identifier();
-		if(idv) {
+		if (idv) {
 			throw invalid_argument("identifier is not a valid operand");
 		}
 		RETURN_ANY_CORE
@@ -153,32 +149,29 @@ KlObject* kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx)
 	return nullptr;
 }
 
-KlObject* kliCheckReg(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+KlObject *kliCheckReg(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_REG
-	throw std::invalid_argument( "invalid operand in program" );
+	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject* kliCheckIdentifierOrReg(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+KlObject *kliCheckIdentifierOrReg(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_ID
 	RETURN_REG
-	throw std::invalid_argument( "invalid operand in program" );
-}
-KlObject* kliCheckIdentifier(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
-	RETURN_ID
-	throw std::invalid_argument( "invalid operand in program" );
+	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject * kliCheckAnyNoId(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+KlObject *kliCheckIdentifier(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
+	RETURN_ID
+	throw std::invalid_argument("invalid operand in program");
+}
+
+KlObject *kliCheckAnyNoId(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	auto idv = ctx->identifier();
-	if(idv) {
+	if (idv) {
 		throw invalid_argument("identifier is not a valid operand");
 	}
 	RETURN_ANY_CORE
@@ -186,20 +179,18 @@ KlObject * kliCheckAnyNoId(KokoLangParser::ValueContext *ctx)
 	return nullptr;
 }
 
-KlObject* kliCheckAny(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+KlObject *kliCheckAny(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_ANY_CORE
 	RETURN_REG
 	RETURN_ID
 	return nullptr;
 }
 
-KlObject* kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx)
-{
-	if(!ctx) throw std::invalid_argument("missing required operand");
+KlObject *kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx) {
+	if (!ctx) throw std::invalid_argument("missing required operand");
 	auto reg = ctx->register_();
-	if(reg) {
+	if (reg) {
 		throw invalid_argument("register is not a valid operand");
 	}
 	RETURN_ANY_CORE
@@ -209,7 +200,7 @@ KlObject* kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx)
 
 #pragma endregion
 
-void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *>& values, size_t size) {
+void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *> &values, size_t size) {
 	switch (*pOpcode) {
 #pragma region 1id
 		case KLOpcode::go:
@@ -220,7 +211,7 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 #pragma endregion
 #pragma region 1any_no_reg 1reg
 		case KLOpcode::push:
-			if(values[0]->identifier()) *pOpcode = KLOpcode::get;
+			if (values[0]->identifier()) *pOpcode = KLOpcode::get;
 			SETOPERAND(0, kliCheckAnyNoReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
@@ -229,7 +220,6 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 		case KLOpcode::pop:
 		case KLOpcode::argc:
 		case KLOpcode::freei:
-		case KLOpcode::ard:
 		case KLOpcode::ref:
 		case KLOpcode::deref:
 			SETOPERAND(0, kliCheckReg);
@@ -240,6 +230,7 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 		case KLOpcode::cp:
 		case KLOpcode::mv:
 		case KLOpcode::typeofi:
+		case KLOpcode::arl:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			break;
@@ -305,11 +296,20 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
+#pragma region 2reg Uany_no_id
+		case KLOpcode::ivk: {
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckReg);
+			for (int i = 2; i < size; ++i) {
+				operands[i] = kliCheckAnyNoId(values[i]);
+			}
+			break;
+		}
+#pragma endregion
 #pragma region 1id 1reg Uany_no_id
-		case KLOpcode::ivk:
 		case KLOpcode::call:
-		case KLOpcode::newi:
-		{
+		case KLOpcode::ard:
+		case KLOpcode::newi: {
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
 			for (int i = 2; i < size; ++i) {
@@ -319,8 +319,6 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 		}
 #pragma endregion
 #pragma region 1id 2reg
-		case KLOpcode::ivka:
-		case KLOpcode::calla:
 		case KLOpcode::newa:
 		case KLOpcode::stfld:
 		case KLOpcode::ldfld:
@@ -332,7 +330,7 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 #pragma endregion
 #pragma region 1opany_no_id
 		case KLOpcode::ret:
-			if(size > 0) {
+			if (size > 0) {
 				SETOPERAND(0, kliCheckOptionalAnyNoId);
 			} else {
 				operands[0] = nullptr;
@@ -341,7 +339,6 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 #pragma endregion
 #pragma region 2reg 1reg_or_int
 		case KLOpcode::copy:
-		case KLOpcode::arl:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
 			SETOPERAND(2, kliCheckRegOrInt);
@@ -354,16 +351,11 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 			SETOPERAND(2, kliCheckRegOrInt);
 			break;
 #pragma endregion
-#pragma region 1reg 1reg_or_int Ureg_or_int
+#pragma region 1reg 1reg_or_int
 		case KLOpcode::arr:
-		{
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckRegOrInt);
-			for (int i = 2; i < size; ++i) {
-				operands[i] = kliCheckRegOrInt(values[i]);
-			}
 			break;
-		}
 #pragma endregion
 #pragma region 2reg 1reg_or_int Ureg_or_int
 		case KLOpcode::lde:
@@ -387,13 +379,17 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 	}
 }
 
-int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optionals) {
+int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int *optionals) {
 	int flag = 0;
 	switch (opcode) {
 #pragma region zero one
 		case KLOpcode::ret:
 			*optionals = 1;
 			break;
+#pragma endregion
+#pragma region unlimited
+		case KLOpcode::ard:
+			*optionals = -1;
 #pragma endregion
 #pragma region one
 		case KLOpcode::go:
@@ -402,7 +398,6 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optiona
 		case KLOpcode::pop:
 		case KLOpcode::argc:
 		case KLOpcode::freei:
-		case KLOpcode::ard:
 		case KLOpcode::ref:
 		case KLOpcode::deref:
 			flag = 1;
@@ -412,7 +407,6 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optiona
 		case KLOpcode::ivk:
 		case KLOpcode::call:
 		case KLOpcode::newi:
-		case KLOpcode::arr:
 			*optionals = -1;
 #pragma endregion
 #pragma region two
@@ -444,6 +438,8 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optiona
 		case KLOpcode::is:
 		case KLOpcode::sizeofi:
 		case KLOpcode::ins:
+		case KLOpcode::arl:
+		case KLOpcode::arr:
 			flag = 2;
 			break;
 #pragma endregion
@@ -460,11 +456,8 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optiona
 		case KLOpcode::mod:
 		case KLOpcode::tobj:
 		case KLOpcode::cast:
-		case KLOpcode::ivka:
-		case KLOpcode::calla:
 		case KLOpcode::copy:
 		case KLOpcode::fill:
-		case KLOpcode::arl:
 		case KLOpcode::newa:
 		case KLOpcode::stfld:
 		case KLOpcode::ldfld:
@@ -476,7 +469,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int* optiona
 			break;
 	}
 
-	if( size < flag) throw invalid_argument("invalid operand count in program");
+	if (size < flag) throw invalid_argument("invalid operand count in program");
 	return flag;
 }
 

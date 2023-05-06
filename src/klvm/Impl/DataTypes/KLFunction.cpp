@@ -140,7 +140,6 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 				}
 				break;
 			case KLOpcode::call:
-			case KLOpcode::calla:
 				if (instruction->operands[0]->type == klstring_t) {
 					auto current = instruction->operands[0];
 					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_FUNCTION | flag);

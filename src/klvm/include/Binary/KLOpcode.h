@@ -455,7 +455,7 @@ enum class KLOpcode : unsigned char
 	 * in the given register.
 	 *
 	 * usage:
-	 * jump <obj> <ret> [params]*
+	 * ivk <obj> <ret> [params]*
 	 *
 	 * operators:
 	 * -obj: the register with the object to invoke.
@@ -463,20 +463,6 @@ enum class KLOpcode : unsigned char
 	 * -params: a list of registers used as params of the called object.
 	 */
 	ivk,
-	/**
-	 * Invoke a object, if the invocation return something the value will be set in
-	 * the given register.
-	 *
-	 * usage:
-	 * jump <obj> <ret> <params>
-	 *
-	 * operators:
-	 * -obj: The register with the object to invoke.
-	 * -ret: a register to save the return value of the function, can be null to ignore.
-	 * -params: the register with an array to be used as args of the invoke if the
-	 * register not contains an array the call will fail.
-	 */
-	ivka,
 	/**
 	 * Invoke a target function, if the function return something the value will be set
 	 * in the given register.
@@ -489,19 +475,6 @@ enum class KLOpcode : unsigned char
 	 * -params: a list of registers used as params of the called function.
 	 */
 	call,
-	/**
-	 * Invoke a target function, if the function return something the value will be set
-	 * in the given register.
-	 *
-	 * usage:
-	 * call <function> <ret> <params>
-	 *
-	 * -function: the identifier of the function to call.
-	 * -ret: a register to save the return value of the function, can be null to ignore.
-	 * -params: the register with an array to be used as args of the function if the
-	 * register not contains an array the call will fail.
-	 */
-	calla,
 	/**
 	 * Set in a register the number of arguments passed to the function.
 	 *
@@ -583,35 +556,36 @@ enum class KLOpcode : unsigned char
 	/**
 	 * Creates a new array object of the specific size.
 	 *
+	 * The new array contains all the elements set to null.
+	 *
 	 * usage:
-	 * arr <reg> <sizes>+
+	 * arr <reg> <size>
 	 *
 	 * operands:
 	 * -reg: the register to save the new array.
-	 * -sizes: this can be a register to an array of sizes, or you can pass a
-	 * list of sizes or registers to sizes.
+	 * -sizes: this can be a register to an int, or an int.
 	 */
 	arr,
 	/**
 	 * Save in the given register the length of the array.
 	 *
 	 * usage:
-	 * arl <reg> <out> <dimension>
+	 * arl <reg> <out>
 	 *
 	 * operands:
 	 * -reg: the register with the array.
 	 * -out: the register to save the length.
-	 * -dimension: the dimension of the array to get the size. Can be an int or a register.
 	 */
 	arl,
 	/**
-	 * Save in the given register the dimension count of an array.
+	 * Create a new array with the values on the operands.
 	 *
 	 * usage:
-	 * ard <reg>
+	 * ard <reg> <values>*
 	 *
 	 * operators:
-	 * -reg: the register containing the array.
+	 * -reg: the register to save the array.
+	 * -values: list of values or registers to use on the array.
 	 */
 	ard,
 	/**

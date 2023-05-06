@@ -36,7 +36,32 @@ static inline bool getBool(KlObject *obj, KLCall &call) {
 	return false;
 }
 
+static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObject *function) {
+	auto reg = argv[1] ? KASINT(argv[1]) : -1;
+	auto val = argv[2];
+	GETREG(val)
+	vector<KlObject *> args;
+	args.reserve(argc - 2);
+	for (int i = 2; i < argc; ++i) {
+		auto arg = argv[i];
+		GETREG(arg)
+		args.push_back(arg);
+	}
+	auto ret = klInvoke(function, args.data(), args.size());
+	if (reg >= 0) {
+		vecref save = call.st.at(reg);
+		klTransfer(&ret, &save);
+	} else {
+		// dismiss return value
+		klDeref(ret);
+	}
+}
+
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
+
+static void opcode_ivk(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	call_core(call, argv, argc, argv[0]);
+}
 
 static void opcode_cast(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
@@ -429,24 +454,8 @@ static void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], 
 		// maybe try to check if function exists now?
 		throw runtime_error("Unable to resolve function " + KSTRING(argv[0]));
 	}
-	auto reg = argv[1] ? KASINT(argv[1]) : -1;
-	auto val = argv[2];
-	GETREG(val)
-	vector<KlObject *> args;
-	args.reserve(argc - 2);
-	for (int i = 2; i < argc; ++i) {
-		auto arg = argv[i];
-		GETREG(arg)
-		args.push_back(arg);
-	}
-	auto ret = klInvoke(argv[0], args.data(), args.size());
-	if (reg >= 0) {
-		vecref save = call.st.at(reg);
-		klTransfer(&ret, &save);
-	} else {
-		// dismiss return value
-		klDeref(ret);
-	}
+	auto function = argv[0];
+	call_core(call, argv, argc, function);
 }
 
 static void opcode_go(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
@@ -613,13 +622,10 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_cast;
 			break;
 		case KLOpcode::ivk:
-			break;
-		case KLOpcode::ivka:
+			instruction->call = opcode_ivk;
 			break;
 		case KLOpcode::call:
 			instruction->call = opcode_call;
-			break;
-		case KLOpcode::calla:
 			break;
 		case KLOpcode::argc:
 			break;
