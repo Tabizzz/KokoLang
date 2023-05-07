@@ -9,7 +9,7 @@ void global_klmap_t()
 			.flags = KLOBJ_FLAG_USE_DELETE
 		},
 		.name = "map",
-		.size = sizeof(kl_arr),
+		.size = sizeof(kl_sptr),
 		.initializer = karr_init,
 		KLTYPE_METADATA
 	};

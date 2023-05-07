@@ -43,6 +43,8 @@
 typedef uint8_t kbyte;
 typedef uint16_t kshort;
 
+typedef void* kptr;
+
 #ifdef TARGET_32B
 typedef int32_t kint;
 typedef float kfloat;

@@ -22,8 +22,8 @@ static void kint_init(KlObject *obj) {
 #pragma ide diagnostic ignored "ConstantFunctionResult"
 
 static int8_t kint_comparer(KlObject *x, KlObject *y) {
-	int64_t first = KASINT(x);
-	int64_t second = 0;
+	kint first = KASINT(x);
+	kint second = 0;
 	if (y) {
 		if (y->type == klint_t) {
 			second = KASINT(y);
@@ -90,7 +90,7 @@ static void kint_add(KlObject *first, KlObject *second, KlObject **target) {
 			return;
 		}
 		auto x = KASINT(first);
-		int64_t y = 0;
+		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
@@ -113,7 +113,7 @@ static void kint_sub(KlObject *first, KlObject *second, KlObject **target) {
 			return;
 		}
 		auto x = KASINT(first);
-		int64_t y = 0;
+		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
@@ -135,7 +135,7 @@ static void kint_mul(KlObject *first, KlObject *second, KlObject **target) {
 			return;
 		}
 		auto x = KASINT(first);
-		int64_t y = 0;
+		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
@@ -159,7 +159,7 @@ static void kint_div(KlObject *first, KlObject *second, KlObject **target) {
 			return;
 		}
 		auto x = KASINT(first);
-		int64_t y = 0;
+		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {
@@ -184,7 +184,7 @@ static void kint_mod(KlObject *first, KlObject *second, KlObject **target) {
 			return;
 		}
 		auto x = KASINT(first);
-		int64_t y = 0;
+		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
 		} else if (second->type->toInt) {

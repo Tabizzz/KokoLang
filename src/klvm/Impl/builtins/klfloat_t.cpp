@@ -23,8 +23,8 @@ static void kfloat_init(KlObject *obj) {
 #pragma ide diagnostic ignored "ConstantFunctionResult"
 
 static int8_t kfloat_comparer(KlObject *x, KlObject *y) {
-	double_t first = KASFLOAT(x);
-	double_t second = 0;
+	kfloat first = KASFLOAT(x);
+	kfloat second = 0;
 	if (y) {
 		if (y->type == klfloat_t) {
 			second = KASFLOAT(y);
@@ -75,7 +75,7 @@ void kfloat_copy(KlObject *a, KlObject *b) {
 static KlObject *kfloat_tostr(KlObject *base) {
 	auto val = KASFLOAT(base);
 	std::ostringstream stream;
-	auto max = std::numeric_limits<double_t>::digits10 + 1;
+	auto max = std::numeric_limits<kfloat>::digits10 + 1;
 	stream.precision(max);
 	stream << val;
 	return KLSTR(stream.str());
@@ -94,7 +94,7 @@ static KlObject *kfloat_tobit(KlObject *base) {
 static void kfloat_add(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
-		double y = 0;
+		kfloat y = 0;
 		if (second->type == klfloat_t) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
@@ -114,7 +114,7 @@ static void kfloat_add(KlObject *first, KlObject *second, KlObject **target) {
 static void kfloat_sub(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
-		double y = 0;
+		kfloat y = 0;
 		if (second->type == klfloat_t) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
@@ -134,7 +134,7 @@ static void kfloat_sub(KlObject *first, KlObject *second, KlObject **target) {
 static void kfloat_mul(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
-		double y = 0;
+		kfloat y = 0;
 		if (second->type == klfloat_t) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
@@ -155,7 +155,7 @@ static void kfloat_mul(KlObject *first, KlObject *second, KlObject **target) {
 static void kfloat_div(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
-		double y = 0;
+		kfloat y = 0;
 		if (second->type == klfloat_t) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
@@ -177,7 +177,7 @@ static void kfloat_div(KlObject *first, KlObject *second, KlObject **target) {
 static void kfloat_mod(KlObject *first, KlObject *second, KlObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
-		double y = 0;
+		kfloat y = 0;
 		if (second->type == klfloat_t) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {

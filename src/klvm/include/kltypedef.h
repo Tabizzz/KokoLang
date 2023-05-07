@@ -20,7 +20,7 @@ struct CPPAPI kl_int {
 	/**
 	 * @brief Internal native value of the int.
 	 */
-    kint value;
+	kint value;
 };
 
 /**
@@ -61,7 +61,7 @@ struct CPPAPI kl_string {
 	 * Strings are immutable and cannot be modified, that is, when you concatenate one string to another a new string is created and the
 	 * originals are unmodified.
 	 */
-	const char* value;
+	const char *value;
 };
 
 /**
@@ -93,7 +93,7 @@ struct CPPAPI kl_ptr {
 	/**
 	 * @brief The native pointer value.
 	 */
-	void* value;
+	kptr value;
 };
 
 /**
@@ -101,16 +101,16 @@ struct CPPAPI kl_ptr {
  *
  * An array has a fixed size and can have multiple dimensions, any array with dimension greater than 0 only contain other arrays.
  */
-struct CPPAPI kl_arr {
+struct CPPAPI kl_sptr {
 	KLOBJECTHEAD
+	/**
+	 * @brief The native array containing the objects.
+	 */
+	kptr content;
 	/**
 	 * @brief The number of elements of the array.
 	 */
 	uint32_t size;
-	/**
-	 * @brief The native array containing the objects.
-	 */
-	void* content;
 };
 
 #ifdef __cplusplus
