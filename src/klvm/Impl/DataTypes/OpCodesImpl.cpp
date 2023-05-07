@@ -59,6 +59,26 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_free(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[0])
+	vecref ptr = call.st.at(reg);
+	if (ptr->type == klptr_t) {
+		free(KLCAST(kl_ptr, ptr)->value);
+		CALL_SET_FLAG(call, CALL_FLAG_CHECK, true);
+	}
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, false);
+}
+
+static void opcode_aloc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[1])
+	vecref regis = call.st.at(reg);
+	auto val = KASINT(argv[0]);
+
+	auto ptr = KLPTR(malloc(val));
+	// transfer the pointer to register
+	klTransfer(&ptr, &regis);
+}
+
 static void opcode_argc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	temp_int.value = call.argc;
@@ -641,8 +661,10 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_ret;
 			break;
 		case KLOpcode::aloc:
+			instruction->call = opcode_aloc;
 			break;
 		case KLOpcode::freei:
+			instruction->call = opcode_free;
 			break;
 		case KLOpcode::copy:
 			break;

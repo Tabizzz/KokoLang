@@ -16,6 +16,13 @@ CAPI KlObject *klBuiltinFloat(kfloat val) {
 	return base;
 }
 
+CAPI KlObject *klBuiltinPtr(void* val) {
+	auto base = klIns(klptr_t);
+	auto obj = KLCAST(kl_ptr , base);
+	obj->value = val;
+	return base;
+}
+
 CPPAPI KlObject *klBuiltinString(const string &val) {
 	auto base = klIns(klstring_t);
 	auto obj = KLCAST(kl_string , base);
