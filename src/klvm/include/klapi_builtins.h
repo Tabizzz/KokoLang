@@ -33,6 +33,7 @@
 #define KSTRING(x) std::string(KASSTR(x), KASSTRSIZE(x))
 #define KLPTR(x) klBuiltinPtr(x)
 #define KPTR(x) KLCAST(kl_ptr, KLPTR(x))
+#define KASPTR(x) KLCAST(kl_ptr, x)->value
 #define KLARR(x) klBuiltinArr(x)
 #define KARR(x) KLCAST(kl_arr, KLARR(x))
 
