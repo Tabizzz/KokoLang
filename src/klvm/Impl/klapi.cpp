@@ -1,8 +1,8 @@
-﻿
-#include "klvm_internal.h"
+﻿#include "klvm_internal.h"
 #include "klapi.h"
 #include <stdexcept>
 #include <cstring>
+#include <sstream> //for std::stringstream
 
 KLPackage *globalPackage = nullptr;
 map<string, KLPackage *> *packages;
@@ -78,6 +78,20 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 	throw invalid_argument("trying to add a package but another package with the same name already exists");
 }
 
+static KlObject *defaultToStr(KlObject *obj) {
+	std::stringstream ss;
+	ss << '[';
+	ss << obj->type->name;
+	ss << ' ';
+	ss << obj;
+	ss << ']';
+	return KLSTR(ss.str());
+}
+
+static int8_t defaultEquals(KlObject *a, KlObject *b) {
+	return a == b ? 1 : 0;
+}
+
 CAPI void klDefType(KLType *type) {
 	if (!type->name || strlen(type->name) == 0) {
 		throw runtime_error("Types must have a name");
@@ -92,6 +106,14 @@ CAPI void klDefType(KLType *type) {
 	// the type is defined, so it only have one ref.
 	type->klbase.refs = 1;
 	type->inscount = 0;
+
+	// set default tostring and equals
+	if (!type->toString) {
+		type->toString = defaultToStr;
+	}
+	if (!type->equal) {
+		type->equal = defaultEquals;
+	}
 }
 
 /*
