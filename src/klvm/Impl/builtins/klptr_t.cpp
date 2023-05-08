@@ -88,21 +88,28 @@ static void kptr_sub(KlObject *first, KlObject *second, KlObject **target) {
 
 void global_klptr_t() {
 	klptr_t = new KLType{
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "ptr",
-		.size = sizeof(kl_ptr),
-		.initializer = kptr_init,
-		.toString = kptr_tostr,
-		.toBool = kptr_tobit,
-		.equal = kptr_equal,
-		.opAdd = kptr_add,
-		.opSub = kptr_sub,
-		.clone = kptr_clone,
-		.copy = kptr_copy,
-		KLTYPE_METADATA
+		"ptr",
+		0,
+		 sizeof(kl_ptr),
+		kptr_init,
+		REP2(nullptr)
+		kptr_tostr,
+		REP2(nullptr)
+		kptr_tobit,
+		REP3(nullptr)
+		kptr_equal,
+		kptr_add,
+		kptr_sub,
+		REP3(nullptr)
+		kptr_clone,
+		kptr_copy,
 	};
+	KLTYPE_METADATA(klptr_t)
 
 	temp_ptr.klbase.type = klptr_t;
 }

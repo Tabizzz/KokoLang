@@ -11,12 +11,15 @@ void karr_init(KlObject *obj) {
 void global_klarray_t()
 {
 	klarray_t = new KLType {
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "array",
-		.size = sizeof(kl_sptr),
-		.initializer = karr_init,
-		KLTYPE_METADATA
+		"array",
+		0,
+		sizeof(kl_sptr),
+		karr_init
 	};
+	KLTYPE_METADATA(klarray_t)
 }

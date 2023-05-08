@@ -198,8 +198,10 @@ static void kfloat_mod(KlObject *first, KlObject *second, KlObject **target) {
 
 void global_klfloat_t() {
 	klfloat_t = new KLType {
-		KlObject {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
 		"flt",
 		0,
@@ -221,12 +223,9 @@ void global_klfloat_t() {
 		kfloat_div,
 		kfloat_mod,
 		kfloat_clone,
-		kfloat_copy,
-		0,
-		new MetaMap(),
-		new MetaMap(),
-		new MetaMap(),
+		kfloat_copy
 	};
+	KLTYPE_METADATA(klfloat_t)
 
 	temp_float.klbase.type = klfloat_t;
 }

@@ -125,13 +125,16 @@ KLType* klpack_t = nullptr;
 void global_klpack_t()
 {
 	klpack_t = new KLType {
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "pack",
-		.size = sizeof(KLPackage),
-		.initializer = kpack_init,
-		.finalizer = kpack_end,
-		KLTYPE_METADATA
+		"pack",
+		0,
+		 sizeof(KLPackage),
+		kpack_init,
+		kpack_end
 	};
+	KLTYPE_METADATA(klpack_t)
 }

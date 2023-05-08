@@ -203,8 +203,10 @@ static void kint_mod(KlObject *first, KlObject *second, KlObject **target) {
 
 void global_klint_t() {
 	klint_t = new KLType {
-		KlObject {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
 		"int",
 		0,
@@ -227,22 +229,26 @@ void global_klint_t() {
 		kint_mod,
 		kint_clone,
 		kint_copy,
-		0,
-		new MetaMap(),
-		new MetaMap(),
-		new MetaMap(),
+		0
 	};
 
+	KLTYPE_METADATA(klint_t)
+
 	klreg_t = new KLType{
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "reg",
-		.size = sizeof(kl_int),
-		.initializer = kint_init,
-		.copy = kint_copy,
-		KLTYPE_METADATA
+		"reg",
+		0,
+		sizeof(kl_int),
+		kint_init,
+		REP(1 , 6, nullptr)
+		kint_copy
 	};
+
+	KLTYPE_METADATA(klreg_t)
 
 	temp_int.klbase.type = klint_t;
 }

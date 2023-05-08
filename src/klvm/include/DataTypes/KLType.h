@@ -15,10 +15,10 @@ KLTYPEHEAD,                        \
 .initializer = c,                \
 .finalizer = d
 
-#define KLTYPE_METADATA 		\
-.functions = new MetaMap(),		\
-.variables = new MetaMap(),		\
-.metadata = new MetaMap(),
+#define KLTYPE_METADATA(type)        \
+type->functions = new MetaMap();        \
+type->variables = new MetaMap();        \
+type->metadata = new MetaMap();
 
 struct CPPAPI KLType {
 	KLOBJECTHEAD
@@ -26,8 +26,8 @@ struct CPPAPI KLType {
 	size_t inscount;            // the number of instances
 	size_t size;                // the size to allocate this an object of this type
 	kltypefunc initializer;        // the initializer to this type
-	KlObject *constructor;        // the constructor of the type
 	kltypefunc finalizer;        // the finalizer to this type
+	KlObject *constructor;        // the constructor of the type
 
 	klunaryop toString;            // return the string representation of the type
 	klunaryop toInt;            // return the int representation of the type
@@ -60,7 +60,7 @@ struct CPPAPI KLType {
 	 */
 	kbyte flags;
 
-	MetaMap* functions;            // the functions defined in the type
-	MetaMap* variables;            // the globals var of the type.
-	MetaMap* metadata;        		// metadata of the type
+	MetaMap *functions;            // the functions defined in the type
+	MetaMap *variables;            // the globals var of the type.
+	MetaMap *metadata;                // metadata of the type
 };

@@ -33,17 +33,23 @@ static KlObject *kbool_tostr(KlObject *obj) {
 KLType *klbool_t = nullptr;
 
 void global_klbool_t() {
-	klbool_t = new KLType {
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+	klbool_t = new KLType{
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "bool",
-		.size = sizeof(kl_bool),
-		.toString = kbool_tostr,
-		.toBool = klself_return,
-		.flags = KLTYPE_FLAG_NOINSTANCE,        // cannot instance
-		KLTYPE_METADATA
+		"bool",
+		0,
+		sizeof(kl_bool),
+		REP3(nullptr)
+		kbool_tostr,
+		REP2(nullptr)
+		klself_return,
+		REP(1, 1, nullptr)
+		KLTYPE_FLAG_NOINSTANCE,        // cannot instance
 	};
+	KLTYPE_METADATA(klbool_t)
 
 	kl_bool_true.klbase.type = klbool_t;
 	kl_bool_false.klbase.type = klbool_t;

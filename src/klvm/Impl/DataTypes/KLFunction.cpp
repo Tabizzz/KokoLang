@@ -160,13 +160,17 @@ KLType* klfunc_t = nullptr;
 void global_klfunc_t()
 {
 	klfunc_t = new KLType {
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "fn",
-		.size = sizeof(KLFunction),
-		.initializer = kfunc_instantiator,
-		.finalizer = kfunc_destructor,
-		KLTYPE_METADATA
+		"fn",
+		0,
+		sizeof(KLFunction),
+		kfunc_instantiator,
+		kfunc_destructor
 	};
+
+	KLTYPE_METADATA(klfunc_t)
 }

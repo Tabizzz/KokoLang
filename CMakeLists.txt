@@ -28,6 +28,12 @@ if (TARGET_32B)
 	add_compile_definitions(TARGET_32B)
 endif()
 
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-pedantic temp)
+if(temp)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+endif()
+
 add_subdirectory(src)
 
 #set environment variable to ON if you want to enable testing

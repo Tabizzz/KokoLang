@@ -141,32 +141,25 @@ static KlObject *kstring_clone(KlObject *obj) {
 void global_klstring_t() {
 	klstring_t = new KLType{
 		{
-			.flags = KLOBJ_FLAG_USE_DELETE
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
 		"str",
 		0,
 		sizeof(kl_string),
 		kstring_init,
-		nullptr,
 		kstring_end,
+		nullptr,
 		klself_return,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
+		REP5(nullptr)
 		kstring_compare,
 		kstring_equals,
 		kstring_add,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
+		REP4(nullptr)
 		kstring_clone,
 		nullptr,
-		0,
-		new MetaMap(),
-		new MetaMap(),
-		new MetaMap(),
+		0
 	};
+	KLTYPE_METADATA(klstring_t)
 }

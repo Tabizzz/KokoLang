@@ -50,13 +50,16 @@ KLType* klvar_t = nullptr;
 void global_klvar_t()
 {
 	klvar_t = new KLType {
-		.klbase = {
-			.flags = KLOBJ_FLAG_USE_DELETE
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE
 		},
-		.name = "var",
-		.size = sizeof(KLVariable),
-		.initializer = kvar_instantiator,
-		.finalizer = kvar_destructor,
-		KLTYPE_METADATA
+		"var",
+		0,
+		sizeof(KLVariable),
+		kvar_instantiator,
+		kvar_destructor
 	};
+	KLTYPE_METADATA(klvar_t)
 }

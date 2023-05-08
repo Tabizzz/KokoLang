@@ -20,15 +20,18 @@ void ktype_end(KlObject* obj)
 
 void global_kltype_t() {
 	kltype_t = new KLType{
-		.klbase = {
-			.flags = KLOBJ_FLAG_IGNORE_REF | KLOBJ_FLAG_USE_DELETE | KLOBJ_FLAG_NO_INSCOUNT,
+		{
+			nullptr,
+			0,
+			KLOBJ_FLAG_USE_DELETE | KLOBJ_FLAG_IGNORE_REF | KLOBJ_FLAG_NO_INSCOUNT
 		},
-		.name = "type",
-		.size = sizeof(KLType),
-		.initializer = ktype_ins,
-		.finalizer = ktype_end,
-		KLTYPE_METADATA
+		"type",
+		0,
+		sizeof(KLType),
+		ktype_ins,
+		ktype_end
 	};
+	KLTYPE_METADATA(kltype_t)
 
 	kltype_t->klbase.type = kltype_t;
 }
