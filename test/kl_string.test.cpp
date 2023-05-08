@@ -86,7 +86,7 @@ TEST_CASE("kl_string", "[klapi_types][kl_string]")
 		klDeref(add);
 		add = nullptr;
 
-		EXCHANGE(first, KLSTR("Hello"), second, KLSTR(u8" μ"), cmp, KLSTR("Hello μ"))
+		EXCHANGE(first, KLSTR("Hello"), second, KLSTR(u8" μ"), cmp, KLSTR(u8"Hello μ"))
 		klstring_t->opAdd(first, second, &add);
 		REQUIRE(klstring_t->equal(add, cmp));
 		klDeref(add);

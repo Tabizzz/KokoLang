@@ -1,3 +1,0 @@
-[submodule "test/deps/segvcatch"]
-	path = test/deps/segvcatch
-	url = https://github.com/Plaristote/segvcatch

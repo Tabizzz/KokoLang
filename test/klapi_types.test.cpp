@@ -66,12 +66,6 @@ TEST_CASE("klapi_types.h","[klapi_types]")
 			klDeref(val);
 			REQUIRE(old - 1 == val->refs);
 		}
-		SECTION("Destroy object")
-		{
-			auto destory = KLINT(0);
-			klDeref(destory);
-			REQUIRE_FALSE(is_valid(destory));
-		}
 		SECTION("Dont do nothing on null")
 		{
 			REQUIRE_NOTHROW(klDeref(nullptr));

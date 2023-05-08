@@ -75,7 +75,7 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 		packages->insert(pair<string, KLPackage *>(name, klPackage));
 		return;
 	}
-	throw invalid_argument("trying to add a package but another package with the same name already exists");
+	throw runtime_error("trying to add a package but another package with the same name already exists");
 }
 
 static KlObject *defaultToStr(KlObject *obj) {

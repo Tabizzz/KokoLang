@@ -1,13 +1,5 @@
 project( Tests CXX )
 
-add_subdirectory(deps/segvcatch)
-
-if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fnon-call-exceptions")
-endif()
-
-include_directories(deps/segvcatch/lib)
-
 add_executable(kltest
         main.cpp
         catch.hpp
@@ -19,4 +11,4 @@ add_executable(kltest
         kl_float.test.cpp
         kl_string.test.cpp)
 
-target_link_libraries(kltest klvm Threads::Threads segvcatch)
+target_link_libraries(kltest klvm Threads::Threads)
