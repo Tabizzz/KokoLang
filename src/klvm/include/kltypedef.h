@@ -45,6 +45,13 @@ struct CPPAPI kl_float {
 struct CPPAPI kl_string {
 	KLOBJECTHEAD
 	/**
+	 * @brief The native array with the chars of the string.
+	 *
+	 * Strings are immutable and cannot be modified, that is, when you concatenate one string to another a new string is created and the
+	 * originals are unmodified.
+	 */
+	const char *value;
+	/**
 	 * @brief The size of the string.
 	 *
 	 * The size represent the number of bytes allocated in the native char array, dont is the number of utf-8 chars in the string.
@@ -55,13 +62,6 @@ struct CPPAPI kl_string {
 	 * @brief Reserved value.
 	 */
 	uint32_t reserved; // in future use as hash or as real count.
-	/**
-	 * @brief The native array with the chars of the string.
-	 *
-	 * Strings are immutable and cannot be modified, that is, when you concatenate one string to another a new string is created and the
-	 * originals are unmodified.
-	 */
-	const char *value;
 };
 
 /**
@@ -99,7 +99,7 @@ struct CPPAPI kl_ptr {
 /**
  *  @brief Kokolang's builtin array structure.
  *
- * An array has a fixed size and can have multiple dimensions, any array with dimension greater than 0 only contain other arrays.
+ * An array has a fixed size.
  */
 struct CPPAPI kl_sptr {
 	KLOBJECTHEAD
@@ -110,7 +110,7 @@ struct CPPAPI kl_sptr {
 	/**
 	 * @brief The number of elements of the array.
 	 */
-	uint32_t size;
+	size_t size;
 };
 
 #ifdef __cplusplus

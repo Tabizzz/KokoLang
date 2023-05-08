@@ -49,7 +49,10 @@ struct CPPAPI KLType {
 	klresoperation opMod;        // modulo operation
 
 	klunaryop clone;            // clone operation
-	klcopy copy;                // copy operation
+	klcopyop copy;                // copy operation
+
+	klbinaryop getter;			// array indexer, get operation
+	klsetop setter;				// array indexer, set operation
 
 	/*
 	 * flags of this type:

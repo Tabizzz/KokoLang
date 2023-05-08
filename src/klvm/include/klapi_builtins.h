@@ -103,25 +103,10 @@ KlObject* klBuiltinPtr(void* val);
 
 CAPI
 /**
- * @brief Creates new array instance with multiple dimensions.
- *
- * @param dimensions The number of dimensions on the array plus 1, that is, if you want to create a 0 dimensional array pass 1 as parameters.
- * @param sizes A array containing the sizes of each dimension on the array, the size of the array must be greater or equal than dimensions.
- *
- * @return A new array of arbitrary dimension and with the given sizes.
- */
-KlObject* klBuiltinMultiArr(uint32_t dimensions, uint32_t* sizes);
-
-CAPI
-/**
- * @brief Creates new array instance with one dimension.
+ * @brief Creates new array instance with specific size.
  *
  * @param size The number of elements in the array.
  *
- * @return A new array of dimension 0.
+ * @return A new array.
  */
-inline KlObject* klBuiltinArr(uint32_t size)
-{
-	uint32_t sizes []{size};
-	return klBuiltinMultiArr(1, sizes);
-}
+KlObject* klBuiltinArr(size_t size);

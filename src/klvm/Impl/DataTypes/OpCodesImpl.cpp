@@ -6,6 +6,9 @@
 #define GETREG(y) \
 if(y && y->type == klreg_t) { \
 y = call.st.at(KASINT(y));}
+#define REQGETREG(x, y) \
+GETREG(x)               \
+if(!x || x->type != y) return;
 #define REGORRET(x) if(!x) return; auto reg = KASINT(x);
 
 typedef vector<KlObject *>::reference vecref;
@@ -60,44 +63,40 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_arr(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[0])
+	vecref ref = call.st.at(reg);
+	auto size = argv[1];
+	REQGETREG(size, klint_t)
+
+	auto arr = klBuiltinArr(KASINT(size));
+	klTransfer(&arr, &ref);
+}
+
 static void opcode_fill(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	auto dest_o = argv[0];
-	GETREG(dest_o)
-	if(dest_o->type != klptr_t) return;
+	auto dest = argv[0];
+	REQGETREG(dest, klptr_t)
 
-	auto src_o = argv[1];
-	GETREG(src_o)
-	if(src_o->type != klint_t) return;
+	auto src = argv[1];
+	REQGETREG(src, klint_t)
 
-	auto size_o = argv[2];
-	GETREG(size_o)
-	if(size_o->type != klint_t) return;
+	auto size = argv[2];
+	REQGETREG(size, klint_t)
 
-	auto dest = KASPTR(dest_o);
-	auto src = KASINT(src_o);
-	auto size = KASINT(size_o);
-
-	memset(dest, static_cast<int>(src), size);
+	memset(KASPTR(dest), static_cast<int>(KASINT(src)), KASINT(size));
 }
 
 static void opcode_copy(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	auto src_o = argv[0];
-	GETREG(src_o)
-	if(src_o->type != klptr_t) return;
+	auto src = argv[0];
+	REQGETREG(src, klptr_t)
 
-	auto dest_o = argv[1];
-	GETREG(dest_o)
-	if(dest_o->type != klptr_t) return;
+	auto dest = argv[1];
+	REQGETREG(dest, klptr_t)
 
-	auto size_o = argv[2];
-	GETREG(size_o)
-	if(size_o->type != klint_t) return;
+	auto size = argv[2];
+	REQGETREG(size, klint_t)
 
-	auto src = KASPTR(src_o);
-	auto dest = KASPTR(dest_o);
-	auto size = KASINT(size_o);
-
-	memcpy(src, dest, size);
+	memcpy(KASPTR(src), KASPTR(dest), KASINT(size));
 }
 
 static void opcode_free(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
@@ -714,6 +713,7 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_fill;
 			break;
 		case KLOpcode::arr:
+			instruction->call = opcode_arr;
 			break;
 		case KLOpcode::arl:
 			break;

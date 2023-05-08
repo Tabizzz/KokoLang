@@ -13,3 +13,5 @@ Pending things to implement:
 - [ ] standard library
 - [ ] core lang functions
 - [ ] add try catch
+- [ ] test for builtin types
+- [ ] test for api

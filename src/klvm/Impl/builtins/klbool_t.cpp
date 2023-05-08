@@ -46,7 +46,7 @@ void global_klbool_t() {
 		kbool_tostr,
 		REP2(nullptr)
 		klself_return,
-		REP(1, 1, nullptr)
+		REP(1, 3, nullptr)
 		KLTYPE_FLAG_NOINSTANCE,        // cannot instance
 	};
 	KLTYPE_METADATA(klbool_t)
