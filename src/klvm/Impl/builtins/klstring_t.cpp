@@ -116,11 +116,9 @@ static void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
 
 	auto size = first->size + second->size;
 	auto value = new char[size];
-	value[0] = 0;
-	value[first->size] = 0;
 
-	strncat(value, first->value, first->size);
-	strncat(value, second->value, second->size);
+    memcpy(value, (void *) first->value, first->size);
+    memcpy(value + first->size, (void *) second->value, second->size);
 
 	auto dev = klIns(klstring_t);
 	KLCAST(kl_string, dev)->size = size;
@@ -157,9 +155,7 @@ void global_klstring_t() {
 		kstring_equals,
 		kstring_add,
 		REP4(nullptr)
-		kstring_clone,
-		nullptr,
-		0
+		kstring_clone
 	};
 	KLTYPE_METADATA(klstring_t)
 }

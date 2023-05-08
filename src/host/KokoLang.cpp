@@ -37,10 +37,10 @@ KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 	auto val = argv[0];
 	if (val) {
 		if (val->type == klstring_t) {
-			nowide::cout << KSTRING(val) << std::endl;
+			nowide::cout.write(KASSTR(val), KASSTRSIZE(val)) << std::endl;
 		} else if (val->type->toString) {
 			auto str = val->type->toString(val);
-			nowide::cout << KSTRING(str) << std::endl;
+			nowide::cout.write(KASSTR(str), KASSTRSIZE(str)) << std::endl;
 			klDeref(str);
 		}
 	} else {
@@ -79,6 +79,15 @@ int main(int argc, const char *argv[]) {
 		out->margs = 1;
 		out->name = KLSTR("out");
 		klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
+
+		std::vector<KlObject*> arg;
+		arg.reserve(1);
+		arg[0] = KLSTR(u8"μs");
+		klInvoke(KLWRAP(out), arg.data(), 1);
+		klDeref(arg[0]);
+		arg[0] = KLSTR("μs");
+		klInvoke(KLWRAP(out), arg.data(), 1);
+		klDeref(arg[0]);
 
 		int exit = EXIT_SUCCESS;
 		if (program) {
