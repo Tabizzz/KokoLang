@@ -1,4 +1,5 @@
 ﻿#include "kilasm.h"
+#define TERMCOLOR_USE_ANSI_ESCAPE_SEQUENCES
 #include "termcolor/termcolor.hpp"
 #include "boost/nowide/iostream.hpp"
 
@@ -6,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-#if _WIN32
+#if _WIN32 || _WIN64
 #include <cstdio>
 #include <windows.h>
 #endif
@@ -52,7 +53,7 @@ KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
 int main(int argc, const char *argv[]) {
 	if (termcolor::_internal::is_atty(std::cout))
 		nowide::cout << termcolor::colorize;
-#if _WIN32
+#if _WIN32 || _WIN64
 	SetConsoleOutputCP( 65001 );
 #endif
 	if (argc > 1) {

@@ -1,0 +1,48 @@
+﻿{
+  "configurations": [
+    {
+      "name": "debug-x64",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64" ],
+      "buildRoot": "${projectDir}\\build\\debug-win\\x64",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DVCPKG_TARGET_TRIPLET=x64-windows-static-md -DCMAKE_TOOLCHAIN_FILE=\"E:\\Dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\" -DBUILD_TESTING=true",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "release-x64",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\build\\release-win\\x64",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DVCPKG_TARGET_TRIPLET=x64-windows-static-md -DCMAKE_TOOLCHAIN_FILE=\"E:\\Dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\"",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64" ]
+    },
+    {
+      "name": "debug-x86",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\build\\debug-win\\x86",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DVCPKG_TARGET_TRIPLET=x86-windows-static-md -DCMAKE_TOOLCHAIN_FILE=\"E:\\Dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\" -DBUILD_TESTING=true -DTARGET_32B=true",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ]
+    },
+    {
+      "name": "release-x86",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\build\\release-win\\x86",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DVCPKG_TARGET_TRIPLET=x86-windows-static-md -DCMAKE_TOOLCHAIN_FILE=\"E:\\Dev\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake\" -DTARGET_32B=true",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ]
+    }
+  ]
+}
