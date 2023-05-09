@@ -17,16 +17,16 @@ include_directories(${PROJECT_SOURCE_DIR}/src/klvm/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/kilasm/gen)
 
-set(CMAKE_INSTALL_RPATH "$ORIGIN")
-set(CMAKE_BUILD_WITH_INSTALL_RPATH true)
-
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/artifacts)
+set(CMAKE_INSTALL_PREFIX /usr/share/kokolang)
 
 if (TARGET_32B)
 	add_compile_definitions(TARGET_32B)
 endif()
+
+list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib )
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-pedantic temp)
@@ -40,3 +40,6 @@ add_subdirectory(src)
 if (BUILD_TESTING)
 	add_subdirectory(test)
 endif()
+
+install(TARGETS klhost klvm kilasm)
+install(FILES "${CMAKE_SOURCE_DIR}/tools/link" DESTINATION /bin RENAME kl)
