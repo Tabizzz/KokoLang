@@ -179,14 +179,6 @@ KlObject *kliCheckAnyNoId(KokoLangParser::ValueContext *ctx) {
 	return nullptr;
 }
 
-KlObject *kliCheckAny(KokoLangParser::ValueContext *ctx) {
-	if (!ctx) throw std::invalid_argument("missing required operand");
-	RETURN_ANY_CORE
-	RETURN_REG
-	RETURN_ID
-	return nullptr;
-}
-
 KlObject *kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	auto reg = ctx->register_();
@@ -296,6 +288,15 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 			SETOPERAND(2, kliCheckReg);
 			break;
 #pragma endregion
+#pragma region 1reg Uany_no_id
+		case KLOpcode::ard: {
+			SETOPERAND(0, kliCheckReg);
+			for (int i = 1; i < size; ++i) {
+				operands[i] = kliCheckAnyNoId(values[i]);
+			}
+			break;
+		}
+#pragma endregion
 #pragma region 2reg Uany_no_id
 		case KLOpcode::ivk: {
 			SETOPERAND(0, kliCheckReg);
@@ -308,7 +309,6 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 #pragma endregion
 #pragma region 1id 1reg Uany_no_id
 		case KLOpcode::call:
-		case KLOpcode::ard:
 		case KLOpcode::newi: {
 			SETOPERAND(0, kliCheckIdentifier);
 			SETOPERAND(1, kliCheckReg);
@@ -357,15 +357,18 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 			SETOPERAND(1, kliCheckRegOrInt);
 			break;
 #pragma endregion
-#pragma region 2reg 1reg_or_int Ureg_or_int
+#pragma region 2reg 1any_no_id
 		case KLOpcode::lde:
-		case KLOpcode::ste:
 			SETOPERAND(0, kliCheckReg);
 			SETOPERAND(1, kliCheckReg);
-			SETOPERAND(2, kliCheckRegOrInt);
-			for (int i = 3; i < size; ++i) {
-				operands[i] = kliCheckRegOrInt(values[i]);
-			}
+			SETOPERAND(2, kliCheckAnyNoId);
+			break;
+#pragma endregion
+#pragma region 1reg 2any_no_id
+		case KLOpcode::ste:
+			SETOPERAND(0, kliCheckReg);
+			SETOPERAND(1, kliCheckAnyNoId);
+			SETOPERAND(2, kliCheckAnyNoId);
 			break;
 #pragma endregion
 #pragma region 1id_or_reg 1reg
@@ -387,7 +390,7 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int *optiona
 			*optionals = 1;
 			break;
 #pragma endregion
-#pragma region unlimited
+#pragma region one unlimited
 		case KLOpcode::ard:
 			*optionals = -1;
 #pragma endregion
@@ -443,11 +446,6 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int *optiona
 			flag = 2;
 			break;
 #pragma endregion
-#pragma region three unlimited
-		case KLOpcode::lde:
-		case KLOpcode::ste:
-			*optionals = -1;
-#pragma endregion
 #pragma region three
 		case KLOpcode::add:
 		case KLOpcode::sub:
@@ -462,6 +460,8 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int *optiona
 		case KLOpcode::stfld:
 		case KLOpcode::ldfld:
 		case KLOpcode::ldfnd:
+		case KLOpcode::lde:
+		case KLOpcode::ste:
 			flag = 3;
 			break;
 #pragma endregion

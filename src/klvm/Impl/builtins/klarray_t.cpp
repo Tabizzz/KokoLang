@@ -5,12 +5,12 @@ KLType* klarray_t = nullptr;
 void karr_init(KlObject *obj) {
 	auto ptr = KLCAST(kl_sptr, obj);
 	ptr->size = 0;
-	ptr->content = nullptr;
+	ptr->value = nullptr;
 }
 
 void karr_end(KlObject *obj) {
 	auto ptr = KLCAST(kl_sptr, obj);
-	auto arr = KLCAST(KlObject*, ptr->content);
+	auto arr = KLCAST(KlObject*, ptr->value);
 	if(arr)
 	{
 		// dereference each element on the array

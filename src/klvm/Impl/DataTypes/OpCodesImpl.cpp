@@ -63,6 +63,92 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_ste(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto obj = argv[0];
+	GETREG(obj)
+	if(!obj) return;
+	auto index = argv[1];
+	GETREG(index)
+	auto value = argv[2];
+	GETREG(value)
+
+	if (obj->type == klarray_t) {
+		auto i = 0;
+		if (index && index->type == klint_t) {
+			i = KASINT(index);
+		}
+		auto length = KASARRSIZE(obj);
+		auto arr = KASARR(obj);
+		if (i >= 0 && i < length) {
+			klCopy(value, &arr[i]);
+		} else {
+			throw runtime_error("Index out of bounds");
+		}
+	} else if (obj->type->setter) {
+		obj->type->setter(obj, index, value);
+	}
+}
+
+static void opcode_lde(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[0])
+	vecref ref = call.st.at(reg);
+
+	auto obj = argv[1];
+	GETREG(obj)
+	auto index = argv[2];
+	GETREG(index)
+
+	if (!obj) return;
+	// load elements is inline for arrays
+	if (obj->type == klarray_t) {
+		auto i = 0;
+		if (index && index->type == klint_t) {
+			i = KASINT(index);
+		}
+		auto length = KASARRSIZE(obj);
+		auto arr = KASARR(obj);
+		if (i >= 0 && i < length) {
+			klCopy(arr[i], &ref);
+		} else {
+			throw runtime_error("Index out of bounds");
+		}
+	} else if (obj->type->getter) {
+		auto value = obj->type->getter(obj, index);
+		klTransfer(&value, &ref);
+	}
+}
+
+static void opcode_ard(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[0])
+	vecref ref = call.st.at(reg);
+
+	auto size = argc - 1;
+	auto crt = klBuiltinArr(size);
+	klTransfer(&crt, &ref);
+
+	auto arr = KASARR(ref);
+	for (int i = 0; i < size; ++i) {
+		klCopy(argv[1 + i], &arr[i]);
+	}
+}
+
+static void opcode_arl(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[1])
+	vecref ref = call.st.at(reg);
+
+	auto obj = argv[0];
+	GETREG(obj)
+
+	if (!obj) return;
+	temp_int.value = 0;
+	if (obj->type == klstring_t) {
+		temp_int.value = KASSTRSIZE(obj);
+	} else if (obj->type->size >= sizeof(kl_sptr)) {
+		temp_int.value = KASARRSIZE(obj);
+	}
+	klCopy(KLWRAP(&temp_int), &ref);
+}
+
 static void opcode_arr(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref ref = call.st.at(reg);
@@ -716,12 +802,16 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_arr;
 			break;
 		case KLOpcode::arl:
+			instruction->call = opcode_arl;
 			break;
 		case KLOpcode::ard:
+			instruction->call = opcode_ard;
 			break;
 		case KLOpcode::lde:
+			instruction->call = opcode_lde;
 			break;
 		case KLOpcode::ste:
+			instruction->call = opcode_ste;
 			break;
 		case KLOpcode::type:
 			break;

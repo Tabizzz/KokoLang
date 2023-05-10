@@ -106,7 +106,7 @@ struct CPPAPI kl_sptr {
 	/**
 	 * @brief The native array containing the objects.
 	 */
-	kptr content;
+	kptr value;
 	/**
 	 * @brief The number of elements of the array.
 	 */

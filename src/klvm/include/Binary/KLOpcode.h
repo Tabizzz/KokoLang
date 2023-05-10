@@ -592,20 +592,19 @@ enum class KLOpcode : unsigned char
 	 * Load the element of the array at the specific index.
 	 *
 	 * usage:
-	 * lde <reg> <dest> <index>+
+	 * lde <dest> <reg> <index>
 	 *
 	 * operators:
 	 * -reg: the array to get the element.
 	 * -dest: the register to save the element.
-	 * -index: this can be a register to an array of indices, or you can pass a
-	 * list of indices or registers to indices.
+	 * -index: the index to access.
 	 */
 	lde,
 	/**
 	 * Store the element of the array at the specific index.
 	 *
 	 * usage:
-	 * ste <reg> <src> <index>+
+	 * ste <reg> <index> <src>
 	 *
 	 * operators:
 	 * -reg: the array to get the element.

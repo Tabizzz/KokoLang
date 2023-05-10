@@ -36,6 +36,8 @@
 #define KASPTR(x) KLCAST(kl_ptr, x)->value
 #define KLARR(x) klBuiltinArr(x)
 #define KARR(x) KLCAST(kl_arr, KLARR(x))
+#define KASARR(x) KLCAST(KlObject*, KLCAST(kl_sptr, x)->value)
+#define KASARRSIZE(x) KLCAST(kl_sptr, x)->size
 
 CAPI
 /**

@@ -38,7 +38,7 @@ CAPI KlObject *klBuiltinArr(size_t size) {
 
 	arr->size = size;
 	if(size > 0) {
-		arr->content = new KlObject*[size]{};
+		arr->value = new KlObject*[size]{};
 	}
 
 	return base;

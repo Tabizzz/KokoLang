@@ -81,15 +81,6 @@ int main(int argc, const char *argv[]) {
 		out->name = KLSTR("out");
 		klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
 
-		std::vector<KlObject*> arg;
-		arg.reserve(1);
-		arg[0] = KLSTR(u8"μs");
-		klInvoke(KLWRAP(out), arg.data(), 1);
-		klDeref(arg[0]);
-		arg[0] = KLSTR("μs");
-		klInvoke(KLWRAP(out), arg.data(), 1);
-		klDeref(arg[0]);
-
 		int exit = EXIT_SUCCESS;
 		if (program) {
 			klRegisterPackage(program);
