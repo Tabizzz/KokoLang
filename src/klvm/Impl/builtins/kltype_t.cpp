@@ -1,21 +1,28 @@
 #include "global.h"
+#include <sstream>
 
-KLType* kltype_t = nullptr;
+KLType *kltype_t = nullptr;
 
-void ktype_ins(KlObject* obj)
-{
+static void ktype_ins(KlObject *obj) {
 	auto type = KLCAST(KLType, obj);
 	type->variables = new MetaMap();
 	type->functions = new MetaMap();
 	type->metadata = new MetaMap();
 }
 
-void ktype_end(KlObject* obj)
-{
+static void ktype_end(KlObject *obj) {
 	auto type = KLCAST(KLType, obj);
 	kliDerefAndDeleteMap(type->variables);
 	kliDerefAndDeleteMap(type->functions);
 	kliDerefAndDeleteMap(type->metadata);
+}
+
+static KlObject* ktype_tostr(KlObject *obj) {
+	std::stringstream ss;
+	ss << "[type ";
+	ss << KLCAST(KLType, obj)->name;
+	ss << ']';
+	return KLSTR(ss.str());
 }
 
 void global_kltype_t() {
@@ -29,7 +36,9 @@ void global_kltype_t() {
 		0,
 		sizeof(KLType),
 		ktype_ins,
-		ktype_end
+		ktype_end,
+		REP1(nullptr)
+		ktype_tostr
 	};
 	KLTYPE_METADATA(kltype_t)
 
