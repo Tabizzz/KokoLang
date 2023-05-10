@@ -62,7 +62,6 @@ KLOpcode ProgramVisitor::getOpcode(KokoLangParser::OpcodeContext *pContext) {
 		{"typeof", KLOpcode::typeofi},
 		{"is",     KLOpcode::is},
 		{"new",    KLOpcode::newi},
-		{"newa",   KLOpcode::newa},
 		{"sizeof", KLOpcode::sizeofi},
 		{"stfld",  KLOpcode::stfld},
 		{"ldfld",  KLOpcode::ldfld},
@@ -319,7 +318,6 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 		}
 #pragma endregion
 #pragma region 1id 2reg
-		case KLOpcode::newa:
 		case KLOpcode::stfld:
 		case KLOpcode::ldfld:
 		case KLOpcode::ldfnd:
@@ -456,7 +454,6 @@ int ProgramVisitor::CheckOperandCount(size_t size, KLOpcode opcode, int *optiona
 		case KLOpcode::cast:
 		case KLOpcode::copy:
 		case KLOpcode::fill:
-		case KLOpcode::newa:
 		case KLOpcode::stfld:
 		case KLOpcode::ldfld:
 		case KLOpcode::ldfnd:

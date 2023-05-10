@@ -130,7 +130,6 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 			case KLOpcode::type:
 			case KLOpcode::is:
 			case KLOpcode::newi:
-			case KLOpcode::newa:
 			case KLOpcode::sizeofi:
 			case KLOpcode::ins:
 				if (instruction->operands[0]->type == klstring_t) {

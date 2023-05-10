@@ -821,8 +821,6 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			break;
 		case KLOpcode::newi:
 			break;
-		case KLOpcode::newa:
-			break;
 		case KLOpcode::sizeofi:
 			break;
 		case KLOpcode::stfld:

@@ -670,18 +670,6 @@ enum class KLOpcode : unsigned char
 	 */
 	newi,
 	/**
-	 * Create a new instance of the given type calling the constructor of the type.
-	 *
-	 * usage:
-	 * new <typename> <reg> <params>
-	 *
-	 * operands:
-	 * -typename: the type identifier to create.
-	 * -reg: a register to save the created object.
-	 * -params: a register with an array with the params to pass to the constructor.
-	 */
-	newa,
-	/**
 	 * Push onto the stack the size in bytes of memory required by the type.
 	 * This value don't include the header size.
 	 *
