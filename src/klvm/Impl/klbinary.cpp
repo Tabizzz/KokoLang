@@ -8,7 +8,7 @@
 
 #define CHECKSTREAM(x,y) if(stream.fail() || stream.eof() || stream.bad()) { y return x; }
 
-static inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream);
+static inline void readPackageDefinition(MetaMap *target, istream &stream);
 
 using namespace std;
 
@@ -20,7 +20,7 @@ KLPackage *klCreatePackageFromFile(const char *filename) {
 	return pack;
 }
 
-static void readMetadata(std::istream &stream, std::map<std::string, KlObject*>* metadata)
+static void readMetadata(std::istream &stream, MetaMap* metadata)
 {
 	kshort size;
 	kbyte count;
@@ -136,7 +136,7 @@ static KlObject* readObject(std::istream &stream)
 	return value;
 }
 
-static inline void readVariableDefinition(std::map<std::string, KlObject*>* target, istream &stream, bool type) {
+static inline void readVariableDefinition(MetaMap* target, istream &stream, bool type) {
 	auto var = KLCAST(KLVariable, klIns(klvar_t));
 	kbyte namesize;
 	bool hasdefaultvalue;
@@ -204,7 +204,7 @@ static vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 	return dev;
 }
 
-static inline void readFunctionDefinition(map<string, KlObject *> *target, istream &stream, bool type) {
+static inline void readFunctionDefinition(MetaMap *target, istream &stream, bool type) {
 	kbyte read[4];
 	kshort size;
 	stream.read((char*)&read, 4);
@@ -321,7 +321,7 @@ static KLPackage* readDefinitions(KLPackage *pPackage, std::istream &stream) {
 	return pPackage;
 }
 
-static inline void readPackageDefinition(map<string, KlObject *> *target, istream &stream) {
+static inline void readPackageDefinition(MetaMap *target, istream &stream) {
 	kbyte namesize;
 	stream.read((char*)&namesize, 1);
 	CHECKSTREAM(,)

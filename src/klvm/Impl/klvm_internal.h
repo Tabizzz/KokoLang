@@ -32,7 +32,7 @@ extern kl_float temp_float;
 
 void kliDerefAndDeleteMap(MetaMap* pMap);
 
-map<string, KLPackage*>* kliRootPackages();
+unordered_map<string, KLPackage*>* kliRootPackages();
 
 KLPackage* kliBuildGlobalPackage();
 

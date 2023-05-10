@@ -66,7 +66,7 @@ struct CPPAPI KlObject {
  *
  * Used mainly to store metadata.
  */
-typedef std::map<std::string, KlObject *> MetaMap;
+typedef std::unordered_map<std::string, KlObject *> MetaMap;
 /**
  * @brief Pair of key-value of a MetaMap
  */

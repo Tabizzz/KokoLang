@@ -63,6 +63,27 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_typeof(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[1])
+	vecref ref = call.st.at(reg);
+
+	auto obj = argv[0];
+	GETREG(obj)
+
+	klMove(obj ? KLWRAP(obj->type) : nullptr, &ref);
+}
+
+static void opcode_type(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[1])
+	if (argv[0]->type == klstring_t) {
+		// maybe try to check if function exists now?
+		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
+	}
+	vecref ref = call.st.at(reg);
+
+	klMove(argv[0], &ref);
+}
+
 static void opcode_ste(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto obj = argv[0];
 	GETREG(obj)
@@ -814,8 +835,10 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_ste;
 			break;
 		case KLOpcode::type:
+			instruction->call = opcode_type;
 			break;
 		case KLOpcode::typeofi:
+			instruction->call = opcode_typeof;
 			break;
 		case KLOpcode::is:
 			break;

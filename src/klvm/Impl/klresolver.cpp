@@ -14,7 +14,7 @@ static inline void split(vector<string> &vector, const string &source, char sepa
 }
 
 template<typename T>
-static inline T mapfind(map<string, T> *map, string &find) {
+static inline T mapfind(unordered_map<string, T> *map, string &find) {
 	auto varfind = map->find(find);
 	return varfind != map->end() ? varfind->second : nullptr;
 }

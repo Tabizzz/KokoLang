@@ -5,9 +5,9 @@
 #include <sstream> //for std::stringstream
 
 KLPackage *globalPackage = nullptr;
-map<string, KLPackage *> *packages;
+unordered_map<string, KLPackage *> *packages;
 
-map<string, KLPackage *> *kliRootPackages() {
+unordered_map<string, KLPackage *> *kliRootPackages() {
 	return packages;
 }
 
@@ -22,7 +22,7 @@ CAPI void klInit() {
 	// we need to set the name after types definition
 	globalPackage->name = KLSTR("global");
 
-	packages = new map<string, KLPackage *>();
+	packages = new unordered_map<string, KLPackage *>();
 }
 
 CAPI void klEnd() {
