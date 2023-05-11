@@ -79,7 +79,7 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 }
 
 static KlObject *defaultToStr(KlObject *obj) {
-	std::stringstream ss;
+	std::ostringstream ss;
 	ss << '[';
 	ss << obj->type->name;
 	ss << ' ';

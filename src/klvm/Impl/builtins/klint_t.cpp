@@ -229,7 +229,6 @@ void global_klint_t() {
 		kint_mod,
 		kint_clone,
 		kint_copy,
-		0
 	};
 
 	KLTYPE_METADATA(klint_t)

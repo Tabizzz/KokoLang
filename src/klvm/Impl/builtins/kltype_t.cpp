@@ -18,7 +18,7 @@ static void ktype_end(KlObject *obj) {
 }
 
 static KlObject* ktype_tostr(KlObject *obj) {
-	std::stringstream ss;
+	std::ostringstream ss;
 	ss << "[type ";
 	ss << KLCAST(KLType, obj)->name;
 	ss << ']';

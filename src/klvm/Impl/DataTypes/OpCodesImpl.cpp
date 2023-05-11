@@ -63,6 +63,16 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_is(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	if (argv[0]->type == klstring_t) {
+		// maybe try to check if function exists now?
+		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
+	}
+	auto obj = argv[1];
+	GETREG(obj)
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, obj && KLWRAP(obj->type) == argv[0]);
+}
+
 static void opcode_typeof(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	vecref ref = call.st.at(reg);
@@ -145,12 +155,15 @@ static void opcode_ard(const KlObject *caller, KLCall &call, KlObject *argv[], s
 
 	auto size = argc - 1;
 	auto crt = klBuiltinArr(size);
-	klTransfer(&crt, &ref);
-
-	auto arr = KASARR(ref);
-	for (int i = 0; i < size; ++i) {
-		klCopy(argv[1 + i], &arr[i]);
+	if(size > 0) {
+		auto arr = KASARR(crt);
+		for (int i = 0; i < size; ++i) {
+			auto val = argv[1 + i];
+			GETREG(val)
+			klCopy(val, &arr[i]);
+		}
 	}
+	klTransfer(&crt, &ref);
 }
 
 static void opcode_arl(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
@@ -841,6 +854,7 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_typeof;
 			break;
 		case KLOpcode::is:
+			instruction->call = opcode_is;
 			break;
 		case KLOpcode::newi:
 			break;
