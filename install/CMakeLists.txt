@@ -43,11 +43,11 @@ else()
     set(CPACK_DEB_COMPONENT_INSTALL false)
     set(CPACK_GENERATOR DEB)
     set(CPACK_PACKAGING_INSTALL_PREFIX "/usr/share/kokolang")
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/link DESTINATION /bin RENAME kl)
 endif()
 
 install(TARGETS klhost klvm kilasm
         RUNTIME DESTINATION "."
         LIBRARY DESTINATION "lib"
         ARCHIVE DESTINATION "bin")
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/link DESTINATION /bin RENAME kl)
 include(CPack)
