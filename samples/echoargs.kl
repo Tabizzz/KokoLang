@@ -1,0 +1,29 @@
+.func main
+{
+	.locals 4
+	.marg   1
+	.args  -1
+
+	// limit = argc
+	argc %2
+	// i = 0
+	push 0 %1
+	// t = arr[argc]
+	arr %3 %2
+
+	:comp
+	// i < limit
+	oplt %1 %2
+	goifn end
+	// arg = args[i]
+	ldarg %1 %0
+	// t[i] = arg
+	ste %3 %1 %0
+
+	// i+=1
+	add 1 %1 %1
+	go comp
+	:end
+	call out %-0 %3
+	ret
+}
