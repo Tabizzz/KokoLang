@@ -53,7 +53,7 @@ static void kfunc_instantiator(KlObject *obj) {
 	func->margs = 0;
 	func->size = 0;
 	func->body = nullptr;
-	func->metadata = new std::unordered_map<std::string, KlObject *>();
+	func->metadata = new MetaMap();
 
 }
 

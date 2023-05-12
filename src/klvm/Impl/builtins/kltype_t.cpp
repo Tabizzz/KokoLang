@@ -12,6 +12,7 @@ static void ktype_ins(KlObject *obj) {
 
 static void ktype_end(KlObject *obj) {
 	auto type = KLCAST(KLType, obj);
+	klDeref(type->constructor);
 	kliDerefAndDeleteMap(type->variables);
 	kliDerefAndDeleteMap(type->functions);
 	kliDerefAndDeleteMap(type->metadata);

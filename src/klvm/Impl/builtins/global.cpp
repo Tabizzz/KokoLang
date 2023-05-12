@@ -22,12 +22,13 @@ KLPackage* kliBuildGlobalPackage() {
 	ADD_TYPE(klstring_t);
 	ADD_TYPE(klptr_t);
 	ADD_TYPE(klarray_t);
-	ADD_TYPE(kllist_t);
-	ADD_TYPE(klmap_t);
 
 	ADD_TYPE(klvar_t);
 	ADD_TYPE(klfunc_t);
 	ADD_TYPE(klinstruction_t);
+
+	ADD_TYPE(kllist_t);
+	ADD_TYPE(klmap_t);
 
 	return dev;
 }
