@@ -97,7 +97,7 @@ static void opcode_type(const KlObject *caller, KLCall &call, KlObject *argv[], 
 static void opcode_ste(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto obj = argv[0];
 	GETREG(obj)
-	if(!obj) return;
+	if (!obj) return;
 	auto index = argv[1];
 	GETREG(index)
 	auto value = argv[2];
@@ -155,7 +155,7 @@ static void opcode_ard(const KlObject *caller, KLCall &call, KlObject *argv[], s
 
 	auto size = argc - 1;
 	auto crt = klBuiltinArr(size);
-	if(size > 0) {
+	if (size > 0) {
 		auto arr = KASARR(crt);
 		for (int i = 0; i < size; ++i) {
 			auto val = argv[1 + i];
@@ -535,23 +535,29 @@ static void opcode_and(const KlObject *caller, KLCall &call, KlObject *argv[], s
 }
 
 static void opcode_ldarg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
-	auto st = KASINT(argv[0]);
-	auto target = KASINT(argv[1]);
+	REGORRET(argv[1])
+	auto index = argv[0];
+	GETREG(index)
 
-	vecref current = call.st.at(st + CALL_REG_COUNT + call.locs);
-	vecref toset = call.st.at(target);
+	if(index && index->type == klint_t) {
+		vecref current = call.st.at(KASINT(index) + CALL_REG_COUNT + call.locs);
+		vecref toset = call.st.at(reg);
 
-	klCopy(current, &toset);
+		klCopy(current, &toset);
+	}
 }
 
 static void opcode_starg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	auto obj = argv[1];
 	GETREG(obj)
 
-	auto st = KASINT(argv[0]);
-	vecref current = call.st.at(st + CALL_REG_COUNT + call.locs);
+	auto st = argv[0];
+	GETREG(st)
 
-	klCopy(obj, &current);
+	if (st && st->type == klint_t) {
+		vecref current = call.st.at(KASINT(st) + CALL_REG_COUNT + call.locs);
+		klCopy(obj, &current);
+	}
 }
 
 static void opcode_get(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {

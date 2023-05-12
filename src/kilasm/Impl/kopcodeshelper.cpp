@@ -228,10 +228,20 @@ void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const v
 #pragma endregion
 #pragma region 1int 1reg
 		case KLOpcode::lflag:
-		case KLOpcode::starg:
-		case KLOpcode::ldarg:
 		case KLOpcode::aloc:
 			SETOPERAND(0, kliCheckInteger);
+			SETOPERAND(1, kliCheckReg);
+			break;
+#pragma endregion
+#pragma region 1int_or_reg 1reg
+		case KLOpcode::starg:
+			SETOPERAND(0, kliCheckRegOrInt);
+			SETOPERAND(1, kliCheckAnyNoId);
+			break;
+#pragma endregion
+#pragma region 1int_or_reg 1reg
+		case KLOpcode::ldarg:
+			SETOPERAND(0, kliCheckRegOrInt);
 			SETOPERAND(1, kliCheckReg);
 			break;
 #pragma endregion
