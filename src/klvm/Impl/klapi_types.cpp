@@ -75,7 +75,11 @@ static inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte ar
 }
 
 CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
-    return nullptr;
+	if(!type) return nullptr;
+	if(!type->constructor) {
+		throw runtime_error(string_format("The type %s dont have a constructor to invoke", type->name));
+	}
+    return klInvokeCore(KLCAST(KLFunction, type->constructor), args, argc);
 }
 
 CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {

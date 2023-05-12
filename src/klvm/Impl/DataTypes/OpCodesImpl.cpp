@@ -44,14 +44,14 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 	auto reg = argv[1] ? KASINT(argv[1]) : -1;
 	auto val = argv[2];
 	GETREG(val)
-	vector<KlObject *> args;
-	args.reserve(argc - 2);
+	auto size = argc - 2;
+	vector<KlObject *> args(size);
 	for (int i = 2; i < argc; ++i) {
 		auto arg = argv[i];
 		GETREG(arg)
-		args.push_back(arg);
+		args[i - 2] = arg;
 	}
-	auto ret = klInvoke(function, args.data(), args.size());
+	auto ret = klInvoke(function, args.data(), size);
 	if (reg >= 0) {
 		vecref save = call.st.at(reg);
 		klTransfer(&ret, &save);
@@ -62,6 +62,25 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 }
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
+
+static void opcode_new(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[1])
+	if (argv[0]->type == klstring_t) {
+		// maybe try to check if function exists now?
+		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
+	}
+	auto type = KLCAST(KLType, argv[0]);
+	auto size = argc - 2;
+	vector<KlObject *> args(size);
+	for (int i = 2; i < argc; ++i) {
+		auto arg = argv[i];
+		GETREG(arg)
+		args[i - 2] = arg;
+	}
+	auto ret = klNew(type, args.data(), size);
+	vecref save = call.st.at(reg);
+	klTransfer(&ret, &save);
+}
 
 static void opcode_is(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
@@ -539,7 +558,7 @@ static void opcode_ldarg(const KlObject *caller, KLCall &call, KlObject *argv[],
 	auto index = argv[0];
 	GETREG(index)
 
-	if(index && index->type == klint_t) {
+	if (index && index->type == klint_t) {
 		vecref current = call.st.at(KASINT(index) + CALL_REG_COUNT + call.locs);
 		vecref toset = call.st.at(reg);
 
@@ -863,6 +882,7 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_is;
 			break;
 		case KLOpcode::newi:
+			instruction->call = opcode_new;
 			break;
 		case KLOpcode::sizeofi:
 			break;
