@@ -22,11 +22,7 @@
 #define KLBOOL(x) klBuiltinBool(x)
 #define KBOOL(x) KLCAST(kl_bool, KLBOOL(x))
 #define KASBOOL(x) KLCAST(kl_bool, x)->value
-#ifdef __cplusplus
 #define KLSTR(x) klBuiltinString(x)
-#else
-#define KLSTR(x) klBuiltinString_c(x)
-#endif
 #define KSTR(x) KLCAST(kl_string, KLSTR(x))
 #define KASSTR(x) KLCAST(kl_string, x)->value
 #define KASSTRSIZE(x) KLCAST(kl_string, x)->size
@@ -78,20 +74,6 @@ CPPAPI
  * @return A kl_string with the same content as val.
  */
 KlObject* klBuiltinString(const std::string& val);
-
-CAPI
-/**
- * @brief Creates new string instance from a c string
- *
- * This function exist to allow interop with languages that not support c++ strings.
- *
- * @param val A null terminating C string.
- *
- * @return A kl_string with the same content as val.
- */
-inline KlObject* klBuiltinString_c(const char* val){
-	return klBuiltinString(val);
-}
 
 CAPI
 /**

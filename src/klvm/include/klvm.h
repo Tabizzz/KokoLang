@@ -10,6 +10,7 @@
 #include "Binary/KLOpcode.h"
 #include "klbinary.h"
 #include "klresolver.h"
+#include "klruntime.h"
 #include "DataTypes/KLRuntime.h"
 #include "Binary/KLMetaType.h"
 #include "Binary/KLDefinitionType.h"
