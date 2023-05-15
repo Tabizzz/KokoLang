@@ -22,6 +22,8 @@ KLPackage *kliBuildGlobalPackage() {
 
 	ADD_TYPE(klfloat_t);
 	ADD_TYPE(klint_t);
+	klDefType(klreg_t);
+	klPackageRegType(dev, klreg_t);
 	ADD_TYPE(klbool_t);
 	ADD_TYPE(klstring_t);
 	ADD_TYPE(klptr_t);
