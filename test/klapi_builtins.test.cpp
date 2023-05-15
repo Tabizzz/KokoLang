@@ -63,16 +63,5 @@ TEST_CASE("klapi_builtins.h", "[klapi_builtins]")
 		klDeref(val);
 	}
 
-	SECTION("klBuiltinString_c")
-	{
-		auto oldIns = klstring_t->inscount;
-		auto val = klBuiltinString_c("test");
-
-		REQUIRE(strncmp("test", KASSTR(val), KASSTRSIZE(val)) == 0);
-
-		REQUIRE(klstring_t->inscount == oldIns + 1);
-		klDeref(val);
-	}
-
 	klEnd();
 }

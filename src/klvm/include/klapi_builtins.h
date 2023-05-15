@@ -94,3 +94,11 @@ CAPI
  * @return A new array.
  */
 KlObject* klBuiltinArr(size_t size);
+
+CAPI
+void klDefaultInitializer(KlObject* obj);
+
+CAPI
+void klDefaultFinalizer(KlObject* obj);
+
+CAPI KlObject* klDefaultConstructor;

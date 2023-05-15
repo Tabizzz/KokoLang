@@ -1,4 +1,5 @@
-﻿#include "klvm_internal.h"
+﻿#include <cstring>
+#include "klvm_internal.h"
 #include "klapi_builtins.h"
 
 CAPI KlObject* klBuiltinInt(kint val)
@@ -42,5 +43,14 @@ CAPI KlObject *klBuiltinArr(size_t size) {
 	}
 
 	return base;
+}
+
+void klDefaultInitializer(KlObject *obj) {
+	std::memset(obj + 1, 0, obj->type->size - sizeof(KlObject));
+
+}
+
+void klDefaultFinalizer(KlObject *obj) {
+
 }
 
