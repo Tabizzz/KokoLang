@@ -152,8 +152,9 @@ void inline kliCopyD(KlObject *src, KlObject **dest) {
 		src->type->copy(src, *dest);
 		return;
 	} else if (src->type->clone) {
+		auto temp = src->type->clone(src);
 		klDeref(*dest);
-		*dest = src->type->clone(src);
+		*dest = temp;
 		return;
 	}
 	klRef(src);
@@ -194,8 +195,8 @@ CAPI void klClone(KlObject *src, KlObject **dest) {
 
 CAPI void klMove(KlObject *src, KlObject **dest) {
 	THROW_ON_NO_VALID_TARGET
-	klDeref(*dest);
 	klRef(src);
+	klDeref(*dest);
 	*dest = src;
 }
 
