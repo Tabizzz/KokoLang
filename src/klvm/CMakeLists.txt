@@ -31,7 +31,7 @@ set(source_files
         "Impl/klapi_builtins.cpp"
         "Impl/DataTypes/OpCodesImpl.cpp"
         "Impl/klbinary.cpp"
-        "Impl/DataTypes/KLVariable.cpp" Impl/klresolver.cpp Impl/builtins/global.h Impl/builtins/global.cpp Impl/builtins/kltype_t.cpp Impl/builtins/klint_t.cpp Impl/builtins/klfloat_t.cpp Impl/builtins/klbool_t.cpp Impl/builtins/klstring_t.cpp Impl/builtins/klmap_t.cpp Impl/builtins/kllist_t.cpp Impl/builtins/klarray_t.cpp Impl/builtins/klptr_t.cpp)
+        "Impl/DataTypes/KLVariable.cpp" Impl/klresolver.cpp Impl/builtins/global.h Impl/builtins/global.cpp Impl/builtins/kltype_t.cpp Impl/builtins/klint_t.cpp Impl/builtins/klfloat_t.cpp Impl/builtins/klbool_t.cpp Impl/builtins/klstring_t.cpp Impl/builtins/klmap_t.cpp Impl/builtins/kllist_t.cpp Impl/builtins/klarray_t.cpp Impl/builtins/klptr_t.cpp Impl/klruntime.cpp)
 
 add_library(klvm SHARED
         ${source_files}
