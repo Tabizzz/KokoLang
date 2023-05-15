@@ -32,7 +32,6 @@ CAPI void klEnd() {
 	delete packages;
 	klDestroyPackage(globalPackage);
 	globalPackage = nullptr;
-	klDestroy(KLWRAP(kltype_t));
 
 	// reset all lib types
 	kltype_t = nullptr;

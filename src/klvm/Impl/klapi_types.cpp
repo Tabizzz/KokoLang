@@ -33,6 +33,9 @@ CAPI void klDeref(KlObject *object) {
 		assert(object->type->inscount > 0);
 	object->refs--;
 	if (object->refs == 0) {
+		if (object->type == kltype_t && KLCAST(KLType, object)->inscount > 0) {
+			return;
+		}
 		klDestroy(object);
 	}
 }
@@ -45,12 +48,16 @@ static inline void freeSpace(void *space, bool delet) {
 	}
 }
 
-CAPI void klDestroy(KlObject *object) {
+CAPI void klDestroy(KlObject *object) { // NOLINT(misc-no-recursion)
 	if (!object) return;
-	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT))
-		object->type->inscount--;
 	// call finalizer
 	KLINVOKE(object->type->finalizer)(object);
+	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT)) {
+		object->type->inscount--;
+		if(object->type->inscount <= 0 && object->type->klbase.refs <= 0) {
+			klDestroy(KLWRAP(object->type));
+		}
+	}
 	freeSpace(object, object->flags & KLOBJ_FLAG_USE_DELETE);
 }
 
