@@ -101,4 +101,4 @@ void klDefaultInitializer(KlObject* obj);
 CAPI
 void klDefaultFinalizer(KlObject* obj);
 
-CAPI KlObject* klDefaultConstructor;
+CAPI KlObject* klDefaultConstructor();

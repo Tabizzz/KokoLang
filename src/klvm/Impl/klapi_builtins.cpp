@@ -54,3 +54,16 @@ void klDefaultFinalizer(KlObject *obj) {
 
 }
 
+static KlObject *ctorImpl(KlObject *, KlObject **, kbyte) { return nullptr; }
+
+KlObject *klDefaultConstructor() {
+	auto defualtCtor = KLCAST(KLFunction, klIns(klfunc_t));
+	defualtCtor->external = true;
+	defualtCtor->margs = 1;
+	defualtCtor->args = 1;
+	defualtCtor->name = KLSTR("ctor");
+	defualtCtor->invokable = ctorImpl;
+
+	return KLWRAP(defualtCtor);
+}
+

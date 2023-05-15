@@ -2,10 +2,6 @@
 
 #define ADD_TYPE(x) global_##x(); klDefType(x); klPackageRegType(dev, x);
 
-KlObject *klDefaultConstructor = nullptr;
-
-KlObject *ctorImpl(KlObject *, KlObject **, kbyte) { return nullptr; }
-
 KLPackage *kliBuildGlobalPackage() {
 	auto dev = new KLPackage();
 	dev->klbase.refs = 1;
@@ -35,15 +31,6 @@ KLPackage *kliBuildGlobalPackage() {
 
 	ADD_TYPE(kllist_t);
 	ADD_TYPE(klmap_t);
-
-	auto defualtCtor = KLCAST(KLFunction, klIns(klfunc_t));
-	defualtCtor->klbase.flags = KLOBJ_FLAG_IGNORE_REF;
-	defualtCtor->external = true;
-	defualtCtor->margs = 1;
-	defualtCtor->args = 1;
-	defualtCtor->name = KLSTR("ctor");
-	defualtCtor->invokable = ctorImpl;
-	klDefaultConstructor = KLWRAP(defualtCtor);
 
 
 	return dev;

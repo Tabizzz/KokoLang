@@ -26,7 +26,6 @@ CAPI void klInit() {
 }
 
 CAPI void klEnd() {
-	klDestroy(klDefaultConstructor);
 	for (const auto &pack: *packages) {
 		klDestroyPackage(pack.second);
 	}
@@ -48,8 +47,6 @@ CAPI void klEnd() {
 	klfunc_t = nullptr;
 	klpack_t = nullptr;
 	klinstruction_t = nullptr;
-
-	klDefaultConstructor = nullptr;
 }
 
 CAPI KLPackage *klGlobalPackage() {
