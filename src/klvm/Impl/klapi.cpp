@@ -99,6 +99,17 @@ CAPI void klDefType(KLType *type) {
 	if (strchr(type->name, '.') || strchr(type->name, ':') || strchr(type->name, '%')) {
 		throw runtime_error("Types cant contain the following characters in name: '.', ':' and '%'");
 	}
+
+	if (type->constructor) {
+		if (type->constructor->type != klfunc_t) {
+			throw runtime_error("A type constructor must be a function.");
+		}
+		auto func = KLCAST(KLFunction, type->constructor);
+		if (func->margs == 0) {
+			throw runtime_error("Type constructors must have at least 1 argument.");
+		}
+	}
+
 	// set the type
 	type->klbase.type = kltype_t;
 	// increase the instance count of type
