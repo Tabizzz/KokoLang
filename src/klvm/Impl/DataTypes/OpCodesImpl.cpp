@@ -63,6 +63,39 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_ldfld(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[2])
+	auto obj = argv[1];
+	GETREG(obj)
+	if (!obj) return;
+	auto field_name = KSTRING(argv[0]);
+	vecref ref = call.st.at(reg);
+
+	KLVariable* field;
+	if (klGetField(obj, field_name, &field)) {
+		auto var = klGetVariable(field, obj);
+		klCopy(var, &ref);
+	} else {
+		throw runtime_error("Unable to resolve field " + field_name + " on type " + string(obj->type->name));
+	}
+}
+
+static void opcode_stfld(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto obj = argv[1];
+	GETREG(obj)
+	if (!obj) return;
+	auto field_name = KSTRING(argv[0]);
+	auto val = argv[2];
+	GETREG(val)
+
+	KLVariable* field;
+	if (klGetField(obj, field_name, &field)) {
+		klSetVariable(field, obj, val);
+	} else {
+		throw runtime_error("Unable to resolve field " + field_name + " on type " + string(obj->type->name));
+	}
+}
+
 static void opcode_sizeof(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	if (argv[0]->type == klstring_t) {
@@ -71,9 +104,9 @@ static void opcode_sizeof(const KlObject *caller, KLCall &call, KlObject *argv[]
 	}
 	vecref ref = call.st.at(reg);
 	auto t = argv[0];
-	GETREG(t);
+	GETREG(t)
 	if (t) {
-		kint size = 0;
+		kint size;
 		if (t->type == kltype_t) {
 			size = KLCAST(KLType, t)->size;
 		} else {
@@ -912,14 +945,18 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_sizeof;
 			break;
 		case KLOpcode::stfld:
+			instruction->call = opcode_stfld;
 			break;
 		case KLOpcode::ldfld:
+			instruction->call = opcode_ldfld;
 			break;
 		case KLOpcode::ref:
 			break;
 		case KLOpcode::deref:
 			break;
 		case KLOpcode::ins:
+			break;
+		case KLOpcode::ldfnd:
 			break;
 		default:
 			break;

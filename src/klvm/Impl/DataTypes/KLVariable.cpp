@@ -28,7 +28,7 @@ void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
 	} else {
 		// copy the value to the address given by the offset.
 		// we skip the header of KLObject with target + 1, then apply the offset
-		//					  |		header				   |		offset					|
+		//			  |		header				   |		offset					|
 		klCopy(value, KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
 
 	}
