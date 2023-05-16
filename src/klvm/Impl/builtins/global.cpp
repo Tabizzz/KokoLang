@@ -2,6 +2,8 @@
 
 #define ADD_TYPE(x) global_##x(); klDefType(x); klPackageRegType(dev, x);
 
+KLConfig klConfig;
+
 KLPackage *kliBuildGlobalPackage() {
 	auto dev = new KLPackage();
 	dev->klbase.refs = 1;

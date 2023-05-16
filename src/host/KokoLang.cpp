@@ -69,6 +69,9 @@ int main(int argc, const char *argv[]) {
 		milliseconds durationms;
 		seconds durations;
 
+		klConfig.argc = argc;
+		klConfig.argv = argv;
+
 		klInit();
 
 		MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))

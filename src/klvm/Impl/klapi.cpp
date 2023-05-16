@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <sstream> //for std::stringstream
+#include <filesystem>
 
 KLPackage *globalPackage = nullptr;
 unordered_map<string, KLPackage *> *packages;
@@ -14,6 +15,17 @@ unordered_map<string, KLPackage *> *kliRootPackages() {
 CAPI void klInit() {
 	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value),
 				  "kl_int and kl_float dont have the same size.");
+
+	if (!klConfig.alloc) {
+		klConfig.alloc = std::malloc;
+	}
+	if (!klConfig.dealloc) {
+		klConfig.dealloc = [](void *ptr, size_t) { std::free(ptr); };
+	}
+	if (!klConfig.installDir) {
+		static string currentPath = filesystem::current_path().string();
+		klConfig.installDir = currentPath.c_str();
+	}
 
 	klRestoreResolver();
 
@@ -46,6 +58,8 @@ CAPI void klEnd() {
 	klfunc_t = nullptr;
 	klpack_t = nullptr;
 	klinstruction_t = nullptr;
+
+	std::memset(&klConfig, 0, sizeof(KLConfig));
 }
 
 CAPI KLPackage *klGlobalPackage() {
