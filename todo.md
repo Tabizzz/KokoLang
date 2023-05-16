@@ -3,7 +3,7 @@
 Pending things to implement:
 - [ ] ffi to C
 - [ ] ffi to C#
-- [ ] all opcode operations
+- [x] all opcode operations
 - [x] custom type creation
 - [ ] custom opcodes
 - [ ] dynamic variables
@@ -15,3 +15,4 @@ Pending things to implement:
 - [ ] add try catch
 - [ ] test for builtin types
 - [ ] test for api
+- [ ] test for opcodes

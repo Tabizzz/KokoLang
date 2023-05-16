@@ -63,6 +63,45 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 
 static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
 
+static void opcode_ldfnd(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[2])
+	auto obj = argv[1];
+	GETREG(obj)
+	if (!obj) return;
+	auto func_name = KSTRING(argv[0]);
+	vecref ref = call.st.at(reg);
+
+	KLFunction *func;
+	if (klGetFunc(obj, func_name, &func)) {
+		klCopy(KLWRAP(func), &ref);
+	} else {
+		throw runtime_error("Unable to resolve func " + func_name + " on type " + string(obj->type->name));
+	}
+}
+
+static void opcode_ins(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	REGORRET(argv[1])
+	if (argv[0]->type == klstring_t) {
+		// maybe try to check if function exists now?
+		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
+	}
+	vecref ref = call.st.at(reg);
+	auto obj = klIns(KLCAST(KLType, argv[0]));
+	klTransfer(&obj, &ref);
+}
+
+static void opcode_deref(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto obj = argv[0];
+	GETREG(obj)
+	klDeref(obj);
+}
+
+static void opcode_ref(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+	auto obj = argv[0];
+	GETREG(obj)
+	klRef(obj);
+}
+
 static void opcode_ldfld(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto obj = argv[1];
@@ -71,7 +110,7 @@ static void opcode_ldfld(const KlObject *caller, KLCall &call, KlObject *argv[],
 	auto field_name = KSTRING(argv[0]);
 	vecref ref = call.st.at(reg);
 
-	KLVariable* field;
+	KLVariable *field;
 	if (klGetField(obj, field_name, &field)) {
 		auto var = klGetVariable(field, obj);
 		klCopy(var, &ref);
@@ -88,7 +127,7 @@ static void opcode_stfld(const KlObject *caller, KLCall &call, KlObject *argv[],
 	auto val = argv[2];
 	GETREG(val)
 
-	KLVariable* field;
+	KLVariable *field;
 	if (klGetField(obj, field_name, &field)) {
 		klSetVariable(field, obj, val);
 	} else {
@@ -951,12 +990,16 @@ void kliFunction_setInstructionCall(KLInstruction *instruction) {
 			instruction->call = opcode_ldfld;
 			break;
 		case KLOpcode::ref:
+			instruction->call = opcode_ref;
 			break;
 		case KLOpcode::deref:
+			instruction->call = opcode_deref;
 			break;
 		case KLOpcode::ins:
+			instruction->call = opcode_ins;
 			break;
 		case KLOpcode::ldfnd:
+			instruction->call = opcode_ldfnd;
 			break;
 		default:
 			break;
