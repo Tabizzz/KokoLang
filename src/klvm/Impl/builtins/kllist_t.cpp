@@ -53,6 +53,21 @@ KlObject *klist_ctor(KlObject *self, KlObject **argv, kbyte argc) {
 	return nullptr;
 }
 
+KlObject *klist_add(KlObject *, KlObject **argv, kbyte argc) {
+	auto ptr = KLCAST(kl_sptr, argv[0]);
+	auto list = KASLIST(argv[0]);
+
+	list->reserve(argc - 1);
+	for (int i = 1; i < argc; ++i) {
+		KlObject* temp = nullptr;
+		klCopy(argv[i], &temp);
+		list->push_back(temp);
+	}
+
+	ptr->size = list->size();
+	return nullptr;
+}
+
 void global_kllist_t() {
 
 	auto func = KLCAST(KLFunction, klIns(klfunc_t));
@@ -76,4 +91,12 @@ void global_kllist_t() {
 		KLWRAP(func)
 	};
 	KLTYPE_METADATA(kllist_t)
+
+	auto add = KLCAST(KLFunction, klIns(klfunc_t));
+	add->external = true;
+	add->name = KLSTR("add");
+	add->margs = 2;
+	add->invokable = klist_add;
+
+	kllist_t->functions->insert(MetaPair("add", KLWRAP(add)));
 }

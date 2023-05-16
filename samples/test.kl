@@ -1,15 +1,17 @@
 ﻿.func main
 {
-	.locals 3
+	.locals 5
 	.marg   1
 	.args  -1
 
 	// iterations
-	push 1000 %0
+	push 10000 %0
 	// total
 	push 0 %1
 	// i
 	push 0 %2
+	new list %3
+	ldfnd add %3 %4
 
 	// i < iterations
 	:comp
@@ -20,11 +22,14 @@
 	// total += i
 	add %1 %2 %1
 
+	ivk %4 %-0 %3 %1
+
 	// i++
 	add %2 1 %2
 	go comp
 
 	:end
+	arl %3 %1
 	call out %-0 %1
 	ret
 }
