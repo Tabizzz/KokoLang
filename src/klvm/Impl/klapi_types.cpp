@@ -13,7 +13,7 @@ CAPI KlObject *klIns(KLType *type) {
 		throw runtime_error("Unable to instance not instantiable type");
 	}
 	auto size = type->size;
-	auto space = KLWRAP(malloc(size));
+	auto space = KLWRAP(klConfig.alloc(size));
 	space->type = type;
 	space->refs = 1;
 	space->flags = 0;
@@ -40,16 +40,17 @@ CAPI void klDeref(KlObject *object) {
 	}
 }
 
-static inline void freeSpace(void *space, bool delet) {
+static inline void freeSpace(void *space, bool delet, size_t size) {
 	if (delet) {
 		::operator delete(space);
 	} else {
-		free(space);
+		klConfig.dealloc(space, size);
 	}
 }
 
 CAPI void klDestroy(KlObject *object) { // NOLINT(misc-no-recursion)
 	if (!object) return;
+	auto size = object->type->size;
 	// call finalizer
 	KLINVOKE(object->type->finalizer)(object);
 	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT)) {
@@ -58,7 +59,7 @@ CAPI void klDestroy(KlObject *object) { // NOLINT(misc-no-recursion)
 			klDestroy(KLWRAP(object->type));
 		}
 	}
-	freeSpace(object, object->flags & KLOBJ_FLAG_USE_DELETE);
+	freeSpace(object, object->flags & KLOBJ_FLAG_USE_DELETE, size);
 }
 
 static inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {

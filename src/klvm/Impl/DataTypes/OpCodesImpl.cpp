@@ -351,6 +351,7 @@ static void opcode_aloc(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	vecref regis = call.st.at(reg);
 	auto val = KASINT(argv[0]);
 
+	// this allocation is arbitrary and not an object, so we use malloc instead of klConfig.alloc
 	auto ptr = KLPTR(malloc(val));
 	// transfer the pointer to register
 	klTransfer(&ptr, &regis);

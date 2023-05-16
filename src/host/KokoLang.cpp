@@ -1,4 +1,5 @@
 ﻿#include "kilasm.h"
+#include "mempool.h"
 #define TERMCOLOR_USE_ANSI_ESCAPE_SEQUENCES
 #include "termcolor/termcolor.hpp"
 #include "boost/nowide/iostream.hpp"
@@ -71,6 +72,8 @@ int main(int argc, const char *argv[]) {
 
 		klConfig.argc = argc;
 		klConfig.argv = argv;
+		klConfig.alloc = mempoolAlloc;
+		klConfig.dealloc = mempoolDealloc;
 
 		klInit();
 
@@ -95,7 +98,7 @@ int main(int argc, const char *argv[]) {
 		}
 
 		klEnd();
-
+		freeAllocs();
 		return exit;
 	}
 
