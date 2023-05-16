@@ -208,16 +208,19 @@ CAPI void klTransfer(KlObject **src, KlObject **dest) {
 		kliCopyA(dest);
 	} else if (val && !*dest) {
 		*dest = val;
-		*src = nullptr;
 	} else if (val && *dest) {
 		if ((val->type == (*dest)->type) && val->type->copy) {
 			val->type->copy(val, *dest);
 			klDeref(val);
-			*src = nullptr;
+		} else if (val->refs > 1 && val->type->clone) {
+			auto temp = val->type->clone(val);
+			klDeref(*dest);
+			*dest = temp;
+			return;
 		} else {
 			klDeref(*dest);
 			*dest = val;
-			*src = nullptr;
 		}
 	}
+	*src = nullptr;
 }
