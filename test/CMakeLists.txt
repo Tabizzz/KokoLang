@@ -1,8 +1,9 @@
 project( Tests CXX )
 
+find_package(Catch2 CONFIG REQUIRED)
+
 add_executable(kltest
         main.cpp
-        catch.hpp
         klapi.test.cpp
         testmacros.h
         klapi_builtins.test.cpp
@@ -11,4 +12,4 @@ add_executable(kltest
         kl_float.test.cpp
         kl_string.test.cpp)
 
-target_link_libraries(kltest klvm)
+target_link_libraries(kltest PRIVATE klvm Catch2::Catch2 Catch2::Catch2WithMain)
