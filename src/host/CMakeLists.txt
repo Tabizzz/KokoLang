@@ -1,5 +1,5 @@
 
-add_executable(klhost "KokoLang.cpp" mempool.cpp mempool.h)
+add_executable(klhost "KokoLang.cpp" mempool.cpp mempool.h pool.hpp)
 set_target_properties(klhost PROPERTIES OUTPUT_NAME "kl")
 find_package(Threads REQUIRED)
 find_path(TERMCOLOR_INCLUDE_DIRS "termcolor/termcolor.hpp")
