@@ -44,6 +44,8 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 	auto reg = argv[1] ? KASINT(argv[1]) : -1;
 	auto val = argv[2];
 	GETREG(val)
+	auto obj = function;
+	GETREG(obj)
 	auto size = argc - 2;
 	vector<KlObject *> args(size);
 	for (int i = 2; i < argc; ++i) {
@@ -51,7 +53,7 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 		GETREG(arg)
 		args[i - 2] = arg;
 	}
-	auto ret = klInvoke(function, args.data(), size);
+	auto ret = klInvoke(obj, args.data(), size);
 	if (reg >= 0) {
 		vecref save = call.st.at(reg);
 		klTransfer(&ret, &save);
