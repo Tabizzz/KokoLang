@@ -4,7 +4,8 @@
 #include "boost/pool/singleton_pool.hpp"
 
 #define SIZE(x) (sizeof(kl_bool) + (sizeof(void*) * x))
-#define POOL(x) using pool##x = boost::singleton_pool<pool_tag, SIZE(x), memallocator, boost::details::pool::default_mutex, 4087 / SIZE(x)>;
+#define POOL(x) using pool##x = boost::singleton_pool<pool_tag, SIZE(x), memallocator, boost::details::pool::default_mutex, 4087 / SIZE(x), \
+408'700'000 / SIZE(x)>;
 #define ALLOC(x) base += sptr; if(size <= base) return pool##x::malloc();
 #define DEALLOC(x) base += sptr; if(size <= base) { pool##x::free(ptr); return; }
 #define PURGE(x) pool##x::purge_memory();
