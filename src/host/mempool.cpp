@@ -14,8 +14,11 @@ struct pool_tag {
 };
 
 #define HAVE_MMAP
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define MS_WINDOWS
+#endif
 #  ifdef MS_WINDOWS
-#    include <windows.h>
+#    include <Windows.h>
 #  elif defined(HAVE_MMAP)
 
 #    include <sys/mman.h>
@@ -32,8 +35,7 @@ struct custom_allocator {
 	static char *
 	malloc BOOST_PREVENT_MACRO_SUBSTITUTION(const size_type size) { //! Attempts to allocate n bytes from the system. Returns 0 if out-of-memory
 #ifdef MS_WINDOWS
-		return VirtualAlloc(NULL, size,
-						MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+		return static_cast<char*>(VirtualAlloc(nullptr, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 #elif defined(ARENAS_USE_MMAP)
 		void *ptr;
 		ptr = mmap(nullptr, size, PROT_READ | PROT_WRITE,
