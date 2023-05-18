@@ -229,6 +229,7 @@ CAPI void klTransfer(KlObject **src, KlObject **dest) {
 		} else if (val->refs > 1 && val->type->clone) {
 			auto temp = val->type->clone(val);
 			klDeref(*dest);
+			klDeref(val);
 			*dest = temp;
 			return;
 		} else {

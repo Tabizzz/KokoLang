@@ -8,7 +8,7 @@ KLType *klfloat_t = nullptr;
 kl_float temp_float = {
 	KlObject{
 		nullptr,
-		1,
+		2,
 		KLOBJ_FLAG_IGNORE_REF
 	},
 	0
@@ -65,7 +65,8 @@ static int8_t kfloat_equal(KlObject *x, KlObject *y) {
 }
 
 static KlObject *kfloat_clone(KlObject *base) {
-	return KLFLOAT(KASFLOAT(base));
+	temp_float.value = KASFLOAT(base);
+	return KLWRAP(&temp_float);
 }
 
 void kfloat_copy(KlObject *a, KlObject *b) {
@@ -82,8 +83,8 @@ static KlObject *kfloat_tostr(KlObject *base) {
 }
 
 static KlObject *kfloat_toint(KlObject *base) {
-	auto val = KASFLOAT(base);
-	return KLINT((int64_t) val);
+	temp_int.value = static_cast<kint>(KASFLOAT(base));
+	return KLWRAP(&temp_int);
 }
 
 static KlObject *kfloat_tobit(KlObject *base) {
