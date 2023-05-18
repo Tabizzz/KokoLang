@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "klvm.h"
 #include "DataTypes/KLFunctionImpl.h"
 #include <memory>
@@ -21,28 +22,33 @@ using namespace std;
 #define REP9(X) REP8(X) X,
 #define REP10(X) REP9(X) X
 
-#define REP(TENS,ONES,X) \
+#define REP(TENS, ONES, X) \
   REP##TENS(REP10(X)) \
   REP##ONES(X)
 
+#define GET_INT(x, y) if (y->type == klint_t) { \
+x = KASINT(y);                                  \
+} else if (y->type->toInt) {                    \
+auto temp##x = y->type->toInt(y);               \
+x = KASINT(temp##x);                            \
+klDeref(temp##x);}
 
 extern kl_int temp_int;
 
 extern kl_float temp_float;
 
-void kliDerefAndDeleteMap(MetaMap* pMap);
+void kliDerefAndDeleteMap(MetaMap *pMap);
 
-unordered_map<string, KLPackage*>* kliRootPackages();
+unordered_map<string, KLPackage *> *kliRootPackages();
 
-KLPackage* kliBuildGlobalPackage();
+KLPackage *kliBuildGlobalPackage();
 
 template<typename ... Args>
-std::string string_format( const std::string& format, Args ... args )
-{
-	int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
-	if( size_s <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+std::string string_format(const std::string &format, Args ... args) {
+	int size_s = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
+	if (size_s <= 0) { throw std::runtime_error("Error during formatting."); }
 	auto size = static_cast<size_t>( size_s );
-	std::unique_ptr<char[]> buf( new char[ size ] );
-	std::snprintf( buf.get(), size, format.c_str(), args ... );
-	return string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside NOLINT(modernize-return-braced-init-list)
+	std::unique_ptr<char[]> buf(new char[size]);
+	std::snprintf(buf.get(), size, format.c_str(), args ...);
+	return string(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside NOLINT(modernize-return-braced-init-list)
 }

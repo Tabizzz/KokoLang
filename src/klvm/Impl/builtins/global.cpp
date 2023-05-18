@@ -1,6 +1,7 @@
 #include "global.h"
 
 #define ADD_TYPE(x) global_##x(); klDefType(x); klPackageRegType(dev, x);
+#define ADD_FUNTIONS(x) global_##x##_m();
 
 KLConfig klConfig;
 
@@ -34,6 +35,7 @@ KLPackage *kliBuildGlobalPackage() {
 	ADD_TYPE(kllist_t);
 	ADD_TYPE(klmap_t);
 
+	ADD_FUNTIONS(klstring_t)
 
 	return dev;
 }

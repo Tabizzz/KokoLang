@@ -91,12 +91,6 @@ void global_kllist_t() {
 		KLWRAP(func)
 	};
 	KLTYPE_METADATA(kllist_t)
-
-	auto add = KLCAST(KLFunction, klIns(klfunc_t));
-	add->external = true;
-	add->name = KLSTR("add");
-	add->margs = 2;
-	add->invokable = klist_add;
-
-	kllist_t->functions->insert(MetaPair("add", KLWRAP(add)));
+	
+	ADD_FUNCTION(add, kllist_t, klist_add, 2, -1)
 }
