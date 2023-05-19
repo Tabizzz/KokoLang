@@ -204,7 +204,7 @@ void global_klfloat_t() {
 			0,
 			KLOBJ_FLAG_USE_DELETE
 		},
-		"flt",
+		"num",
 		0,
 		sizeof(kl_float),
 		kfloat_init,
