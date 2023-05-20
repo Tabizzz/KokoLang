@@ -91,13 +91,21 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 }
 
 static KlObject *defaultToStr(KlObject *obj) {
-	std::ostringstream ss;
+	std::stringstream ss;
 	ss << '[';
 	ss << obj->type->name;
 	ss << ' ';
 	ss << obj;
 	ss << ']';
-	return KLSTR(ss.str());
+	auto s = ss.tellp();
+	auto buff = new char[s];
+	ss.read(buff, s);
+
+	// create the stream
+	auto str = KLCAST(kl_string, klIns(klstring_t));
+	str->size = s;
+	str->value = buff;
+	return KLWRAP(str);
 }
 
 static int8_t defaultEquals(KlObject *a, KlObject *b) {

@@ -21,11 +21,11 @@ void karr_end(KlObject *obj) {
 	}
 }
 
-KlObject *karr_tostr(KlObject *obj) {
+static KlObject *karr_tostr(KlObject *obj) {
 	std::ostringstream ss;
 	auto size = KASARRSIZE(obj);
 	auto arr = KASARR(obj);
-	ss << "[";
+	ss << "(";
 	if (size > 0) {
 		for (int i = 0; i < size - 1; ++i) {
 			auto val = arr[i];
@@ -58,7 +58,7 @@ KlObject *karr_tostr(KlObject *obj) {
 			ss << "null";
 		}
 	}
-	ss << ']';
+	ss << ')';
 	return KLSTR(ss.str());
 }
 
