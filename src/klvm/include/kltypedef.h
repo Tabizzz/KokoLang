@@ -57,11 +57,11 @@ struct CPPAPI kl_string {
 	 * The size represent the number of bytes allocated in the native char array, dont is the number of utf-8 chars in the string.
 	 * For example: "a" has a size of 1 while "💀" has a size of 4.
 	 */
-	uint32_t size;
+	ksize size;
 	/**
 	 * @brief Reserved value.
 	 */
-	uint32_t reserved; // in future use as hash or as real count.
+	ksize reserved; // in future use as hash or as real count.
 };
 
 /**
@@ -110,7 +110,7 @@ struct CPPAPI kl_sptr {
 	/**
 	 * @brief The number of elements of the array.
 	 */
-	size_t size;
+	ksize size;
 };
 
 #ifdef __cplusplus
