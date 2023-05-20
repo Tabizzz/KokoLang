@@ -27,6 +27,10 @@ static int8_t kint_comparer(KlObject *x, KlObject *y) {
 	if (y) {
 		if (y->type == klint_t) {
 			second = KASINT(y);
+		} else if (y->type == klfloat_t) {
+			int8_t t = klfloat_t->comparer(y, x);
+			t *= -1;	// we invert the operation because we are passing x first and y second
+			return t;
 		} else if (y->type->toInt) {
 			auto frees = y->type->toInt(y);
 			second = KASINT(frees);
@@ -48,6 +52,8 @@ static int8_t kint_equal(KlObject *x, KlObject *y) {
 	if (y) {
 		if (y->type == klint_t) {
 			return KASINT(x) == KASINT(y);
+		} else if (y->type == klfloat_t) {
+			return KASINT(x) == KASFLOAT(y);
 		} else if (y->type->toInt) {
 			auto frees = y->type->toInt(y);
 			auto dev = KASINT(frees);
