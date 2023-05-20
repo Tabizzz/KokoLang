@@ -60,8 +60,7 @@ static int8_t kint_equal(KlObject *x, KlObject *y) {
 }
 
 static KlObject *kint_clone(KlObject *base) {
-	temp_int.value = KASINT(base);
-	return KLWRAP(&temp_int);
+	return KLINT(KASINT(base));
 }
 
 static void kint_copy(KlObject *a, KlObject *b) {
@@ -74,8 +73,7 @@ static KlObject *klint_tostr(KlObject *base) {
 }
 
 static KlObject *klint_toflt(KlObject *base) {
-	temp_float.value = KASINT(base);
-	return KLWRAP(&temp_float);
+	return KLFLOAT(KASINT(base));
 }
 
 static KlObject *klint_tobit(KlObject *base) {
@@ -203,7 +201,7 @@ static void kint_mod(KlObject *first, KlObject *second, KlObject **target) {
 }
 
 void global_klint_t() {
-	klint_t = new KLType {
+	klint_t = new KLType{
 		{
 			nullptr,
 			0,
@@ -244,7 +242,7 @@ void global_klint_t() {
 		0,
 		sizeof(kl_int),
 		kint_init,
-		REP(1 , 6, nullptr)
+		REP(1, 6, nullptr)
 		kint_copy
 	};
 
