@@ -30,6 +30,8 @@ static int8_t kfloat_comparer(KlObject *x, KlObject *y) {
 			second = KASFLOAT(y);
 		} else if (y->type == klint_t) {
 			second = KASINT(y);
+		} else if (y == KLBOOL(true)) {
+			second = 1;
 		} else if (y->type->toFloat) {
 			auto frees = y->type->toFloat(y);
 			second = KASFLOAT(frees);
@@ -196,7 +198,7 @@ static void kfloat_mod(KlObject *first, KlObject *second, KlObject **target) {
 }
 
 void global_klfloat_t() {
-	klfloat_t = new KLType {
+	klfloat_t = new KLType{
 		{
 			nullptr,
 			0,
