@@ -32,7 +32,7 @@ CPPAPI KlObject *klBuiltinString(const string &val) {
 	return base;
 }
 
-CAPI KlObject *klBuiltinArr(size_t size) {
+CAPI KlObject *klBuiltinArr(ksize size) {
 	auto base = klIns(klarray_t);
 	auto arr = KLCAST(kl_sptr, base);
 

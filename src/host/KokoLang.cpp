@@ -72,8 +72,10 @@ int main(int argc, const char *argv[]) {
 
 		klConfig.argc = argc;
 		klConfig.argv = argv;
+#ifdef NDEBUG // for debug dont use memory pool to detect leaks
 		klConfig.alloc = mempoolAlloc;
 		klConfig.dealloc = mempoolDealloc;
+#endif
 
 		klInit();
 

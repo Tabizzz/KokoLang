@@ -93,7 +93,7 @@ CAPI
  *
  * @return A new array.
  */
-KlObject* klBuiltinArr(size_t size);
+KlObject* klBuiltinArr(ksize size);
 
 CAPI
 void klDefaultInitializer(KlObject* obj);

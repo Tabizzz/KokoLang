@@ -6,10 +6,10 @@
       <configuration PROFILE_NAME="Release-Win" ENABLED="false" GENERATION_DIR="build/release-win/x64" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=&quot;E:\Dev\vcpkg\scripts\buildsystems\vcpkg.cmake&quot; -DVCPKG_TARGET_TRIPLET=x64-windows-static-md" />
       <configuration PROFILE_NAME="Debug-Win x86" ENABLED="false" GENERATION_DIR="build/debug-win/x86" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Visual Studio x86" GENERATION_OPTIONS="-DBUILD_TESTING=true -DCMAKE_TOOLCHAIN_FILE=&quot;E:\Dev\vcpkg\scripts\buildsystems\vcpkg.cmake&quot; -DVCPKG_TARGET_TRIPLET=x86-windows-static-md -DTARGET_32B=true" />
       <configuration PROFILE_NAME="Release-Win x86" ENABLED="false" GENERATION_DIR="build/release-win/x86" CONFIG_NAME="Release" TOOLCHAIN_NAME="Visual Studio x86" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=&quot;E:\Dev\vcpkg\scripts\buildsystems\vcpkg.cmake&quot; -DVCPKG_TARGET_TRIPLET=x86-windows-static-md -DTARGET_32B=true" />
-      <configuration PROFILE_NAME="Debug" ENABLED="true" GENERATION_DIR="build/debug/x64" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DBUILD_TESTING=true -DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake" />
-      <configuration PROFILE_NAME="Release" ENABLED="true" GENERATION_DIR="build/release/x64" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake" />
-      <configuration PROFILE_NAME="Debug x86" ENABLED="false" GENERATION_DIR="build/debug/x86" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DBUILD_TESTING=true -DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake -DTARGET_32B=true" />
-      <configuration PROFILE_NAME="Release x86" ENABLED="false" GENERATION_DIR="build/release/x86" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake -DTARGET_32B=true" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" GENERATION_DIR="build/debug/x64" CONFIG_NAME="Debug" GENERATION_OPTIONS="-G Ninja -DBUILD_TESTING=true -DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake" />
+      <configuration PROFILE_NAME="Release" ENABLED="true" GENERATION_DIR="build/release/x64" CONFIG_NAME="Release" GENERATION_OPTIONS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake" />
+      <configuration PROFILE_NAME="Debug x86" ENABLED="false" GENERATION_DIR="build/debug/x86" CONFIG_NAME="Debug" GENERATION_OPTIONS="-G Ninja -DBUILD_TESTING=true -DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake -DTARGET_32B=true" />
+      <configuration PROFILE_NAME="Release x86" ENABLED="false" GENERATION_DIR="build/release/x86" CONFIG_NAME="Release" GENERATION_OPTIONS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=/hdd/Dev/vcpkg/scripts/buildsystems/vcpkg.cmake -DTARGET_32B=true" />
     </configurations>
   </component>
 </project>
