@@ -1,4 +1,5 @@
 #include <cstring>
+#include <functional>
 #include "global.h"
 
 #define STR_FUNC(x) func_##x->name->flags = KLOBJ_FLAG_NO_INSCOUNT; klstring_t->inscount--;
@@ -39,6 +40,7 @@ static int8_t kstring_compare(KlObject *x, KlObject *y) {
 	}
 
 	int8_t dev = strncmp(second->value, first->value, min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
+	dev = std::clamp(dev, static_cast<int8_t>(-1), static_cast<int8_t>(1));
 
 	if (dev == 0 && first->size != second->size) {
 		if (first->size < second->size)
