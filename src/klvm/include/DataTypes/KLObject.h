@@ -18,29 +18,29 @@ extern "C" {
  */
 #define KLINVOKE(x) if(x) x
 
-/**
- * @brief Use delete instead of free() to destroy the pointer of this object.
- */
-#define KLOBJ_FLAG_USE_DELETE 1
-/**
- * @brief Use to not change the inscount of the type on destroy.
- */
-#define KLOBJ_FLAG_NO_INSCOUNT 2
-/**
- * @brief Ignored reference counting or this object.
- */
-#define KLOBJ_FLAG_IGNORE_REF 4
-/**
- * @brief The object will be used as reference ignoring clone and copy operations.
- */
-#define KLOBJ_FLAG_CONST 8
+#define KLOBJ_FLAG_USE_DELETE  (1 << 0)
+#define KLOBJ_FLAG_NO_INSCOUNT (1 << 1)
+#define KLOBJ_FLAG_IGNORE_REF  (1 << 2)
+#define KLOBJ_FLAG_CONST       (1 << 3)
 
 struct KLType;
 
-struct KLObjectFlags {
+struct CPPAPI KLObjectFlags {
+	/**
+	 * @brief Use delete instead of free() to destroy the pointer of this object.
+	 */
 	kbyte use_delete: 1;
+	/**
+ 	 * @brief Not change the inscount of the type on destroy.
+ 	 */
 	kbyte no_inscount: 1;
+	/**
+	 * @brief Ignored reference counting or this object.
+	 */
 	kbyte ignore_ref: 1;
+	/**
+ 	 * @brief The object will be used as reference ignoring clone and copy operations.
+	 */
 	kbyte constant: 1;
 };
 
@@ -57,7 +57,7 @@ struct CPPAPI KLObject {
 	/**
 	 * @brief How many objects are referencing this object.
 	 *
-	 * In types with the KLTYPE_FLAG_NOINSTANCE flag the refs count is not change and is always 1.
+	 * In types with the KLTYPE_FLAG_NOINSTANCE flag the refs count is not change and is always the same.
 	 *
 	 * @see KLTYPE_FLAG_NOINSTANCE
 	 */

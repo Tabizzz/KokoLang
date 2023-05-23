@@ -80,7 +80,7 @@ CAPI
  * Increase the ref count of an object.
  */
 inline void klRef(KLObject *object) {
-	if(object && !KLTYPE_IS_STATIC(object->type) && !(object->flags & KLOBJ_FLAG_IGNORE_REF)) object->refs++;
+	if(object && !object->type->rflags.no_instance && !object->rflags.ignore_ref) object->refs++;
 }
 
 CAPI

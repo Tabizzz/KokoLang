@@ -4,13 +4,20 @@
 
 #include "kldelegates.h"
 
-#define KLTYPE_FLAG_NOINSTANCE 1
-#define KLTYPE_IS_STATIC(x) (x->flags & KLTYPE_FLAG_NOINSTANCE)
+#define KLTYPE_FLAG_NOINSTANCE (1 << 0)
 
 #define KLTYPE_METADATA(type)        \
 type->functions = new MetaMap();     \
 type->variables = new MetaMap();     \
 type->metadata = new MetaMap();
+
+struct CPPAPI KLTypeFlags {
+	/**
+	 * @brief The type cannot be instanced, this is for types that you will manually
+	 * instance and cannot be instanced by klruntime.
+	 */
+	kbyte no_instance: 1;
+};
 
 struct CPPAPI KLType {
 	KLOBJECTHEAD
@@ -46,14 +53,10 @@ struct CPPAPI KLType {
 	klbinaryop getter;            // array indexer, get operation
 	klsetop setter;               // array indexer, set operation
 
-	/*
-	 * flags of this type:
-	 * 0: if the first flag is set, then the type cannot be instanced, this is for types that you will manually
-	 * instance and cannot be instanced by klruntime.
-	 *
-	 * other flags are currently unused.
-	 */
-	kbyte flags;
+	union {
+		kbyte flags;              // type flags
+		KLTypeFlags rflags;       // raw flags
+	};
 
 	MetaMap *functions;           // the functions defined in the type
 	MetaMap *variables;           // the globals var of the type.

@@ -9,7 +9,7 @@ KLObject *klself_return(KLObject *base) {
 
 
 CAPI KLObject *klIns(KLType *type) {
-	if (KLTYPE_IS_STATIC(type)) {
+	if (type->rflags.no_instance) {
 		throw runtime_error("Unable to instance not instantiable type");
 	}
 	auto size = type->size;
@@ -25,11 +25,11 @@ CAPI KLObject *klIns(KLType *type) {
 
 CAPI void klDeref(KLObject *object) {
 	if (!object) return;
-	if (KLTYPE_IS_STATIC(object->type)) return;
-	if (object->flags & KLOBJ_FLAG_IGNORE_REF) return;
+	if (object->type->rflags.no_instance) return;
+	if (object->rflags.ignore_ref) return;
 
 	assert(object->refs > 0);
-	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT))
+	if (!object->rflags.no_inscount)
 		assert(object->type->inscount > 0);
 	object->refs--;
 	if (object->refs == 0) {
@@ -53,13 +53,13 @@ CAPI void klDestroy(KLObject *object) { // NOLINT(misc-no-recursion)
 	auto size = object->type->size;
 	// call finalizer
 	KLINVOKE(object->type->finalizer)(object);
-	if (!(object->flags & KLOBJ_FLAG_NO_INSCOUNT)) {
+	if (!object->rflags.no_inscount) {
 		object->type->inscount--;
 		if(object->type->inscount <= 0 && object->type->klbase.refs <= 0) {
 			klDestroy(KLWRAP(object->type));
 		}
 	}
-	freeSpace(object, object->flags & KLOBJ_FLAG_USE_DELETE, size);
+	freeSpace(object, object->rflags.use_delete, size);
 }
 
 static inline KLObject *klInvokeCore(KLFunction *func, KLObject **argv, kbyte argc) {
