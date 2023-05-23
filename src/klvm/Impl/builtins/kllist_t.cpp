@@ -405,6 +405,39 @@ static void klist_mul(KLObject *x, KLObject *y, KLObject **res) {
 	}
 }
 
+static KLObject* klist_get(KLObject* obj, KLObject* index) {
+	auto list = KASLIST(obj);
+	auto ptr = KLCAST(kl_sptr, obj);
+	kint i = 0;
+	if(index) {
+		if (index->type != klint_t && !index->type->toInt) throw runtime_error("can only index list with ints");
+		GET_INT(i, index);
+		if (i < 0 || i > ptr->size) {
+			throw runtime_error("Index out of bounds");
+		}
+	}
+	auto val = list->at(i);
+	// we need to reference the value because the getter is expected to return a strong ref.
+	klRef(val);
+	return val;
+}
+
+static void klist_set(KLObject* obj, KLObject* index, KLObject* value) {
+	auto list = KASLIST(obj);
+	auto ptr = KLCAST(kl_sptr, obj);
+	kint i = 0;
+	if(index) {
+		if (index->type != klint_t && !index->type->toInt) throw runtime_error("can only index list with ints");
+		GET_INT(i, index);
+		if (i < 0 || i > ptr->size) {
+			throw runtime_error("Index out of bounds");
+		}
+	}
+	vector<KLObject*>::reference val = list->at(i);
+	klCopy(value, &val);
+}
+
+
 void global_kllist_t() {
 
 	auto func = KLCAST(KLFunction, klIns(klfunc_t));
@@ -432,8 +465,8 @@ void global_kllist_t() {
 		REP1(nullptr)
 		klist_mul,
 		REP4(nullptr)
-		nullptr,
-		nullptr
+		klist_get,
+		klist_set
 	};
 	KLTYPE_METADATA(kllist_t)
 
