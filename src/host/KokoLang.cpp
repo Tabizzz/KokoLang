@@ -1,6 +1,8 @@
 ﻿#include "kilasm.h"
 #include "mempool.h"
+
 #define TERMCOLOR_USE_ANSI_ESCAPE_SEQUENCES
+
 #include "termcolor/termcolor.hpp"
 #include "boost/nowide/iostream.hpp"
 
@@ -36,74 +38,80 @@ nowide::cout << termcolor::yellow <<                                    \
 }}}
 
 KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
-	auto val = argv[0];
-	if (val) {
-		if (val->type == klstring_t) {
-			nowide::cout.write(KASSTR(val), KASSTRSIZE(val)) << std::endl;
-		} else if (val->type->toString) {
-			auto str = val->type->toString(val);
-			nowide::cout.write(KASSTR(str), KASSTRSIZE(str)) << std::endl;
-			klDeref(str);
-		}
-	} else {
-		nowide::cout << "null" << std::endl;
-	}
-	return nullptr;
+    auto val = argv[0];
+    if (val) {
+        if (val->type == klstring_t) {
+            nowide::cout.write(KASSTR(val), KASSTRSIZE(val)) << std::endl;
+        } else if (val->type->toString) {
+            auto str = val->type->toString(val);
+            nowide::cout.write(KASSTR(str), KASSTRSIZE(str)) << std::endl;
+            klDeref(str);
+        }
+    } else {
+        nowide::cout << "null" << std::endl;
+    }
+    return nullptr;
 }
 
 int main(int argc, const char *argv[]) {
-	if (termcolor::_internal::is_atty(std::cout))
-		nowide::cout << termcolor::colorize;
+    if (termcolor::_internal::is_atty(std::cout))
+        nowide::cout << termcolor::colorize;
 #if _WIN32 || _WIN64
-	SetConsoleOutputCP( 65001 );
+    SetConsoleOutputCP( 65001 );
 #endif
-	if (argc > 1) {
-		bool time = false;
-		if (argc > 2) {
-			if (!strcmp("-t", argv[2])) {
-				time = true;
-			}
-		}
-		auto start = high_resolution_clock::now();
-		duration<long, std::ratio<1, 1000000000>> sub{};
-		microseconds duration;
-		milliseconds durationms;
-		seconds durations;
+    if (argc > 1) {
+        bool time = false;
+        if (argc > 2) {
+            if (!strcmp("-t", argv[2])) {
+                time = true;
+            }
+        }
+        auto start = high_resolution_clock::now();
+        duration<long, std::ratio<1, 1000000000>> sub{};
+        microseconds duration;
+        milliseconds durationms;
+        seconds durations;
 
-		klConfig.argc = argc;
-		klConfig.argv = argv;
+        klConfig.argc = argc;
+        klConfig.argv = argv;
 #ifdef NDEBUG // for debug dont use memory pool to detect leaks
-		klConfig.alloc = mempoolAlloc;
-		klConfig.dealloc = mempoolDealloc;
+        klConfig.alloc = mempoolAlloc;
+        klConfig.dealloc = mempoolDealloc;
 #endif
 
-		klInit();
+        klInit();
 
-		MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))
+        auto obj = KlObject{
+                nullptr,
+				0,
+				KLOBJ_FLAG_CONST | KLOBJ_FLAG_NO_INSCOUNT
+        };
+		obj.rflags.ignore_ref = true;
+        MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))
 
-		auto out = KLCAST(KLFunction, klIns(klfunc_t));
-		out->external = true;
-		out->invokable = outImpl;
-		out->args = 1;
-		out->margs = 1;
-		out->name = KLSTR("out");
-		klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
+        auto out = KLCAST(KLFunction, klIns(klfunc_t));
+        out->external = true;
+        out->invokable = outImpl;
+        out->args = 1;
+        out->margs = 1;
+        out->name = KLSTR("out");
+        klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
 
-		int exit = EXIT_SUCCESS;
-		if (program) {
-			klRegisterPackage(program);
+        int exit = EXIT_SUCCESS;
+        if (program) {
+            klRegisterPackage(program);
 
-			MEASURE("Program build: ", klBuildPackage(program))
-			MEASURE("Program run: ", exit = klRunPackage(program, argc, argv))
-		} else {
-			exit = EXIT_FAILURE;
-		}
+            MEASURE("Program build: ", klBuildPackage(program))
+            MEASURE("Program run: ", exit = klRunPackage(program, argc, argv))
+        } else {
+            exit = EXIT_FAILURE;
+        }
 
-		klEnd();
-		freeAllocs();
-		return exit;
-	}
+        klEnd();
+        freeAllocs();
+        return exit;
+    }
 
-	nowide::cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
-	return EXIT_FAILURE;
+    nowide::cout << termcolor::red << "Error: " << termcolor::reset << "No input files" << std::endl;
+    return EXIT_FAILURE;
 }

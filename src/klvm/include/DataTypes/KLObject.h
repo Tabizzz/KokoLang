@@ -30,8 +30,19 @@ extern "C" {
  * @brief Ignored reference counting or this object.
  */
 #define KLOBJ_FLAG_IGNORE_REF 4
+/**
+ * @brief The object will be used as reference ignoring clone and copy operations.
+ */
+#define KLOBJ_FLAG_CONST 8
 
 struct KLType;
+
+struct KlObjectFlags {
+	kbyte use_delete: 1;
+	kbyte no_inscount: 1;
+	kbyte ignore_ref: 1;
+	kbyte constant: 1;
+};
 
 /**
  * @brief  The global dynamic object representation in kokolang.
@@ -42,7 +53,7 @@ struct CPPAPI KlObject {
 	/**
 	 * @brief The type of the object.
 	*/
-	KLType* type;
+	KLType *type;
 	/**
 	 * @brief How many objects are referencing this object.
 	 *
@@ -51,10 +62,13 @@ struct CPPAPI KlObject {
 	 * @see KLTYPE_FLAG_NOINSTANCE
 	 */
 	uint32_t refs;
-	/**
-	 * @brief flags field.
-	 */
-	uint32_t flags; // to be used as flags for garbage collection.
+	union {
+		/**
+		 * @brief flags field.
+		 */
+		uint32_t flags; // to be used as flags for garbage collection.
+		KlObjectFlags rflags;
+	};
 };
 
 #ifdef __cplusplus
@@ -70,4 +84,4 @@ typedef std::unordered_map<std::string, KlObject *> MetaMap;
 /**
  * @brief Pair of key-value of a MetaMap
  */
-typedef std::pair<std::string, KlObject*> MetaPair;
+typedef std::pair<std::string, KlObject *> MetaPair;
