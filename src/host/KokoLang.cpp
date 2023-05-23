@@ -53,6 +53,12 @@ KLObject *outImpl(KLObject *caller, KLObject **argv, kbyte passedArgs) {
     return nullptr;
 }
 
+KLObject *inImpl(KLObject *, KLObject **, kbyte) {
+	std::string str;
+	nowide::cin >> str;
+	return KLSTR(str);
+}
+
 int main(int argc, const char *argv[]) {
     if (termcolor::_internal::is_atty(std::cout))
         nowide::cout << termcolor::colorize;
@@ -90,6 +96,14 @@ int main(int argc, const char *argv[]) {
         out->margs = 1;
         out->name = KLSTR("out");
         klGlobalPackage()->functions->insert(MetaPair("out", KLWRAP(out)));
+
+	    auto in = KLCAST(KLFunction, klIns(klfunc_t));
+	    in->external = true;
+	    in->invokable = inImpl;
+	    in->args = 0;
+	    in->margs = 0;
+	    in->name = KLSTR("in");
+	    klGlobalPackage()->functions->insert(MetaPair("in", KLWRAP(in)));
 
         int exit = EXIT_SUCCESS;
         if (program) {
