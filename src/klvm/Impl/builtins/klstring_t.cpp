@@ -6,18 +6,18 @@
 
 KLType *klstring_t = nullptr;
 
-static void kstring_init(KlObject *obj) {
+static void kstring_init(KLObject *obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	ptr->value = nullptr;
 	ptr->size = 0;
 }
 
-static void kstring_end(KlObject *obj) {
+static void kstring_end(KLObject *obj) {
 	auto ptr = KLCAST(kl_string, obj);
 	delete[] ptr->value;
 }
 
-static int8_t kstring_compare(KlObject *x, KlObject *y) {
+static int8_t kstring_compare(KLObject *x, KLObject *y) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -55,7 +55,7 @@ static int8_t kstring_compare(KlObject *x, KlObject *y) {
 	return dev;
 }
 
-static int8_t kstring_equals(KlObject *x, KlObject *y) {
+static int8_t kstring_equals(KLObject *x, KLObject *y) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -88,7 +88,7 @@ static int8_t kstring_equals(KlObject *x, KlObject *y) {
 	return dev;
 }
 
-static void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
+static void kstring_add(KLObject *x, KLObject *y, KLObject **target) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -136,7 +136,7 @@ static void kstring_add(KlObject *x, KlObject *y, KlObject **target) {
 	}
 }
 
-static KlObject *kstring_clone(KlObject *obj) {
+static KLObject *kstring_clone(KLObject *obj) {
 	return KLSTR(KSTRING(obj));
 }
 
@@ -159,13 +159,13 @@ static inline kint isSubstring(const char *s1, const char *s2, uint32_t M, uint3
 	return -1;
 }
 
-static KlObject *kstring_find(KlObject *, KlObject **argv, kbyte argc) {
+static KLObject *kstring_find(KLObject *, KLObject **argv, kbyte argc) {
 	auto str = KLCAST(kl_string, argv[0]);
 	const char *find = "null";
 	int32_t size = 4;
 	uint32_t start = 0;
 	uint32_t end = UINT32_MAX;
-	KlObject *temp = nullptr;
+	KLObject *temp = nullptr;
 
 	if (argc > 2 && argv[2]) { GET_INT(start, argv[2])}
 	if (argc > 3 && argv[3]) { GET_INT(end, argv[3])}
@@ -184,20 +184,20 @@ static KlObject *kstring_find(KlObject *, KlObject **argv, kbyte argc) {
 	return KLWRAP(&temp_int);
 }
 
-static KlObject *kstring_contains(KlObject *s, KlObject **argv, kbyte argc) {
+static KLObject *kstring_contains(KLObject *s, KLObject **argv, kbyte argc) {
 	// this call sets temp_int
 	kstring_find(s, argv, argc);
 	return KLBOOL(temp_int.value != -1);
 }
 
-static KlObject *kstring_count(KlObject *, KlObject **argv, kbyte argc) {
+static KLObject *kstring_count(KLObject *, KLObject **argv, kbyte argc) {
 	kint count = 0;
 	auto str = KLCAST(kl_string, argv[0]);
 	const char *find = "null";
 	int32_t size = 4;
 	uint32_t start = 0;
 	uint32_t end = UINT32_MAX;
-	KlObject *temp = nullptr;
+	KLObject *temp = nullptr;
 
 	if (argc > 2 && argv[2]) { GET_INT(start, argv[2])}
 	if (argc > 3 && argv[3]) { GET_INT(end, argv[3])}
@@ -222,11 +222,11 @@ static KlObject *kstring_count(KlObject *, KlObject **argv, kbyte argc) {
 	return KLWRAP(&temp_int);
 }
 
-static KlObject *kstring_startswith(KlObject *, KlObject **argv, kbyte) {
+static KLObject *kstring_startswith(KLObject *, KLObject **argv, kbyte) {
 	auto str = KLCAST(kl_string, argv[0]);
 	const char *find = "null";
 	int32_t size = 4;
-	KlObject *temp = nullptr;
+	KLObject *temp = nullptr;
 
 	if (argv[1]) {
 		if (argv[1]->type == klstring_t) {
@@ -243,11 +243,11 @@ static KlObject *kstring_startswith(KlObject *, KlObject **argv, kbyte) {
 	return KLBOOL(out == 0);
 }
 
-static KlObject *kstring_endswith(KlObject *, KlObject **argv, kbyte) {
+static KLObject *kstring_endswith(KLObject *, KLObject **argv, kbyte) {
 	auto str = KLCAST(kl_string, argv[0]);
 	const char *find = "null";
 	int32_t size = 4;
-	KlObject *temp = nullptr;
+	KLObject *temp = nullptr;
 
 	if (argv[1]) {
 		if (argv[1]->type == klstring_t) {
@@ -264,7 +264,7 @@ static KlObject *kstring_endswith(KlObject *, KlObject **argv, kbyte) {
 	return KLBOOL(out == 0);
 }
 
-static KlObject *kstring_lower(KlObject *, KlObject **argv, kbyte) {
+static KLObject *kstring_lower(KLObject *, KLObject **argv, kbyte) {
 	auto str = KLCAST(kl_string, argv[0]);
 	auto ret = KLCAST(kl_string, klIns(klstring_t));
 	ret->size = str->size;
@@ -276,7 +276,7 @@ static KlObject *kstring_lower(KlObject *, KlObject **argv, kbyte) {
 	return KLWRAP(ret);
 }
 
-static KlObject *kstring_upper(KlObject *, KlObject **argv, kbyte) {
+static KLObject *kstring_upper(KLObject *, KLObject **argv, kbyte) {
 	auto str = KLCAST(kl_string, argv[0]);
 	auto ret = KLCAST(kl_string, klIns(klstring_t));
 	ret->size = str->size;
@@ -288,7 +288,7 @@ static KlObject *kstring_upper(KlObject *, KlObject **argv, kbyte) {
 	return KLWRAP(ret);
 }
 
-static KlObject *kstring_capitalize(KlObject *, KlObject **argv, kbyte) {
+static KLObject *kstring_capitalize(KLObject *, KLObject **argv, kbyte) {
 	auto str = KLCAST(kl_string, argv[0]);
 	auto ret = KLCAST(kl_string, klIns(klstring_t));
 	ret->size = str->size;
@@ -303,11 +303,11 @@ static KlObject *kstring_capitalize(KlObject *, KlObject **argv, kbyte) {
 	return KLWRAP(ret);
 }
 
-static KlObject *kstring_split(KlObject *, KlObject **argv, kbyte argc) {
+static KLObject *kstring_split(KLObject *, KLObject **argv, kbyte argc) {
 	auto str = KLCAST(kl_string, argv[0]);
 	const char *sep = " ";
 	int32_t size = 1;
-	KlObject* temp = nullptr;
+	KLObject* temp = nullptr;
 	uint32_t start = 0;
 	if (argc > 1 && argv[1]) {
 		if (argv[1]->type == klstring_t) {
@@ -320,7 +320,7 @@ static KlObject *kstring_split(KlObject *, KlObject **argv, kbyte argc) {
 		}
 	}
 	auto list = KLCAST(kl_sptr, klIns(kllist_t));
-	auto vec = new vector<KlObject*>();
+	auto vec = new vector<KLObject*>();
 	list->value = vec;
 
 	kint i;

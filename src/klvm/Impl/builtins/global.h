@@ -12,7 +12,7 @@ func_##id->args = argsc;                                 \
 func_##id->invokable = ivk;                              \
 type->functions->insert(MetaPair(STRINGIFY(id), KLWRAP(func_##id)));
 
-KlObject *klself_return(KlObject *obj);
+KLObject *klself_return(KLObject *obj);
 
 void global_kltype_t();
 
@@ -43,4 +43,4 @@ void global_klfunc_t();
 void global_klinstruction_t();
 
 
-void karr_init(KlObject *obj);
+void karr_init(KLObject *obj);

@@ -8,7 +8,7 @@ KLCall::~KLCall() {
 	}
 }
 
-static KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
+static KLObject *kliFunctionImpl(KLObject *caller, KLObject **argv, kbyte passedArgs) {
 	auto func = KLCAST(KLFunction, caller);
 	auto argc = func->args == -1 ? passedArgs : func->args;
 
@@ -43,7 +43,7 @@ static KlObject *kliFunctionImpl(KlObject *caller, KlObject **argv, kbyte passed
 	return call.ret;
 }
 
-static void kfunc_instantiator(KlObject *obj) {
+static void kfunc_instantiator(KLObject *obj) {
 	auto func = KLCAST(KLFunction, obj);
 	func->external = false;
 	func->name = nullptr;
@@ -57,7 +57,7 @@ static void kfunc_instantiator(KlObject *obj) {
 
 }
 
-static void kfunc_destructor(KlObject *obj) {
+static void kfunc_destructor(KLObject *obj) {
 	auto func = KLCAST(KLFunction, obj);
 	klDeref(func->name);
 	if (!func->external) {

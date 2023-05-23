@@ -2,7 +2,7 @@
 #include "../klvm_internal.h"
 #include "DataTypes/KLPackage.h"
 
-static void kpack_init(KlObject* pack)
+static void kpack_init(KLObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
 	ins->name = nullptr;
@@ -22,7 +22,7 @@ void kliDerefAndDeleteMap(MetaMap* pMap)
 	delete pMap;
 }
 
-static void kpack_end(KlObject* pack)
+static void kpack_end(KLObject* pack)
 {
 	auto ins = KLCAST(KLPackage, pack);
 	klDeref(ins->name);
@@ -69,9 +69,9 @@ CAPI void klBuildPackage(KLPackage *klPackage, kbyte recursive) // NOLINT(misc-n
 
 }
 
-static inline KlObject** argstoobject(const char **pString, int i)
+static inline KLObject** argstoobject(const char **pString, int i)
 {
-	auto ret = new KlObject* [i];
+	auto ret = new KLObject* [i];
 
 	for (int j = 0; j < i; ++j) {
 		ret[j] = KLSTR(pString[j]);
@@ -114,7 +114,7 @@ void klPackageRegType(KLPackage *klPackage, KLType *type) {
 	auto find = klPackage->types->find(name);
 	if(find == klPackage->types->end())
 	{
-		klPackage->types->insert(pair<string, KlObject*>(name, KLWRAP(type)));
+		klPackage->types->insert(pair<string, KLObject*>(name, KLWRAP(type)));
 		return;
 	}
 	throw invalid_argument("trying to define a type but another type with the same name already exists");

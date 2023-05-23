@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-typedef void (*opcodecall)(const KlObject* caller, KLCall& call, KlObject* operands[], size_t operandc);
+typedef void (*opcodecall)(const KLObject* caller, KLCall& call, KLObject* operands[], size_t operandc);
 
 /*
  * A part of a function which operate on the stack.
@@ -16,9 +16,9 @@ typedef void (*opcodecall)(const KlObject* caller, KLCall& call, KlObject* opera
 struct CPPAPI KLInstruction
 {
 	KLOBJECTHEAD
-	KlObject* label;	// the name of the label if this instruction is a label, null otherwise
+	KLObject* label;	// the name of the label if this instruction is a label, null otherwise
 	KLOpcode opcode;		// the opcode this instruction represent
-	KlObject** operands;// the operands of the op code
+	KLObject** operands;// the operands of the op code
 	size_t operandc;	// the amount of operands passed to the opcode
 	opcodecall call;	// the function invoked with the opcode logic
 };

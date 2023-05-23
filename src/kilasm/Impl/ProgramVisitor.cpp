@@ -14,7 +14,7 @@ any ProgramVisitor::visitProgram(KokoLangParser::ProgramContext* ctx)
 
 		auto find = program->functions->find(name);
 		if(find == program->functions->end()) {
-			program->functions->insert(pair<string, KlObject *>(name, KLWRAP(func)));
+			program->functions->insert(pair<string, KLObject *>(name, KLWRAP(func)));
 		} else {
 			cout << "ignoring repeat function definition: " << name << endl;
 		}
@@ -79,7 +79,7 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 		numargs = optionalargs == -1 ? size : requiredoperands + optionalargs;
 	}
 
-	auto operandv = new KlObject*[numargs]{};
+	auto operandv = new KLObject*[numargs]{};
 
 	if(requiredoperands > 0 || optionalargs != 0) getOperands(&opcode, operandv, values, size);
 

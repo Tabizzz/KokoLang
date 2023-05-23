@@ -2,13 +2,13 @@
 #include "klapi_types.h"
 #include <cassert>
 
-KlObject *klself_return(KlObject *base) {
+KLObject *klself_return(KLObject *base) {
 	klRef(base);
 	return base;
 }
 
 
-CAPI KlObject *klIns(KLType *type) {
+CAPI KLObject *klIns(KLType *type) {
 	if (KLTYPE_IS_STATIC(type)) {
 		throw runtime_error("Unable to instance not instantiable type");
 	}
@@ -23,7 +23,7 @@ CAPI KlObject *klIns(KLType *type) {
 	return space;
 }
 
-CAPI void klDeref(KlObject *object) {
+CAPI void klDeref(KLObject *object) {
 	if (!object) return;
 	if (KLTYPE_IS_STATIC(object->type)) return;
 	if (object->flags & KLOBJ_FLAG_IGNORE_REF) return;
@@ -48,7 +48,7 @@ static inline void freeSpace(void *space, bool delet, size_t size) {
 	}
 }
 
-CAPI void klDestroy(KlObject *object) { // NOLINT(misc-no-recursion)
+CAPI void klDestroy(KLObject *object) { // NOLINT(misc-no-recursion)
 	if (!object) return;
 	auto size = object->type->size;
 	// call finalizer
@@ -62,7 +62,7 @@ CAPI void klDestroy(KlObject *object) { // NOLINT(misc-no-recursion)
 	freeSpace(object, object->flags & KLOBJ_FLAG_USE_DELETE, size);
 }
 
-static inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte argc) {
+static inline KLObject *klInvokeCore(KLFunction *func, KLObject **argv, kbyte argc) {
 	// implement call stack:
 	// add the function to the call stack
 	if (argc < func->margs) {
@@ -81,7 +81,7 @@ static inline KlObject *klInvokeCore(KLFunction *func, KlObject **argv, kbyte ar
 	return func->invokable(KLWRAP(func), argv, argc);
 }
 
-CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
+CAPI KLObject *klNew(KLType *type, KLObject **args, kbyte argc) {
 	if (!type) return nullptr;
 	// type must have a constructor
 	if (!type->constructor) {
@@ -90,7 +90,7 @@ CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
 	auto size = argc + 1;
 	auto obj = klIns(type);
 	// we need to inject instance on args
-	vector<KlObject *> argv(size);
+	vector<KLObject *> argv(size);
 	argv[0] = obj;
 	for (int i = 1; i < size; ++i) {
 		argv[i] = args[i - 1];
@@ -100,7 +100,7 @@ CAPI KlObject *klNew(KLType *type, KlObject **args, kbyte argc) {
 	return obj;
 }
 
-CAPI KlObject *klInvoke(KlObject *target, KlObject **argv, kbyte argc) {
+CAPI KLObject *klInvoke(KLObject *target, KLObject **argv, kbyte argc) {
 	if (!target) return nullptr;
 	if (target->type == klfunc_t) {
 		auto func = KLCAST(KLFunction, target);

@@ -11,12 +11,12 @@ GETREG(x)               \
 if(!x || x->type != y) return;
 #define REGORRET(x) if(!x) return; auto reg = KASINT(x);
 
-typedef vector<KlObject *>::reference vecref;
+typedef vector<KLObject *>::reference vecref;
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnusedParameter"
 
-static inline bool getBool(KlObject *obj, KLCall &call) {
+static inline bool getBool(KLObject *obj, KLCall &call) {
 	GETREG(obj)
 	if (obj) {
 		if (obj->type == klbool_t) {
@@ -40,14 +40,14 @@ static inline bool getBool(KlObject *obj, KLCall &call) {
 	return false;
 }
 
-static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObject *function) {
+static inline void call_core(KLCall &call, KLObject *argv[], size_t argc, KLObject *function) {
 	auto reg = argv[1] ? KASINT(argv[1]) : -1;
 	auto val = argv[2];
 	GETREG(val)
 	auto obj = function;
 	GETREG(obj)
 	auto size = argc - 2;
-	vector<KlObject *> args(size);
+	vector<KLObject *> args(size);
 	for (int i = 2; i < argc; ++i) {
 		auto arg = argv[i];
 		GETREG(arg)
@@ -63,9 +63,9 @@ static inline void call_core(KLCall &call, KlObject *argv[], size_t argc, KlObje
 	}
 }
 
-static void opcode_noc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {}
+static void opcode_noc(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {}
 
-static void opcode_ldfnd(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ldfnd(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto obj = argv[1];
 	GETREG(obj)
@@ -81,7 +81,7 @@ static void opcode_ldfnd(const KlObject *caller, KLCall &call, KlObject *argv[],
 	}
 }
 
-static void opcode_ins(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ins(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if function exists now?
@@ -92,19 +92,19 @@ static void opcode_ins(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klTransfer(&obj, &ref);
 }
 
-static void opcode_deref(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_deref(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto obj = argv[0];
 	GETREG(obj)
 	klDeref(obj);
 }
 
-static void opcode_ref(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ref(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto obj = argv[0];
 	GETREG(obj)
 	klRef(obj);
 }
 
-static void opcode_ldfld(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ldfld(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto obj = argv[1];
 	GETREG(obj)
@@ -121,7 +121,7 @@ static void opcode_ldfld(const KlObject *caller, KLCall &call, KlObject *argv[],
 	}
 }
 
-static void opcode_stfld(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_stfld(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto obj = argv[1];
 	GETREG(obj)
 	if (!obj) return;
@@ -137,7 +137,7 @@ static void opcode_stfld(const KlObject *caller, KLCall &call, KlObject *argv[],
 	}
 }
 
-static void opcode_sizeof(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_sizeof(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if function exists now?
@@ -153,7 +153,7 @@ static void opcode_sizeof(const KlObject *caller, KLCall &call, KlObject *argv[]
 		} else {
 			size = static_cast<kint>(t->type->size);
 		}
-		size -= sizeof(KlObject);
+		size -= sizeof(KLObject);
 		temp_int.value = size;
 		klCopy(KLWRAP(&temp_int), &ref);
 	} else {
@@ -161,7 +161,7 @@ static void opcode_sizeof(const KlObject *caller, KLCall &call, KlObject *argv[]
 	}
 }
 
-static void opcode_new(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_new(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if function exists now?
@@ -169,7 +169,7 @@ static void opcode_new(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 	auto type = KLCAST(KLType, argv[0]);
 	auto size = argc - 2;
-	vector<KlObject *> args(size);
+	vector<KLObject *> args(size);
 	for (int i = 2; i < argc; ++i) {
 		auto arg = argv[i];
 		GETREG(arg)
@@ -180,7 +180,7 @@ static void opcode_new(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klTransfer(&ret, &save);
 }
 
-static void opcode_is(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_is(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if function exists now?
 		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
@@ -190,7 +190,7 @@ static void opcode_is(const KlObject *caller, KLCall &call, KlObject *argv[], si
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, obj && KLWRAP(obj->type) == argv[0]);
 }
 
-static void opcode_typeof(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_typeof(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	vecref ref = call.st.at(reg);
 
@@ -200,7 +200,7 @@ static void opcode_typeof(const KlObject *caller, KLCall &call, KlObject *argv[]
 	klMove(obj ? KLWRAP(obj->type) : nullptr, &ref);
 }
 
-static void opcode_type(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_type(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if function exists now?
@@ -211,7 +211,7 @@ static void opcode_type(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	klMove(argv[0], &ref);
 }
 
-static void opcode_ste(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ste(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto obj = argv[0];
 	GETREG(obj)
 	if (!obj) return;
@@ -237,7 +237,7 @@ static void opcode_ste(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_lde(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_lde(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref ref = call.st.at(reg);
 
@@ -266,7 +266,7 @@ static void opcode_lde(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_ard(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ard(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref ref = call.st.at(reg);
 
@@ -283,7 +283,7 @@ static void opcode_ard(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klTransfer(&crt, &ref);
 }
 
-static void opcode_arl(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_arl(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	vecref ref = call.st.at(reg);
 
@@ -300,7 +300,7 @@ static void opcode_arl(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klCopy(KLWRAP(&temp_int), &ref);
 }
 
-static void opcode_arr(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_arr(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref ref = call.st.at(reg);
 	auto size = argv[1];
@@ -310,7 +310,7 @@ static void opcode_arr(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klTransfer(&arr, &ref);
 }
 
-static void opcode_fill(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_fill(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto dest = argv[0];
 	REQGETREG(dest, klptr_t)
 
@@ -323,7 +323,7 @@ static void opcode_fill(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	memset(KASPTR(dest), static_cast<int>(KASINT(src)), KASINT(size));
 }
 
-static void opcode_copy(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_copy(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto src = argv[0];
 	REQGETREG(src, klptr_t)
 
@@ -336,7 +336,7 @@ static void opcode_copy(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	memcpy(KASPTR(src), KASPTR(dest), KASINT(size));
 }
 
-static void opcode_free(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_free(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref ptr = call.st.at(reg);
 	if (ptr->type == klptr_t) {
@@ -346,7 +346,7 @@ static void opcode_free(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, false);
 }
 
-static void opcode_aloc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_aloc(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	vecref regis = call.st.at(reg);
 	auto val = KASINT(argv[0]);
@@ -357,18 +357,18 @@ static void opcode_aloc(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	klTransfer(&ptr, &regis);
 }
 
-static void opcode_argc(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_argc(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	temp_int.value = call.argc;
 	vecref regis = call.st.at(reg);
 	klCopy(KLWRAP(&temp_int), &regis);
 }
 
-static void opcode_ivk(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ivk(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	call_core(call, argv, argc, argv[0]);
 }
 
-static void opcode_cast(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_cast(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if type exists now?
 		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
@@ -387,7 +387,7 @@ static void opcode_cast(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	}
 }
 
-static void opcode_tobj(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_tobj(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if type exists now?
 		throw runtime_error("Unable to resolve type " + KSTRING(argv[0]));
@@ -405,7 +405,7 @@ static void opcode_tobj(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	}
 }
 
-static void opcode_tbit(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_tbit(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto val = argv[0];
 	GETREG(val)
 	REGORRET(argv[1])
@@ -418,7 +418,7 @@ static void opcode_tbit(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	}
 }
 
-static void opcode_tflt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_tflt(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto val = argv[0];
 	GETREG(val)
 	REGORRET(argv[1])
@@ -431,7 +431,7 @@ static void opcode_tflt(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	}
 }
 
-static void opcode_tint(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_tint(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto val = argv[0];
 	GETREG(val)
 	REGORRET(argv[1])
@@ -444,7 +444,7 @@ static void opcode_tint(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	}
 }
 
-static void opcode_tstr(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_tstr(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto val = argv[0];
 	GETREG(val)
 	REGORRET(argv[1])
@@ -462,7 +462,7 @@ static void opcode_tstr(const KlObject *caller, KLCall &call, KlObject *argv[], 
 
 }
 
-static void opcode_mod(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_mod(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
 	GETREG(first)
@@ -483,7 +483,7 @@ static void opcode_mod(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_div(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_div(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
 	GETREG(first)
@@ -504,7 +504,7 @@ static void opcode_div(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_mul(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_mul(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
 	GETREG(first)
@@ -523,7 +523,7 @@ static void opcode_mul(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_sub(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_sub(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
 	GETREG(first)
@@ -544,7 +544,7 @@ static void opcode_sub(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_opne(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_opne(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	auto second = argv[1];
@@ -562,7 +562,7 @@ static void opcode_opne(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, !operation);
 }
 
-static void opcode_opeq(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_opeq(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	auto second = argv[1];
@@ -580,7 +580,7 @@ static void opcode_opeq(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation);
 }
 
-static void opcode_opge(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_opge(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	auto second = argv[1];
@@ -597,7 +597,7 @@ static void opcode_opge(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation <= 0);
 }
 
-static void opcode_opgt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_opgt(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	auto second = argv[1];
@@ -614,7 +614,7 @@ static void opcode_opgt(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation < 0);
 }
 
-static void opcode_ople(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ople(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	auto second = argv[1];
@@ -631,28 +631,28 @@ static void opcode_ople(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation >= 0);
 }
 
-static void opcode_xor(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_xor(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto a = getBool(argv[0], call);
 	auto b = getBool(argv[1], call);
 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a != b);
 }
 
-static void opcode_or(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_or(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto a = getBool(argv[0], call);
 	auto b = getBool(argv[1], call);
 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a || b);
 }
 
-static void opcode_and(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_and(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto a = getBool(argv[0], call);
 	auto b = getBool(argv[1], call);
 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a && b);
 }
 
-static void opcode_ldarg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ldarg(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto index = argv[0];
 	GETREG(index)
@@ -665,7 +665,7 @@ static void opcode_ldarg(const KlObject *caller, KLCall &call, KlObject *argv[],
 	}
 }
 
-static void opcode_starg(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_starg(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto obj = argv[1];
 	GETREG(obj)
 
@@ -678,7 +678,7 @@ static void opcode_starg(const KlObject *caller, KLCall &call, KlObject *argv[],
 	}
 }
 
-static void opcode_get(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_get(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if variable exists now?
 		throw runtime_error("Unable to resolve variable " + KSTRING(argv[0]));
@@ -691,7 +691,7 @@ static void opcode_get(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klCopy(value, &current);
 }
 
-static void opcode_set(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_set(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if variable exists now?
 		throw runtime_error("Unable to resolve variable " + KSTRING(argv[0]));
@@ -703,7 +703,7 @@ static void opcode_set(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	klSetVariable(var, nullptr, current);
 }
 
-static void opcode_lflag(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_lflag(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto index = KASINT(argv[0]);
 	auto val = CALL_HAS_FLAG(call, index);
@@ -712,21 +712,21 @@ static void opcode_lflag(const KlObject *caller, KLCall &call, KlObject *argv[],
 	klCopy(KLBOOL(val), &current);
 }
 
-static void opcode_pop(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_pop(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
 	vecref current = call.st.at(reg);
 	klDeref(current);
 	current = nullptr;
 }
 
-static void opcode_goif(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_goif(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto op = CALL_HAS_FLAG(call, CALL_FLAG_CHECK);
 	if (op) {
 		call.next = KASINT(argv[0]);
 	}
 }
 
-static void opcode_cl(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_cl(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	GETREG(obj)
@@ -735,7 +735,7 @@ static void opcode_cl(const KlObject *caller, KLCall &call, KlObject *argv[], si
 	klClone(obj, &current);
 }
 
-static void opcode_mv(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_mv(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	GETREG(obj)
@@ -744,7 +744,7 @@ static void opcode_mv(const KlObject *caller, KLCall &call, KlObject *argv[], si
 	klMove(obj, &current);
 }
 
-static void opcode_cp(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_cp(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	GETREG(obj)
@@ -753,14 +753,14 @@ static void opcode_cp(const KlObject *caller, KLCall &call, KlObject *argv[], si
 	klCopy(obj, &current);
 }
 
-static void opcode_ret(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_ret(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	klCopy(first, &call.ret);
 	CALL_SET_FLAG(call, CALL_FLAG_EXIT, true);
 }
 
-static void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_call(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	if (argv[0]->type == klstring_t) {
 		// maybe try to check if function exists now?
 		throw runtime_error("Unable to resolve function " + KSTRING(argv[0]));
@@ -769,11 +769,11 @@ static void opcode_call(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	call_core(call, argv, argc, function);
 }
 
-static void opcode_go(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_go(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	call.next = KASINT(argv[0]);
 }
 
-static void opcode_add(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_add(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[2])
 	auto first = argv[0];
 	GETREG(first)
@@ -794,7 +794,7 @@ static void opcode_add(const KlObject *caller, KLCall &call, KlObject *argv[], s
 	}
 }
 
-static void opcode_goifn(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_goifn(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto op = CALL_HAS_FLAG(call, CALL_FLAG_CHECK);
 	if (!op) {
 		call.next = KASINT(argv[0]);
@@ -802,7 +802,7 @@ static void opcode_goifn(const KlObject *caller, KLCall &call, KlObject *argv[],
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, !op);
 }
 
-static void opcode_oplt(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_oplt(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	auto first = argv[0];
 	GETREG(first)
 	auto second = argv[1];
@@ -819,7 +819,7 @@ static void opcode_oplt(const KlObject *caller, KLCall &call, KlObject *argv[], 
 	CALL_SET_FLAG(call, CALL_FLAG_CHECK, operation > 0);
 }
 
-static void opcode_push(const KlObject *caller, KLCall &call, KlObject *argv[], size_t argc) {
+static void opcode_push(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[1])
 	auto obj = argv[0];
 	vecref current = call.st.at(reg);

@@ -21,7 +21,7 @@ struct CPPAPI KLPackage
 	* The name of the package, is not possible to have multiples packages with the
 	* same name.
 	*/
-	KlObject* name;
+	KLObject* name;
 	MetaMap* functions;		// the functions defined in the package
 	MetaMap* variables;		// the globals var of the package.
 	MetaMap* types;			// the types defined in the package.

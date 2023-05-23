@@ -7,7 +7,7 @@ static inline T mapfind(unordered_map<string, T> *map, const string &find) {
     return varfind != map->end() ? varfind->second : nullptr;
 }
 
-bool klGetField(const KlObject *obj, const string &name, KLVariable **out) {
+bool klGetField(const KLObject *obj, const string &name, KLVariable **out) {
     if (!obj) return false;
     MetaMap *map;
     if (obj->type == kltype_t) {
@@ -22,7 +22,7 @@ bool klGetField(const KlObject *obj, const string &name, KLVariable **out) {
     return *out;
 }
 
-bool klGetFunc(const KlObject *obj, const string &name, KLFunction **out) {
+bool klGetFunc(const KLObject *obj, const string &name, KLFunction **out) {
     if (!obj) return false;
     MetaMap *map;
     if (obj->type == kltype_t) {

@@ -1,7 +1,7 @@
 #include "global.h"
 
 static kl_bool kl_bool_true = {
-	KlObject{
+	KLObject{
 		nullptr,
 		1,
 		KLOBJ_FLAG_IGNORE_REF
@@ -10,7 +10,7 @@ static kl_bool kl_bool_true = {
 };
 
 static kl_bool kl_bool_false = {
-	KlObject{
+	KLObject{
 		nullptr,
 		1,
 		KLOBJ_FLAG_IGNORE_REF
@@ -18,11 +18,11 @@ static kl_bool kl_bool_false = {
 	false
 };
 
-CAPI KlObject *klBuiltinBool(char val) {
+CAPI KLObject *klBuiltinBool(char val) {
 	return KLWRAP(val ? &kl_bool_true : &kl_bool_false);
 }
 
-static KlObject *kbool_tostr(KlObject *obj) {
+static KLObject *kbool_tostr(KLObject *obj) {
 	if (KASBOOL(obj)) {
 		return KLSTR("true");
 	} else {

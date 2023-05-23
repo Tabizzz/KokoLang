@@ -90,7 +90,7 @@ CAPI void klRegisterPackage(KLPackage *klPackage) {
 	throw runtime_error("trying to add a package but another package with the same name already exists");
 }
 
-static KlObject *defaultToStr(KlObject *obj) {
+static KLObject *defaultToStr(KLObject *obj) {
 	std::stringstream ss;
 	ss << '[';
 	ss << obj->type->name;
@@ -108,7 +108,7 @@ static KlObject *defaultToStr(KlObject *obj) {
 	return KLWRAP(str);
 }
 
-static int8_t defaultEquals(KlObject *a, KlObject *b) {
+static int8_t defaultEquals(KLObject *a, KLObject *b) {
 	return a == b ? 1 : 0;
 }
 
@@ -150,7 +150,7 @@ CAPI void klDefType(KLType *type) {
 /*
  * src is null, dest is not null.
  */
-void inline kliCopyA(KlObject **dest) {
+void inline kliCopyA(KLObject **dest) {
 	klDeref(*dest);
 	*dest = nullptr;
 }
@@ -158,7 +158,7 @@ void inline kliCopyA(KlObject **dest) {
 /*
  * src is not null, dest is null
  */
-void inline kliCopyB(KlObject *src, KlObject **dest) {
+void inline kliCopyB(KLObject *src, KLObject **dest) {
 	if (src->type->clone) {
 		// no need to deref dest because is null
 		*dest = src->type->clone(src);
@@ -169,7 +169,7 @@ void inline kliCopyB(KlObject *src, KlObject **dest) {
 	}
 }
 
-void inline kliCopyD(KlObject *src, KlObject **dest) {
+void inline kliCopyD(KLObject *src, KLObject **dest) {
 	if ((src->type == (*dest)->type) && src->type->copy) {
 		src->type->copy(src, *dest);
 		return;
@@ -186,7 +186,7 @@ void inline kliCopyD(KlObject *src, KlObject **dest) {
 
 #define THROW_ON_NO_VALID_TARGET if(!dest){throw std::runtime_error("Not a valid target");}
 
-CAPI void klCopy(KlObject *src, KlObject **dest) {
+CAPI void klCopy(KLObject *src, KLObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	if (!src && *dest) {
 		kliCopyA(dest);
@@ -197,7 +197,7 @@ CAPI void klCopy(KlObject *src, KlObject **dest) {
 	}
 }
 
-CAPI void klClone(KlObject *src, KlObject **dest) {
+CAPI void klClone(KLObject *src, KLObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	if (!src && *dest) {
 		kliCopyA(dest);
@@ -215,14 +215,14 @@ CAPI void klClone(KlObject *src, KlObject **dest) {
 	}
 }
 
-CAPI void klMove(KlObject *src, KlObject **dest) {
+CAPI void klMove(KLObject *src, KLObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	klRef(src);
 	klDeref(*dest);
 	*dest = src;
 }
 
-CAPI void klTransfer(KlObject **src, KlObject **dest) {
+CAPI void klTransfer(KLObject **src, KLObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	auto val = src ? *src : nullptr;
 

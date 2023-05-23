@@ -17,11 +17,11 @@
  *
  * When mode is true and if necessary the resolver must load the packages.
  */
-typedef KlObject*(*klresolver)(
+typedef KLObject*(*klresolver)(
 		/**
 		 * @brief The full name of the object to resolve. Always type string.
 		 */
-		const KlObject* fullname,
+		const KLObject* fullname,
 		/**
          * @brief The package resolving the object.
          */

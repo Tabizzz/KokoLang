@@ -5,10 +5,10 @@
 
 KLType testT =
 {
-		KlObject(),
-		"test",
-		0,
-		sizeof (kl_int)
+	KLObject(),
+	"test",
+	0,
+	sizeof (kl_int)
 };
 
 TEST_CASE( "klapi.h", "[klapi]" ) {
@@ -121,7 +121,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			WHEN( "dest is null" )
 			{
 				// the object will be cloned
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				REQUIRE(src->refs == 1);
 
 				klCopy(src, &dest);
@@ -136,7 +136,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null and the same type of src" )
 			{
-				KlObject* dest = KLINT(0);
+				KLObject* dest = KLINT(0);
 				REQUIRE(src->refs == 1);
 				REQUIRE(dest->refs == 1);
 				auto oldDest = dest;
@@ -157,7 +157,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			WHEN( "dest is not null and not the same type of src" )
 			{
 				// dest can be any type, it must be overwritten anyway
-				KlObject* dest = KLSTR("");
+				KLObject* dest = KLSTR("");
 				auto oldDest = dest;
 				klRef(oldDest);
 
@@ -187,7 +187,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				CHECK(src->refs == 1);
 
 				klClone(src, &dest);
@@ -198,7 +198,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null and the same type of src" )
 			{
-				KlObject* dest = klIns(klreg_t);
+				KLObject* dest = klIns(klreg_t);
 				KASINT(dest) = 1;
 				REQUIRE(src->refs == 1);
 				REQUIRE(dest->refs == 1);
@@ -243,7 +243,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			auto src = KLSTR("value");
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 
 				REQUIRE(src->refs == 1);
 
@@ -261,7 +261,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null and the same type of src" )
 			{
-				KlObject* dest = KLSTR("test");
+				KLObject* dest = KLSTR("test");
 				auto oldDest = dest;
 				klRef(oldDest);
 				REQUIRE(src->refs == 1);
@@ -286,7 +286,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null and not the same type of src" )
 			{
-				KlObject* dest = KLINT(0);
+				KLObject* dest = KLINT(0);
 				auto oldDest = dest;
 				klRef(oldDest);
 				REQUIRE(src->refs == 1);
@@ -310,10 +310,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A null src")
 		{
-			KlObject* src = nullptr;
+			KLObject* src = nullptr;
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				klCopy(src, &dest);
 				// in this case nothing occurs so both value must be still null.
 				REQUIRE(src == nullptr);
@@ -321,7 +321,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null" )
 			{
-				KlObject* dest = KLSTR("");
+				KLObject* dest = KLSTR("");
 				auto oldDest = dest;
 				CHECK(dest->refs == 1);
 				klRef(dest);
@@ -349,7 +349,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 
 				klClone(src, &dest);
 
@@ -368,7 +368,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			WHEN( "dest is not null" )
 			{
 				// dest can be any type, it must be overwritten anyway
-				KlObject* dest = KLSTR("");
+				KLObject* dest = KLSTR("");
 				auto oldDest = dest;
 				klRef(oldDest);
 
@@ -398,7 +398,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				CHECK(src->refs == 1);
 
 				klClone(src, &dest);
@@ -430,10 +430,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A null src")
 		{
-			KlObject* src = nullptr;
+			KLObject* src = nullptr;
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				klClone(src, &dest);
 				// in this case nothing occurs so both value must be still null.
 				REQUIRE(src == nullptr);
@@ -441,7 +441,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null" )
 			{
-				KlObject* dest = KLSTR("");
+				KLObject* dest = KLSTR("");
 				auto oldDest = dest;
 				CHECK(dest->refs == 1);
 				klRef(dest);
@@ -468,7 +468,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			auto src = KLSTR("");
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				CHECK(src->refs == 1);
 
 				klMove(src, &dest);
@@ -500,10 +500,10 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 		}
 		GIVEN("A null src")
 		{
-			KlObject* src = nullptr;
+			KLObject* src = nullptr;
 			WHEN( "dest is null" )
 			{
-				KlObject* dest = nullptr;
+				KLObject* dest = nullptr;
 				klMove(src, &dest);
 				// in this case nothing occurs so both value must be still null.
 				REQUIRE(src == nullptr);
@@ -511,7 +511,7 @@ TEST_CASE( "klapi.h", "[klapi]" ) {
 			}
 			WHEN( "dest is not null" )
 			{
-				KlObject* dest = KLSTR("");
+				KLObject* dest = KLSTR("");
 				auto oldDest = dest;
 				CHECK(dest->refs == 1);
 				klRef(dest);

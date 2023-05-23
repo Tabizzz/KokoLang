@@ -5,14 +5,14 @@
 #include "DataTypes/KLObject.h"
 #include "DataTypes/KLVariable.h"
 
-CPPAPI bool klGetFunc(const KlObject* obj, const std::string& name, KLFunction** out);
+CPPAPI bool klGetFunc(const KLObject* obj, const std::string& name, KLFunction** out);
 
-CPPAPI bool klGetType(const KlObject* obj, const std::string& name, KLType** out);
+CPPAPI bool klGetType(const KLObject* obj, const std::string& name, KLType** out);
 
-CPPAPI bool klGetPack(const KlObject* obj, const std::string& name, KLPackage** out);
+CPPAPI bool klGetPack(const KLObject* obj, const std::string& name, KLPackage** out);
 
-CPPAPI bool klGetField(const KlObject* obj, const std::string& name, KLVariable** out);
+CPPAPI bool klGetField(const KLObject* obj, const std::string& name, KLVariable** out);
 
-CPPAPI bool klGetMeta(const KlObject* obj, const std::string& name, KlObject** out, KLType* type = nullptr);
+CPPAPI bool klGetMeta(const KLObject* obj, const std::string& name, KLObject** out, KLType* type = nullptr);
 
-CPPAPI void klSetMeta(KlObject* obj, const std::string& name, KlObject* value);
+CPPAPI void klSetMeta(KLObject* obj, const std::string& name, KLObject* value);

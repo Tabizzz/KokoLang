@@ -60,7 +60,7 @@ CAPI
  *
  * This function will try to copy or move the object, dont clone.
  */
-void klTransfer(KlObject ** src, KlObject** dest);
+void klTransfer(KLObject ** src, KLObject** dest);
 
 CAPI
 /**
@@ -93,7 +93,7 @@ CAPI
  * and the type support copy operation then src is copied into
  * dest and no ref count is changed.
  */
-void klCopy(KlObject *src, KlObject** dest);
+void klCopy(KLObject *src, KLObject** dest);
 
 CAPI
 /**
@@ -116,7 +116,7 @@ CAPI
  * operation, if not then the same instance is used and the ref
  * count is increased on src and decreased in dest.
  */
-void klClone(KlObject* src, KlObject** dest);
+void klClone(KLObject* src, KLObject** dest);
 
 CAPI
 /**
@@ -135,4 +135,4 @@ CAPI
  *  Case D, both src and dest are not null:
  * dest is deref, src is ref and set by reference to dest.
  */
-void klMove(KlObject* src, KlObject** dest);
+void klMove(KLObject* src, KLObject** dest);

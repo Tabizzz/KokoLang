@@ -3,14 +3,14 @@
 
 KLType *kltype_t = nullptr;
 
-static void ktype_ins(KlObject *obj) {
+static void ktype_ins(KLObject *obj) {
 	auto type = KLCAST(KLType, obj);
 	type->variables = new MetaMap();
 	type->functions = new MetaMap();
 	type->metadata = new MetaMap();
 }
 
-static void ktype_end(KlObject *obj) {
+static void ktype_end(KLObject *obj) {
 	auto type = KLCAST(KLType, obj);
 	klDeref(type->constructor);
 	kliDerefAndDeleteMap(type->variables);
@@ -18,7 +18,7 @@ static void ktype_end(KlObject *obj) {
 	kliDerefAndDeleteMap(type->metadata);
 }
 
-static KlObject* ktype_tostr(KlObject *obj) {
+static KLObject* ktype_tostr(KLObject *obj) {
 	std::ostringstream ss;
 	ss << "[type ";
 	ss << KLCAST(KLType, obj)->name;

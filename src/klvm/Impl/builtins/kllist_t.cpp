@@ -2,11 +2,11 @@
 #include <sstream>
 #include <algorithm>
 
-#define KASLIST(x) KLCAST(vector<KlObject*>, KLCAST(kl_sptr, x)->value)
+#define KASLIST(x) KLCAST(vector<KLObject*>, KLCAST(kl_sptr, x)->value)
 
 KLType *kllist_t = nullptr;
 
-void klist_end(KlObject *obj) {
+void klist_end(KLObject *obj) {
 	auto vec = KASLIST(obj);
 	if (vec) {
 		for (auto elem: *vec) {
@@ -16,21 +16,21 @@ void klist_end(KlObject *obj) {
 	}
 }
 
-KlObject *klist_ctor(KlObject *, KlObject **argv, kbyte argc) {
+KLObject *klist_ctor(KLObject *, KLObject **argv, kbyte argc) {
 	auto ret = argv[0];
 	auto ptr = KLCAST(kl_sptr, ret);
 
 	if (argc == 1 || !argv[1]) {
-		ptr->value = new vector<KlObject *>();
+		ptr->value = new vector<KLObject *>();
 	} else {
 		if (argv[1]->type == klint_t) {
-			auto vec = new vector<KlObject *>();
+			auto vec = new vector<KLObject *>();
 			vec->reserve(KASINT(argv[1]));
 			ptr->value = vec;
 		} else if (argv[1]->type == klarray_t) {
 			auto size = KASARRSIZE(argv[1]);
 			auto arr = KASARR(argv[1]);
-			auto vec = new vector<KlObject *>(size);
+			auto vec = new vector<KLObject *>(size);
 			for (int i = 0; i < size; ++i) {
 				klCopy(arr[i], &vec->at(i));
 			}
@@ -39,7 +39,7 @@ KlObject *klist_ctor(KlObject *, KlObject **argv, kbyte argc) {
 		} else if (argv[1]->type == kllist_t) {
 			auto size = KASARRSIZE(argv[1]);
 			auto arr = KASLIST(argv[1]);
-			auto vec = new vector<KlObject *>(size);
+			auto vec = new vector<KLObject *>(size);
 			for (int i = 0; i < size; ++i) {
 				klCopy(arr->at(i), &vec->at(i));
 			}
@@ -55,13 +55,13 @@ KlObject *klist_ctor(KlObject *, KlObject **argv, kbyte argc) {
 	return nullptr;
 }
 
-static KlObject *klist_add(KlObject *, KlObject **argv, kbyte argc) {
+static KLObject *klist_add(KLObject *, KLObject **argv, kbyte argc) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
 
 	list->reserve(argc - 1);
 	for (int i = 1; i < argc; ++i) {
-		KlObject *temp = nullptr;
+		KLObject *temp = nullptr;
 		klCopy(argv[i], &temp);
 		list->push_back(temp);
 	}
@@ -70,7 +70,7 @@ static KlObject *klist_add(KlObject *, KlObject **argv, kbyte argc) {
 	return nullptr;
 }
 
-static KlObject *klist_tostr(KlObject *obj) {
+static KLObject *klist_tostr(KLObject *obj) {
 	std::stringstream ss;
 	auto size = KASARRSIZE(obj);
 	auto arr = KASLIST(obj);
@@ -126,10 +126,10 @@ static KlObject *klist_tostr(KlObject *obj) {
 	return KLWRAP(str);
 }
 
-static KlObject *klist_addall(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_addall(KLObject *, KLObject **argv, kbyte) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
-	KlObject **data = nullptr;
+	KLObject **data = nullptr;
 	ksize size = 0;
 	if (argv[1]) {
 		if (argv[1]->type == kllist_t) {
@@ -145,7 +145,7 @@ static KlObject *klist_addall(KlObject *, KlObject **argv, kbyte) {
 	if (size > 0) {
 		list->reserve(size);
 		for (int i = 0; i < size; ++i) {
-			KlObject *temp = nullptr;
+			KLObject *temp = nullptr;
 			klCopy(data[i], &temp);
 			list->push_back(temp);
 		}
@@ -154,7 +154,7 @@ static KlObject *klist_addall(KlObject *, KlObject **argv, kbyte) {
 	return nullptr;
 }
 
-static KlObject *klist_index(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_index(KLObject *, KLObject **argv, kbyte) {
 	auto size = KASARRSIZE(argv[0]);
 	auto list = KASLIST(argv[0]);
 	auto obj = argv[1];
@@ -168,7 +168,7 @@ static KlObject *klist_index(KlObject *, KlObject **argv, kbyte) {
 	return KLWRAP(&temp_int);
 }
 
-static KlObject *klist_lastindex(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_lastindex(KLObject *, KLObject **argv, kbyte) {
 	auto size = KASARRSIZE(argv[0]);
 	auto list = KASLIST(argv[0]);
 	auto obj = argv[1];
@@ -182,13 +182,13 @@ static KlObject *klist_lastindex(KlObject *, KlObject **argv, kbyte) {
 	return KLWRAP(&temp_int);
 }
 
-static KlObject *klist_contains(KlObject *s, KlObject **argv, kbyte argc) {
+static KLObject *klist_contains(KLObject *s, KLObject **argv, kbyte argc) {
 	// this call sets temp_int
 	klist_index(s, argv, argc);
 	return KLBOOL(temp_int.value != -1);
 }
 
-static bool objectComparer(KlObject *i1, KlObject *i2) {
+static bool objectComparer(KLObject *i1, KLObject *i2) {
 	if (!i1) return true;
 	if (!i2) return false;
 	if (i1->type->comparer) {
@@ -199,13 +199,13 @@ static bool objectComparer(KlObject *i1, KlObject *i2) {
 	return false;
 }
 
-static KlObject *klist_sort(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_sort(KLObject *, KLObject **argv, kbyte) {
 	auto list = KASLIST(argv[0]);
 	std::sort(list->begin(), list->end(), objectComparer);
 	return nullptr;
 }
 
-static KlObject *klist_clear(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_clear(KLObject *, KLObject **argv, kbyte) {
 	auto list = KASLIST(argv[0]);
 	// we deref every object before clear
 	for (const auto obj: *list) {
@@ -215,18 +215,18 @@ static KlObject *klist_clear(KlObject *, KlObject **argv, kbyte) {
 	return nullptr;
 }
 
-static KlObject *klist_trim(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_trim(KLObject *, KLObject **argv, kbyte) {
 	auto list = KASLIST(argv[0]);
 	list->shrink_to_fit();
 	return nullptr;
 }
 
-static KlObject *klist_capacity(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_capacity(KLObject *, KLObject **argv, kbyte) {
 	auto list = KASLIST(argv[0]);
 	return KLINT(list->capacity());
 }
 
-static KlObject *klist_insert(KlObject *, KlObject **argv, kbyte argc) {
+static KLObject *klist_insert(KLObject *, KLObject **argv, kbyte argc) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
 	kint index = 0;
@@ -243,18 +243,18 @@ static KlObject *klist_insert(KlObject *, KlObject **argv, kbyte argc) {
 	list->insert(list->begin() + index, size, nullptr);
 
 	for (int i = 0; i < size; ++i) {
-		vector<KlObject *>::reference ref = list->at(i + index);
+		vector<KLObject *>::reference ref = list->at(i + index);
 		klCopy(argv[2 + i], &ref);
 	}
 	ptr->size = list->size();
 	return nullptr;
 }
 
-static KlObject *klist_insertall(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_insertall(KLObject *, KLObject **argv, kbyte) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
 	kint index = 0;
-	KlObject **data = nullptr;
+	KLObject **data = nullptr;
 	ksize size = 0;
 	if (argv[1]) {
 		GET_INT(index, argv[1])
@@ -279,7 +279,7 @@ static KlObject *klist_insertall(KlObject *, KlObject **argv, kbyte) {
 		// insert null values first
 		list->insert(list->begin() + index, size, nullptr);
 		for (int i = 0; i < size; ++i) {
-			vector<KlObject *>::reference ref = list->at(i + index);
+			vector<KLObject *>::reference ref = list->at(i + index);
 			klCopy(data[i], &ref);
 		}
 		ptr->size = list->size();
@@ -287,7 +287,7 @@ static KlObject *klist_insertall(KlObject *, KlObject **argv, kbyte) {
 	return nullptr;
 }
 
-static KlObject *klist_remove(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_remove(KLObject *, KLObject **argv, kbyte) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
 	auto obj = argv[1];
@@ -305,7 +305,7 @@ static KlObject *klist_remove(KlObject *, KlObject **argv, kbyte) {
 	return nullptr;
 }
 
-static KlObject *klist_removeat(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_removeat(KLObject *, KLObject **argv, kbyte) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
 	kint index = 0;
@@ -324,7 +324,7 @@ static KlObject *klist_removeat(KlObject *, KlObject **argv, kbyte) {
 	return nullptr;
 }
 
-static KlObject *klist_toarray(KlObject *, KlObject **argv, kbyte) {
+static KLObject *klist_toarray(KLObject *, KLObject **argv, kbyte) {
 	auto ptr = KLCAST(kl_sptr, argv[0]);
 	auto list = KASLIST(argv[0]);
 	auto obj = KLARR(ptr->size);
@@ -337,7 +337,7 @@ static KlObject *klist_toarray(KlObject *, KlObject **argv, kbyte) {
 	return obj;
 }
 
-static void klist_add(KlObject *x, KlObject *y, KlObject **res) {
+static void klist_add(KLObject *x, KLObject *y, KLObject **res) {
 	auto a = KASLIST(x);
 	if (y) {
 		if (y->type == kllist_t) {
@@ -345,7 +345,7 @@ static void klist_add(KlObject *x, KlObject *y, KlObject **res) {
 			auto obj = klIns(kllist_t);
 			auto ptr = KLCAST(kl_sptr, obj);
 			ptr->size = a->size() + b->size();
-			auto list = new vector<KlObject *>(ptr->size);
+			auto list = new vector<KLObject *>(ptr->size);
 			ptr->value = list;
 
 			for (int i = 0; i < a->size(); ++i) {
@@ -363,7 +363,7 @@ static void klist_add(KlObject *x, KlObject *y, KlObject **res) {
 		auto obj = klIns(kllist_t);
 		auto ptr = KLCAST(kl_sptr, obj);
 		ptr->size = a->size();
-		auto list = new vector<KlObject *>(ptr->size);
+		auto list = new vector<KLObject *>(ptr->size);
 		ptr->value = list;
 
 		for (int i = 0; i < ptr->size; ++i) {
@@ -374,7 +374,7 @@ static void klist_add(KlObject *x, KlObject *y, KlObject **res) {
 	}
 }
 
-static void klist_mul(KlObject *x, KlObject *y, KlObject **res) {
+static void klist_mul(KLObject *x, KLObject *y, KLObject **res) {
 	auto a = KASLIST(x);
 	if (y) {
 		if (y->type != klint_t && !y->type->toInt) throw runtime_error("can only multiply list with int");
@@ -385,7 +385,7 @@ static void klist_mul(KlObject *x, KlObject *y, KlObject **res) {
 		auto obj1 = klIns(kllist_t);
 		auto ptr1 = KLCAST(kl_sptr, obj1);
 		ptr1->size = a->size() * size;
-		auto list = new vector<KlObject *>(ptr1->size);
+		auto list = new vector<KLObject *>(ptr1->size);
 		ptr1->value = list;
 		if (ptr1->size > 0) {
 			for (int i = 0; i < size; ++i) {
@@ -399,7 +399,7 @@ static void klist_mul(KlObject *x, KlObject *y, KlObject **res) {
 	} else {
 		auto obj = klIns(kllist_t);
 		auto ptr = KLCAST(kl_sptr, obj);
-		ptr->value = new vector<KlObject *>();
+		ptr->value = new vector<KLObject *>();
 
 		klTransfer(&obj, res);
 	}

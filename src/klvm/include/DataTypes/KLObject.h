@@ -11,7 +11,7 @@ extern "C" {
  *
  * Any structure must have this header to be a valid Kokolang object.
  */
-#define KLOBJECTHEAD KlObject klbase;
+#define KLOBJECTHEAD KLObject klbase;
 
 /**
  * @brief Invoke a function if is not null
@@ -37,7 +37,7 @@ extern "C" {
 
 struct KLType;
 
-struct KlObjectFlags {
+struct KLObjectFlags {
 	kbyte use_delete: 1;
 	kbyte no_inscount: 1;
 	kbyte ignore_ref: 1;
@@ -49,7 +49,7 @@ struct KlObjectFlags {
  *
  * Any type can be used a pointer to this class to be a valid kokolang object.
  */
-struct CPPAPI KlObject {
+struct CPPAPI KLObject {
 	/**
 	 * @brief The type of the object.
 	*/
@@ -67,7 +67,7 @@ struct CPPAPI KlObject {
 		 * @brief flags field.
 		 */
 		uint32_t flags; // to be used as flags for garbage collection.
-		KlObjectFlags rflags;
+		KLObjectFlags rflags;
 	};
 };
 
@@ -80,8 +80,8 @@ struct CPPAPI KlObject {
  *
  * Used mainly to store metadata.
  */
-typedef std::unordered_map<std::string, KlObject *> MetaMap;
+typedef std::unordered_map<std::string, KLObject *> MetaMap;
 /**
  * @brief Pair of key-value of a MetaMap
  */
-typedef std::pair<std::string, KlObject *> MetaPair;
+typedef std::pair<std::string, KLObject *> MetaPair;

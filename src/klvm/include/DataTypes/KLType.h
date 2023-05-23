@@ -19,7 +19,7 @@ struct CPPAPI KLType {
 	size_t size;                  // the size to allocate this an object of this type
 	kltypefunc initializer;       // the initializer to this type
 	kltypefunc finalizer;         // the finalizer to this type
-	KlObject *constructor;        // the constructor of the type
+	KLObject *constructor;        // the constructor of the type
 
 	klunaryop toString;           // return the string representation of the type
 	klunaryop toInt;              // return the int representation of the type

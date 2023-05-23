@@ -5,7 +5,7 @@
 KLType *klptr_t = nullptr;
 
 kl_ptr temp_ptr = {
-	KlObject{
+	KLObject{
 		nullptr,
 		1,
 		KLOBJ_FLAG_IGNORE_REF
@@ -13,12 +13,12 @@ kl_ptr temp_ptr = {
 	nullptr
 };
 
-static void kptr_init(KlObject *obj) {
+static void kptr_init(KLObject *obj) {
 	auto ptr = KLCAST(kl_ptr, obj);
 	ptr->value = nullptr;
 }
 
-static int8_t kptr_equal(KlObject *x, KlObject *y) {
+static int8_t kptr_equal(KLObject *x, KLObject *y) {
 	if (y) {
 		if (y->type == klptr_t) {
 			return KASPTR(x) == KASPTR(y);
@@ -30,27 +30,27 @@ static int8_t kptr_equal(KlObject *x, KlObject *y) {
 	return KASPTR(x) == nullptr;
 }
 
-static KlObject *kptr_clone(KlObject *base) {
+static KLObject *kptr_clone(KLObject *base) {
 	return KLPTR(KASPTR(base));
 }
 
-static void kptr_copy(KlObject *a, KlObject *b) {
+static void kptr_copy(KLObject *a, KLObject *b) {
 	KASPTR(b) = KASPTR(a);
 }
 
-static KlObject *kptr_tostr(KlObject *base) {
+static KLObject *kptr_tostr(KLObject *base) {
 	auto val = KASPTR(base);
 	std::stringstream ss;
 	ss << val;
 	return KLSTR(ss.str());
 }
 
-static KlObject *kptr_tobit(KlObject *base) {
+static KLObject *kptr_tobit(KLObject *base) {
 	auto val = KASPTR(base);
 	return KLBOOL(val ? true : false);
 }
 
-static void kptr_add(KlObject *first, KlObject *second, KlObject **target) {
+static void kptr_add(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KLCAST(kbyte, KASPTR(first));
 		kint y = 0;
@@ -68,7 +68,7 @@ static void kptr_add(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-static void kptr_sub(KlObject *first, KlObject *second, KlObject **target) {
+static void kptr_sub(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KLCAST(kbyte, KASPTR(first));
 		kint y = 0;

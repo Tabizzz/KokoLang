@@ -8,9 +8,9 @@
 
 #define KLCAST(x, y) ((x*)(y))
 /**
- * @brief Cast any object as KlObject.
+ * @brief Cast any object as KLObject.
  */
-#define KLWRAP(x) ((KlObject*)(x))
+#define KLWRAP(x) ((KLObject*)(x))
 
 /**
  * Builtin type type.
@@ -66,20 +66,20 @@ CAPI
 /**
  * Create a new object calling the constructor of the type.
  */
-KlObject* klNew(KLType* type, KlObject** args, kbyte argc);
+KLObject* klNew(KLType* type, KLObject** args, kbyte argc);
 
 CAPI
 /**
  * Create a new instance of an object only calling the initializer but not the
  * constructor.
  */
-KlObject* klIns(KLType* type);
+KLObject* klIns(KLType* type);
 
 CAPI
 /**
  * Increase the ref count of an object.
  */
-inline void klRef(KlObject *object) {
+inline void klRef(KLObject *object) {
 	if(object && !KLTYPE_IS_STATIC(object->type) && !(object->flags & KLOBJ_FLAG_IGNORE_REF)) object->refs++;
 }
 
@@ -88,17 +88,17 @@ CAPI
  * Decrease the refcount of an object.
  * If the refcount is now 0 the object is destroyed.
  */
-void klDeref(KlObject* object);
+void klDeref(KLObject* object);
 
 CAPI
 /**
  * Destroy an object, this call the finalizer and free the memory.
  */
-void klDestroy(KlObject* object);
+void klDestroy(KLObject* object);
 
 CAPI
 /**
- * @briefs Invokes a KlObject, if the object is a function is invoked directly, if is a
+ * @briefs Invokes a KLObject, if the object is a function is invoked directly, if is a
  * type with a method called "call" that method is used.
  *
  * Any invocable object in kokolang must be invoked using this function.
@@ -114,4 +114,4 @@ CAPI
  *
  * @return The object returned by the invoked object.
  */
-KlObject* klInvoke(KlObject *target, KlObject **argv, kbyte argc);
+KLObject* klInvoke(KLObject *target, KLObject **argv, kbyte argc);

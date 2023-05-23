@@ -123,20 +123,20 @@ return KLINT(stol(numt));                        \
 
 #pragma region checks
 
-KlObject *kliCheckInteger(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckInteger(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_INT
 	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject *kliCheckRegOrInt(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckRegOrInt(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_REG
 	RETURN_INT
 	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject *kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx) {
 	if (ctx) {
 		auto idv = ctx->identifier();
 		if (idv) {
@@ -148,26 +148,26 @@ KlObject *kliCheckOptionalAnyNoId(KokoLangParser::ValueContext *ctx) {
 	return nullptr;
 }
 
-KlObject *kliCheckReg(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckReg(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_REG
 	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject *kliCheckIdentifierOrReg(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckIdentifierOrReg(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_ID
 	RETURN_REG
 	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject *kliCheckIdentifier(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckIdentifier(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	RETURN_ID
 	throw std::invalid_argument("invalid operand in program");
 }
 
-KlObject *kliCheckAnyNoId(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckAnyNoId(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	auto idv = ctx->identifier();
 	if (idv) {
@@ -178,7 +178,7 @@ KlObject *kliCheckAnyNoId(KokoLangParser::ValueContext *ctx) {
 	return nullptr;
 }
 
-KlObject *kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx) {
+KLObject *kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx) {
 	if (!ctx) throw std::invalid_argument("missing required operand");
 	auto reg = ctx->register_();
 	if (reg) {
@@ -191,7 +191,7 @@ KlObject *kliCheckAnyNoReg(KokoLangParser::ValueContext *ctx) {
 
 #pragma endregion
 
-void ProgramVisitor::getOperands(KLOpcode *pOpcode, KlObject **operands, const vector<KokoLangParser::ValueContext *> &values, size_t size) {
+void ProgramVisitor::getOperands(KLOpcode *pOpcode, KLObject **operands, const vector<KokoLangParser::ValueContext *> &values, size_t size) {
 	switch (*pOpcode) {
 #pragma region 1id
 		case KLOpcode::go:

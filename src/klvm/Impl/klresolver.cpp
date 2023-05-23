@@ -19,7 +19,7 @@ static inline T mapfind(unordered_map<string, T> *map, string &find) {
 	return varfind != map->end() ? varfind->second : nullptr;
 }
 
-static inline KlObject *internalPackageResolver(const string &str) {
+static inline KLObject *internalPackageResolver(const string &str) {
 	if (str == "global") return KLWRAP(klGlobalPackage());
 	vector<string> list;
 	split(list, str, '.');
@@ -39,12 +39,12 @@ static inline KlObject *internalPackageResolver(const string &str) {
 	return KLWRAP(pack);
 }
 
-static inline KlObject *defaultPackageResolver(const KlObject *fullname) {
+static inline KLObject *defaultPackageResolver(const KLObject *fullname) {
 	return internalPackageResolver(KSTRING(fullname));
 }
 
-static inline KlObject *defaultTypeResolver(const KlObject *fullname,
-									 const KLPackage *package) {
+static inline KLObject *defaultTypeResolver(const KLObject *fullname,
+                                            const KLPackage *package) {
 	auto str = KSTRING(fullname);
 	auto index = str.rfind('.');
 
@@ -69,8 +69,8 @@ static inline KlObject *defaultTypeResolver(const KlObject *fullname,
 	return nullptr;
 }
 
-static inline KlObject *defaultFunctionResolver(const KlObject *fullname,
-										 const KLPackage *package) {
+static inline KLObject *defaultFunctionResolver(const KLObject *fullname,
+                                                const KLPackage *package) {
 	auto str = KSTRING(fullname);
 	auto index = str.rfind('.');
 
@@ -95,9 +95,9 @@ static inline KlObject *defaultFunctionResolver(const KlObject *fullname,
 	return nullptr;
 }
 
-static inline KlObject *defaultVariableResolver(const KlObject *fullname,
-										 const KLPackage *package,
-										 kbyte mode) {
+static inline KLObject *defaultVariableResolver(const KLObject *fullname,
+                                                const KLPackage *package,
+                                                kbyte mode) {
 	auto str = KSTRING(fullname);
 	auto index = str.rfind('.');
 	auto global = klGlobalPackage();
@@ -133,11 +133,11 @@ static inline KlObject *defaultVariableResolver(const KlObject *fullname,
 	}
 }
 
-static KlObject *defaultResolver(const KlObject *fullname,
-						  const KLPackage *package,
-						  [[maybe_unused]] const KLType *type,
-						  [[maybe_unused]] const KLFunction *function,
-						  kbyte mode) {
+static KLObject *defaultResolver(const KLObject *fullname,
+                                 const KLPackage *package,
+                                 [[maybe_unused]] const KLType *type,
+                                 [[maybe_unused]] const KLFunction *function,
+                                 kbyte mode) {
 	if (mode & KLRESOLVE_VARIABLE) {
 		return defaultVariableResolver(fullname, package, mode & KLRESOLVE_GLOBAL);
 	}

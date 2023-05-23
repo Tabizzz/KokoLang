@@ -257,9 +257,9 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 
 	SECTION("to_str")
 	{
-		KlObject* value = nullptr;
-		KlObject* str = nullptr;
-		KlObject* convert = nullptr;
+		KLObject* value = nullptr;
+		KLObject* str = nullptr;
+		KLObject* convert = nullptr;
 
 		EXCHANGE(value, KLFLOAT(10), str, KLSTR("10"), convert, klfloat_t->toString(value))
 		REQUIRE(STR_EQUALS(str, convert));
@@ -289,9 +289,9 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 
 	SECTION("to_int")
 	{
-		KlObject* value = nullptr;
-		KlObject* str = nullptr;
-		KlObject* convert = nullptr;
+		KLObject* value = nullptr;
+		KLObject* str = nullptr;
+		KLObject* convert = nullptr;
 
 		EXCHANGE(value, KLINT(10), str, KLFLOAT(10), convert, klfloat_t->toInt(str))
 		REQUIRE(KASINT(convert) == KASINT(value));
@@ -321,9 +321,9 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 
 	SECTION("to_bit")
 	{
-		KlObject* value = nullptr;
-		KlObject* str = nullptr;
-		KlObject* convert = nullptr;
+		KLObject* value = nullptr;
+		KLObject* str = nullptr;
+		KLObject* convert = nullptr;
 
 		EXCHANGE(value, KLFLOAT(10), str, nullptr, convert, klfloat_t->toBool(value))
 		REQUIRE(KASBOOL(convert) == true);
@@ -350,7 +350,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLFLOAT(10.2);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 20.7);
 				klDeref(y);
@@ -359,7 +359,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLFLOAT(-10.8);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(KASFLOAT(res) == -0.3_a);
 				klDeref(y);
@@ -368,7 +368,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Big value")
 			{
 				auto y = KLFLOAT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 9223372036854775808.0);
@@ -378,7 +378,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Small Value")
 			{
 				auto y = KLFLOAT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == -9223372036854775798);
@@ -388,7 +388,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Big value")
 			{
 				auto y = KLFLOAT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 9223372036854775808.0);
@@ -398,7 +398,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -411,7 +411,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLINT(10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 20.5);
@@ -421,7 +421,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLINT(-10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 0.5);
@@ -431,7 +431,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLINT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 9223372036854775808.0);
@@ -441,7 +441,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLINT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == -9223372036854775798);
@@ -451,7 +451,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLINT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -464,7 +464,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLSTR("10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 10.5);
 				klDeref(y);
@@ -473,7 +473,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLSTR("-10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 10.5);
 				klDeref(y);
@@ -482,7 +482,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLSTR("INT64_MAX");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -492,7 +492,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLSTR("INT64_MIN");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -502,7 +502,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLSTR("0");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opAdd(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -521,7 +521,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLFLOAT(10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 0.5);
 				klDeref(y);
@@ -530,7 +530,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLFLOAT(-10.5);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 21);
 				klDeref(y);
@@ -539,7 +539,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLFLOAT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == -9223372036854775808.0);
@@ -549,7 +549,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLFLOAT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 9223372036854775808.0);
@@ -559,7 +559,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -572,7 +572,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLINT(10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 0.5);
@@ -582,7 +582,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLINT(-10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 20.5);
@@ -592,7 +592,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLINT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == -9223372036854775797);
@@ -602,7 +602,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLINT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 9223372036854775808.0);
@@ -612,7 +612,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -625,7 +625,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLSTR("10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 10.5);
 				klDeref(y);
@@ -634,7 +634,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLSTR("-10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 10.5);
 				klDeref(y);
@@ -643,7 +643,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLSTR("INT64_MAX");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -653,7 +653,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLSTR("INT64_MIN");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -663,7 +663,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLSTR("0");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opSub(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -682,7 +682,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLFLOAT(10.2);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 107.1);
 				klDeref(y);
@@ -691,7 +691,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLFLOAT(-10.8);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(KASFLOAT(res) == -113.4);
 				klDeref(y);
@@ -700,7 +700,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLFLOAT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 96845406386975145984.0);
@@ -710,7 +710,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLFLOAT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == -96845406386975145984.0);
@@ -720,7 +720,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 0);
@@ -733,7 +733,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLINT(10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 105);
@@ -743,7 +743,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLINT(-10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == -105);
@@ -753,7 +753,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLINT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 96845406386975145984.0);
@@ -763,7 +763,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLINT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == -96845406386975145984.0);
@@ -773,7 +773,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLINT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 0);
@@ -786,7 +786,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLSTR("10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 0);
 				klDeref(y);
@@ -795,7 +795,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLSTR("-10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 0);
 				klDeref(y);
@@ -804,7 +804,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLSTR("INT64_MAX");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 0);
@@ -814,7 +814,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLSTR("INT64_MIN");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 0);
@@ -824,7 +824,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLSTR("0");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMul(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 0);
@@ -843,7 +843,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLFLOAT(10.2);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 1.02941176471_a);
 				klDeref(y);
@@ -852,7 +852,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLFLOAT(-10.8);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				REQUIRE(KASFLOAT(res) == -0.972222222222_a);
 				klDeref(y);
@@ -861,7 +861,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLFLOAT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 1.13841228111e-18_a);
@@ -871,7 +871,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLFLOAT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == -1.13841228111e-18_a);
@@ -881,7 +881,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
@@ -891,7 +891,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLINT(10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 1.05);
@@ -901,7 +901,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLINT(-10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == -1.05);
@@ -911,7 +911,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLINT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 1.13841228111e-18_a);
@@ -921,7 +921,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLINT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opDiv(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == -1.13841228111e-18_a);
@@ -931,7 +931,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLINT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
@@ -941,35 +941,35 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLSTR("10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Negative")
 			{
 				auto y = KLSTR("-10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Max value")
 			{
 				auto y = KLSTR("INT64_MAX");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Min Value")
 			{
 				auto y = KLSTR("INT64_MIN");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Zero")
 			{
 				auto y = KLSTR("0");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opDiv(x, y, &res));
 				klDeref(y);
 			}
@@ -985,7 +985,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLFLOAT(10.2);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 0.3_a);
 				klDeref(y);
@@ -994,7 +994,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLFLOAT(-10.8);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				REQUIRE(KASFLOAT(res) == 10.5_a);
 				klDeref(y);
@@ -1003,7 +1003,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLFLOAT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -1013,7 +1013,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLFLOAT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				// overflow
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -1023,7 +1023,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}
@@ -1033,7 +1033,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLINT(10);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 0.5);
@@ -1043,7 +1043,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Negative")
 			{
 				auto y = KLINT(-15);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -1053,7 +1053,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Max value")
 			{
 				auto y = KLINT(INT64_MAX);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -1063,7 +1063,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Min Value")
 			{
 				auto y = KLINT(INT64_MIN);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				klfloat_t->opMod(x, y, &res);
 				REQUIRE(res->type == klfloat_t);
 				REQUIRE(KASFLOAT(res) == 10.5);
@@ -1073,7 +1073,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Zero")
 			{
 				auto y = KLFLOAT(0);
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}
@@ -1083,35 +1083,35 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 			SECTION("Positive")
 			{
 				auto y = KLSTR("10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Negative")
 			{
 				auto y = KLSTR("-10");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Max value")
 			{
 				auto y = KLSTR("INT64_MAX");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Min Value")
 			{
 				auto y = KLSTR("INT64_MIN");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}
 			SECTION("Zero")
 			{
 				auto y = KLSTR("0");
-				KlObject* res = nullptr;
+				KLObject* res = nullptr;
 				REQUIRE_THROWS(klfloat_t->opMod(x, y, &res));
 				klDeref(y);
 			}

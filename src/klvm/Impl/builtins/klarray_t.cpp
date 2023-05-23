@@ -3,15 +3,15 @@
 
 KLType *klarray_t = nullptr;
 
-void karr_init(KlObject *obj) {
+void karr_init(KLObject *obj) {
 	auto ptr = KLCAST(kl_sptr, obj);
 	ptr->size = 0;
 	ptr->value = nullptr;
 }
 
-void karr_end(KlObject *obj) {
+void karr_end(KLObject *obj) {
 	auto ptr = KLCAST(kl_sptr, obj);
-	auto arr = KLCAST(KlObject*, ptr->value);
+	auto arr = KLCAST(KLObject*, ptr->value);
 	if (arr) {
 		// dereference each element on the array
 		for (int i = 0; i < ptr->size; ++i) {
@@ -21,7 +21,7 @@ void karr_end(KlObject *obj) {
 	}
 }
 
-static KlObject *karr_tostr(KlObject *obj) {
+static KLObject *karr_tostr(KLObject *obj) {
 	std::ostringstream ss;
 	auto size = KASARRSIZE(obj);
 	auto arr = KASARR(obj);

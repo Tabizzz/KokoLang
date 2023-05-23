@@ -2,7 +2,7 @@
 #include "DataTypes/KLVariable.h"
 
 
-static void kvar_instantiator(KlObject *obj) {
+static void kvar_instantiator(KLObject *obj) {
 	auto var = KLCAST(KLVariable, obj);
 	var->data.packvar.value = nullptr;
 	var->data.packvar.type = true;
@@ -10,7 +10,7 @@ static void kvar_instantiator(KlObject *obj) {
 	var->metadata = new MetaMap();
 }
 
-static void kvar_destructor(KlObject *obj) {
+static void kvar_destructor(KLObject *obj) {
 	auto var = KLCAST(KLVariable, obj);
 
 	kliDerefAndDeleteMap(var->metadata);
@@ -19,7 +19,7 @@ static void kvar_destructor(KlObject *obj) {
 	klDeref(var->data.packvar.value);
 }
 
-void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
+void klSetVariable(KLVariable *variable, KLObject *target, KLObject *value) {
 	if (variable->data.packvar.type) {
 		// mark var as defined
 		variable->data.packvar.defined = true;
@@ -29,19 +29,19 @@ void klSetVariable(KLVariable *variable, KlObject *target, KlObject *value) {
 		// copy the value to the address given by the offset.
 		// we skip the header of KLObject with target + 1, then apply the offset
 		//			  |		header				   |		offset					|
-		klCopy(value, KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
+		klCopy(value, KLCAST(KLObject*, target + 1) + variable->data.typevar.offset);
 
 	}
 }
 
-KlObject *klGetVariable(KLVariable *variable, KlObject *target) {
+KLObject *klGetVariable(KLVariable *variable, KLObject *target) {
 	if (variable->data.packvar.type) {
 		if (variable->data.packvar.defined) {
 			return variable->data.packvar.value;
 		}
 		throw runtime_error("Unable to read undefined variable");
 	} else {
-		return *(KLCAST(KlObject*, target + 1) + variable->data.typevar.offset);
+		return *(KLCAST(KLObject*, target + 1) + variable->data.typevar.offset);
 	}
 }
 

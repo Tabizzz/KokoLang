@@ -40,7 +40,7 @@ struct CPPAPI KLVariable
 			 *
 			 * By default is null, that is, when an new instance of an object is created this variable will be set to null.
 			 */
-			KlObject* defaultValue;
+			KLObject* defaultValue;
 			/**
 			 * @brief This byte is always 0 in type variable.
 			 */
@@ -64,7 +64,7 @@ struct CPPAPI KLVariable
 			 *
 			 * This is not set on creation and can contain any value while undefined.
 			 */
-			KlObject* value;
+			KLObject* value;
 			/**
 			 * @brief This byte is always 1 in package variable.
 			 */
@@ -95,7 +95,7 @@ CAPI
  * @param target The object in which you want to set the variable, if is null then is a package variable.
  * @param value The value to save in the variable.
  */
-void klSetVariable(KLVariable* variable, KlObject* target, KlObject* value);
+void klSetVariable(KLVariable* variable, KLObject* target, KLObject* value);
 
 CAPI
 /**
@@ -107,7 +107,7 @@ CAPI
  * @param target The object in which you want to get the variable, if is null then is a package variable.
  * @return The value held by the variable.
  */
-KlObject* klGetVariable(KLVariable* variable, KlObject* target);
+KLObject* klGetVariable(KLVariable* variable, KLObject* target);
 
 CAPI
 /**

@@ -32,7 +32,7 @@
 #define KASPTR(x) KLCAST(kl_ptr, x)->value
 #define KLARR(x) klBuiltinArr(x)
 #define KARR(x) KLCAST(kl_arr, KLARR(x))
-#define KASARR(x) KLCAST(KlObject*, KLCAST(kl_sptr, x)->value)
+#define KASARR(x) KLCAST(KLObject*, KLCAST(kl_sptr, x)->value)
 #define KASARRSIZE(x) KLCAST(kl_sptr, x)->size
 
 CAPI
@@ -43,7 +43,7 @@ CAPI
  *
  * @return A new kokolang object with the same value as val.
  */
-KlObject* klBuiltinInt(kint val);
+KLObject* klBuiltinInt(kint val);
 
 CAPI
 /**
@@ -53,7 +53,7 @@ CAPI
  *
  * @return A new kokolang object with the same value as val.
  */
-KlObject* klBuiltinFloat(kfloat val);
+KLObject* klBuiltinFloat(kfloat val);
 
 CAPI
 /**
@@ -63,7 +63,7 @@ CAPI
  *
  * @return A new kokolang object with the same value as val.
  */
-KlObject* klBuiltinBool(char val);
+KLObject* klBuiltinBool(char val);
 
 CPPAPI
 /**
@@ -73,7 +73,7 @@ CPPAPI
  *
  * @return A kl_string with the same content as val.
  */
-KlObject* klBuiltinString(const std::string& val);
+KLObject* klBuiltinString(const std::string& val);
 
 CAPI
 /**
@@ -83,7 +83,7 @@ CAPI
  *
  * @return A ptr object wrapping val.
  */
-KlObject* klBuiltinPtr(void* val);
+KLObject* klBuiltinPtr(void* val);
 
 CAPI
 /**
@@ -93,12 +93,12 @@ CAPI
  *
  * @return A new array.
  */
-KlObject* klBuiltinArr(ksize size);
+KLObject* klBuiltinArr(ksize size);
 
 CAPI
-void klDefaultInitializer(KlObject* obj);
+void klDefaultInitializer(KLObject* obj);
 
 CAPI
-void klDefaultFinalizer(KlObject* obj);
+void klDefaultFinalizer(KLObject* obj);
 
-CAPI KlObject* klDefaultConstructor();
+CAPI KLObject* klDefaultConstructor();

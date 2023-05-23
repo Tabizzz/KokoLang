@@ -8,8 +8,8 @@ TEST_CASE("kl_string", "[klapi_types][kl_string]")
 
 	SECTION("compare")
 	{
-		KlObject* first = nullptr;
-		KlObject* second = nullptr;
+		KLObject* first = nullptr;
+		KLObject* second = nullptr;
 
 		SWAP(first, KLSTR(""), second, nullptr)
 		REQUIRE(klstring_t->comparer(first, second) == 0);
@@ -40,8 +40,8 @@ TEST_CASE("kl_string", "[klapi_types][kl_string]")
 
 	SECTION("equal")
 	{
-		KlObject* first = nullptr;
-		KlObject* second = nullptr;
+		KLObject* first = nullptr;
+		KLObject* second = nullptr;
 
 		SWAP(first, KLSTR(""), second, nullptr)
 		REQUIRE(klstring_t->equal(first, second));
@@ -69,10 +69,10 @@ TEST_CASE("kl_string", "[klapi_types][kl_string]")
 
 	SECTION("add")
 	{
-		KlObject* first = nullptr;
-		KlObject* second = nullptr;
-		KlObject* add = nullptr;
-		KlObject* cmp = nullptr;
+		KLObject* first = nullptr;
+		KLObject* second = nullptr;
+		KLObject* add = nullptr;
+		KLObject* cmp = nullptr;
 
 		EXCHANGE(first, KLSTR("Hello"), second, KLSTR(""), cmp, KLSTR("Hello"))
 		klstring_t->opAdd(first, second, &add);

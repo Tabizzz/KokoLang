@@ -37,7 +37,7 @@ nowide::cout << termcolor::yellow <<                                    \
 (x) << termcolor::reset << durations.count() << "s" << std::endl;        \
 }}}
 
-KlObject *outImpl(KlObject *caller, KlObject **argv, kbyte passedArgs) {
+KLObject *outImpl(KLObject *caller, KLObject **argv, kbyte passedArgs) {
     auto val = argv[0];
     if (val) {
         if (val->type == klstring_t) {
@@ -80,13 +80,7 @@ int main(int argc, const char *argv[]) {
 #endif
 
         klInit();
-
-        auto obj = KlObject{
-                nullptr,
-				0,
-				KLOBJ_FLAG_CONST | KLOBJ_FLAG_NO_INSCOUNT
-        };
-		obj.rflags.ignore_ref = true;
+		
         MEASURE("Program parse: ", KLPackage *program = klLoadIntermediateFile(argv[1]))
 
         auto out = KLCAST(KLFunction, klIns(klfunc_t));

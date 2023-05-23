@@ -43,7 +43,7 @@ static void readMetadata(std::istream &stream, MetaMap* metadata)
 		stream.read((char*)&type, 1);
 		CHECKSTREAM(,)
 
-		KlObject* value = nullptr;
+		KLObject* value = nullptr;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wswitch"
@@ -81,13 +81,13 @@ static void readMetadata(std::istream &stream, MetaMap* metadata)
 
 		CHECKSTREAM(, klDeref(value);)
 
-		metadata->insert(pair<std::string, KlObject*>(key, value));
+		metadata->insert(pair<std::string, KLObject*>(key, value));
 	}
 }
 
-static KlObject* readObject(std::istream &stream)
+static KLObject* readObject(std::istream &stream)
 {
-	KlObject* value = nullptr;
+	KLObject* value = nullptr;
 	KLMetaType type;
 	stream.read((char*)&type, 1);
 	CHECKSTREAM(nullptr,)
@@ -150,14 +150,14 @@ static inline void readVariableDefinition(MetaMap* target, istream &stream, bool
 	namebuff[namesize] = 0;
 	stream.read(namebuff, namesize);
 	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
-	KlObject* defaultValue = nullptr;
+	KLObject* defaultValue = nullptr;
 	if(hasdefaultvalue)
 		defaultValue = readObject(stream);
 	readMetadata(stream, var->metadata);
 	CHECKSTREAM(, klDeref(KLWRAP(var)); delete [] namebuff;)
 	
 	if(!type) { // type var
-		var->data.typevar.offset = offset * sizeof(KlObject*);
+		var->data.typevar.offset = offset * sizeof(KLObject*);
 		var->data.typevar.defaultValue = defaultValue;
 	}
 
@@ -165,7 +165,7 @@ static inline void readVariableDefinition(MetaMap* target, istream &stream, bool
 	delete [] namebuff;
 	auto find = target->find(name);
 	if(find == target->end()) {
-		target->insert(std::pair<std::string, KlObject*>(std::move(name), KLWRAP(var)));
+		target->insert(std::pair<std::string, KLObject*>(std::move(name), KLWRAP(var)));
 	} else {
 		klDeref(KLWRAP(var));
 	}
@@ -191,7 +191,7 @@ static vector<KLInstruction *> *readFuntionBody(istream &stream, kshort size) {
 			KLCAST(kl_string, ins->label)->value = namebuff;
 			KLCAST(kl_string, ins->label)->size = labelsize;
 		}
-		ins->operands = new KlObject*[count]{};
+		ins->operands = new KLObject*[count]{};
 		for (int i = 0; i < count; ++i) {
 			ins->operands[i] = readObject(stream);
 		}
@@ -238,7 +238,7 @@ static inline void readFunctionDefinition(MetaMap *target, istream &stream, bool
 
 	auto find = target->find(namebuff);
 	if(find == target->end()) {
-		target->insert(std::pair<std::string, KlObject*>(namebuff, KLWRAP(func)));
+		target->insert(std::pair<std::string, KLObject*>(namebuff, KLWRAP(func)));
 	} else {
 		klDeref(KLWRAP(func));
 	}
@@ -256,10 +256,10 @@ static inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 	stream.read(namebuff, namesize);
 	CHECKSTREAM(, delete [] namebuff;)
 	auto type = new KLType{
-			KlObject (),
-			namebuff,
-			0,
-			sizeof(KlObject)
+		KLObject (),
+		namebuff,
+		0,
+		sizeof(KLObject)
 	};
 	readMetadata(stream, type->metadata);
 	KLDefinitionType def;
@@ -283,7 +283,7 @@ static inline void readTypeDefinition(istream &stream, KLPackage *parent) {
 		}
 		CHECKSTREAM(, delete type;)
 	} while (def == KLDefinitionType::variable || def == KLDefinitionType::function);
-	type->size += type->variables->size() * sizeof(KlObject*);
+	type->size += type->variables->size() * sizeof(KLObject*);
 	// todo: convert functions in the type to builtin operations
 	klDefType(type);
 	klPackageRegType(parent, type);
@@ -340,7 +340,7 @@ static inline void readPackageDefinition(MetaMap *target, istream &stream) {
 
 	auto find = target->find(namebuff);
 	if(find == target->end()) {
-		target->insert(std::pair<std::string, KlObject*>(namebuff, KLWRAP(package)));
+		target->insert(std::pair<std::string, KLObject*>(namebuff, KLWRAP(package)));
 	} else {
 		klDeref(KLWRAP(package));
 	}
@@ -368,7 +368,7 @@ static KLPackage* createBasePackage(std::istream &stream)
 		KLCAST(kl_string, dev->name)->size = read[4];
 		KLCAST(kl_string, dev->name)->value = namebuff;
 
-		KlObject* authorname;
+		KLObject* authorname;
 
 		if(read[5]) {
 			namebuff = new char[read[5]+1];
@@ -383,9 +383,9 @@ static KLPackage* createBasePackage(std::istream &stream)
 		readMetadata(stream, dev->metadata);
 		CHECKSTREAM(nullptr, klDeref(KLWRAP(dev));)
 
-		dev->metadata->insert(pair<std::string, KlObject*>("version_major", KLINT(read[2])));
-		dev->metadata->insert(pair<std::string, KlObject*>("version_minor", KLINT(read[3])));
-		if(read[5])	dev->metadata->insert(pair<std::string, KlObject*>("author", authorname));
+		dev->metadata->insert(pair<std::string, KLObject*>("version_major", KLINT(read[2])));
+		dev->metadata->insert(pair<std::string, KLObject*>("version_minor", KLINT(read[3])));
+		if(read[5])	dev->metadata->insert(pair<std::string, KLObject*>("author", authorname));
 	}
 	else {
 		// we need to skip te author name

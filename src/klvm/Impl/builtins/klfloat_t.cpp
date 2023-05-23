@@ -6,7 +6,7 @@ KLType *klfloat_t = nullptr;
 // static object used to temporary store the value of the operations
 
 kl_float temp_float = {
-	KlObject{
+	KLObject{
 		nullptr,
 		2,
 		KLOBJ_FLAG_IGNORE_REF
@@ -14,7 +14,7 @@ kl_float temp_float = {
 	0
 };
 
-static void kfloat_init(KlObject *obj) {
+static void kfloat_init(KLObject *obj) {
 	auto ptr = KLCAST(kl_float, obj);
 	ptr->value = 0;
 }
@@ -22,7 +22,7 @@ static void kfloat_init(KlObject *obj) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantFunctionResult"
 
-static int8_t kfloat_comparer(KlObject *x, KlObject *y) {
+static int8_t kfloat_comparer(KLObject *x, KLObject *y) {
 	kfloat first = KASFLOAT(x);
 	kfloat second = 0;
 	if (y) {
@@ -49,7 +49,7 @@ static int8_t kfloat_comparer(KlObject *x, KlObject *y) {
 
 #pragma clang diagnostic pop
 
-static int8_t kfloat_equal(KlObject *x, KlObject *y) {
+static int8_t kfloat_equal(KLObject *x, KLObject *y) {
 	if (y) {
 		if (y->type == klfloat_t) {
 			return KASFLOAT(x) == KASFLOAT(y);
@@ -66,15 +66,15 @@ static int8_t kfloat_equal(KlObject *x, KlObject *y) {
 	return KASFLOAT(x) == 0;
 }
 
-static KlObject *kfloat_clone(KlObject *base) {
+static KLObject *kfloat_clone(KLObject *base) {
 	return KLFLOAT(KASFLOAT(base));
 }
 
-void kfloat_copy(KlObject *a, KlObject *b) {
+void kfloat_copy(KLObject *a, KLObject *b) {
 	KASFLOAT(b) = KASFLOAT(a);
 }
 
-static KlObject *kfloat_tostr(KlObject *base) {
+static KLObject *kfloat_tostr(KLObject *base) {
 	auto val = KASFLOAT(base);
 	std::ostringstream stream;
 	auto max = std::numeric_limits<kfloat>::digits10 + 1;
@@ -83,16 +83,16 @@ static KlObject *kfloat_tostr(KlObject *base) {
 	return KLSTR(stream.str());
 }
 
-static KlObject *kfloat_toint(KlObject *base) {
+static KLObject *kfloat_toint(KLObject *base) {
 	return KLINT(static_cast<kint>(KASFLOAT(base)));
 }
 
-static KlObject *kfloat_tobit(KlObject *base) {
+static KLObject *kfloat_tobit(KLObject *base) {
 	auto val = KASFLOAT(base);
 	return KLBOOL(val);
 }
 
-static void kfloat_add(KlObject *first, KlObject *second, KlObject **target) {
+static void kfloat_add(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -112,7 +112,7 @@ static void kfloat_add(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-static void kfloat_sub(KlObject *first, KlObject *second, KlObject **target) {
+static void kfloat_sub(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -132,7 +132,7 @@ static void kfloat_sub(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-static void kfloat_mul(KlObject *first, KlObject *second, KlObject **target) {
+static void kfloat_mul(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -153,7 +153,7 @@ static void kfloat_mul(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-static void kfloat_div(KlObject *first, KlObject *second, KlObject **target) {
+static void kfloat_div(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -175,7 +175,7 @@ static void kfloat_div(KlObject *first, KlObject *second, KlObject **target) {
 	}
 }
 
-static void kfloat_mod(KlObject *first, KlObject *second, KlObject **target) {
+static void kfloat_mod(KLObject *first, KLObject *second, KLObject **target) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;

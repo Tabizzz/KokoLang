@@ -49,11 +49,11 @@ struct CPPAPI KLCall
 	 * The next objects are the locals.
 	 * Finally, at the end are the passed args.
 	 */
-	std::vector<KlObject*> st;
+	std::vector<KLObject*> st;
 	/**
 	 * Object returned by the function call.
 	 */
-	KlObject* ret = nullptr;
+	KLObject* ret = nullptr;
 
 	~KLCall();
 };
