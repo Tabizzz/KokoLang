@@ -89,7 +89,7 @@ TEST_CASE("kl_float", "[klapi_types][kl_float]")
 				auto val = KLBOOL(true);
 				SECTION("Same value")
 				{
-					auto y = KLFLOAT(0);
+					auto y = KLFLOAT(1);
 					REQUIRE(klfloat_t->comparer(y, val) == 0);
 					klDeref(y);
 				}

@@ -87,7 +87,7 @@ TEST_CASE("kl_int", "[klapi_types][kl_int]")
 				auto val = KLBOOL(true);
 				SECTION("Same value")
 				{
-					auto y = KLINT(0);
+					auto y = KLINT(1);
 					REQUIRE(klint_t->comparer(y, val) == 0);
 					klDeref(y);
 				}
