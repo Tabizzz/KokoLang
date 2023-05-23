@@ -4,7 +4,7 @@ static kl_bool kl_bool_true = {
 	KLObject{
 		nullptr,
 		1,
-		KLOBJ_FLAG_IGNORE_REF
+		KLOBJ_FLAG_IGNORE_REF | KLOBJ_FLAG_CONST
 	},
 	true
 };
@@ -13,7 +13,7 @@ static kl_bool kl_bool_false = {
 	KLObject{
 		nullptr,
 		1,
-		KLOBJ_FLAG_IGNORE_REF
+		KLOBJ_FLAG_IGNORE_REF  | KLOBJ_FLAG_CONST
 	},
 	false
 };

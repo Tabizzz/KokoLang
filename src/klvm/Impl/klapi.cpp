@@ -14,7 +14,7 @@ unordered_map<string, KLPackage *> *kliRootPackages() {
 
 CAPI void klInit() {
 	static_assert(sizeof(KLCAST(kl_int, nullptr)->value) == sizeof(KLCAST(kl_float, nullptr)->value),
-				  "kl_int and kl_float dont have the same size.");
+	              "kl_int and kl_float dont have the same size.");
 
 	if (!klConfig.alloc) {
 		klConfig.alloc = std::malloc;
@@ -159,7 +159,8 @@ void inline kliCopyA(KLObject **dest) {
  * src is not null, dest is null
  */
 void inline kliCopyB(KLObject *src, KLObject **dest) {
-	if (src->type->clone) {
+	//                      | dont clone constants
+	if (src->type->clone && !src->rflags.constant) {
 		// no need to deref dest because is null
 		*dest = src->type->clone(src);
 	} else {
@@ -170,14 +171,17 @@ void inline kliCopyB(KLObject *src, KLObject **dest) {
 }
 
 void inline kliCopyD(KLObject *src, KLObject **dest) {
-	if ((src->type == (*dest)->type) && src->type->copy) {
-		src->type->copy(src, *dest);
-		return;
-	} else if (src->type->clone) {
-		auto temp = src->type->clone(src);
-		klDeref(*dest);
-		*dest = temp;
-		return;
+	if (!src->rflags.constant) {
+		//  | if the target is a constant we cant change the value with a copy, so we need to clone or move
+		if (!(*dest)->rflags.constant && (src->type == (*dest)->type) && src->type->copy) {
+			src->type->copy(src, *dest);
+			return;
+		} else if (src->type->clone) {
+			auto temp = src->type->clone(src);
+			klDeref(*dest);
+			*dest = temp;
+			return;
+		}
 	}
 	klRef(src);
 	klDeref(*dest);
@@ -201,9 +205,8 @@ CAPI void klClone(KLObject *src, KLObject **dest) {
 	THROW_ON_NO_VALID_TARGET
 	if (!src && *dest) {
 		kliCopyA(dest);
-	} else if (src && !*dest) {
-		kliCopyB(src, dest);
-	} else if (src && *dest) {
+	} else if (src) {
+		// we can safely deref dest, if iss null nothing happens
 		klDeref(*dest);
 		if (src->type->clone) {
 			// no need to ref src, we are creating a new instance on clone.
@@ -224,22 +227,27 @@ CAPI void klMove(KLObject *src, KLObject **dest) {
 
 CAPI void klTransfer(KLObject **src, KLObject **dest) {
 	THROW_ON_NO_VALID_TARGET
-	auto val = src ? *src : nullptr;
+	if (!src) { throw std::runtime_error("Not a valid source"); }
+	auto val = *src;
 
 	if (!val && dest) {
 		kliCopyA(dest);
-	} else if (val && !*dest) {
-		*dest = val;
-	} else if (val && *dest) {
-		if ((val->type == (*dest)->type) && val->type->copy) {
+	} else if (val) {
+		// requirement to copy in transfer:
+		// - source is not a constant, this is we want to move constant by reference
+		// - dest is not null
+		// - dest is not a constant, we cant copy into a constant because that change it value.
+		// - src and dest have the same type
+		// - the type support copy
+		if (!val->rflags.constant && *dest && !(*dest)->rflags.constant && (val->type == (*dest)->type) &&
+		    val->type->copy) {
 			val->type->copy(val, *dest);
 			klDeref(val);
-		} else if (val->refs > 1 && val->type->clone) {
+		} else if (!val->rflags.constant && val->refs > 1 && val->type->clone) {
 			auto temp = val->type->clone(val);
 			klDeref(*dest);
 			klDeref(val);
 			*dest = temp;
-			return;
 		} else {
 			klDeref(*dest);
 			*dest = val;

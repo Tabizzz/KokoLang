@@ -42,8 +42,6 @@ static inline bool getBool(KLObject *obj, KLCall &call) {
 
 static inline void call_core(KLCall &call, KLObject *argv[], size_t argc, KLObject *function) {
 	auto reg = argv[1] ? KASINT(argv[1]) : -1;
-	auto val = argv[2];
-	GETREG(val)
 	auto obj = function;
 	GETREG(obj)
 	auto size = argc - 2;

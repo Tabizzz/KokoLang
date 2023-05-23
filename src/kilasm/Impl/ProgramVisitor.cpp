@@ -83,6 +83,11 @@ any ProgramVisitor::visitSentence(KokoLangParser::SentenceContext *ctx) {
 
 	if(requiredoperands > 0 || optionalargs != 0) getOperands(&opcode, operandv, values, size);
 
+	// every operand is marked as a constant including registers
+	for (int i = 0; i < numargs; ++i) {
+		KLINVOKE(operandv[i])->rflags.constant = true;
+	}
+
 	instruction->opcode = opcode;
 	instruction->operandc = numargs;
 	instruction->operands = operandv;
