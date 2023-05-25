@@ -1,6 +1,7 @@
 #include <cstring>
 #include <functional>
 #include "global.h"
+#include <algorithm>
 
 #define STR_FUNC(x) func_##x->name->flags = KLOBJ_FLAG_NO_INSCOUNT; klstring_t->inscount--;
 
