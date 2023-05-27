@@ -354,7 +354,7 @@ static void klist_add(KLObject *x, KLObject *y, KLObject **res) {
 				klCopy(b->at(i), &list->at(i + a->size()));
 			}
 
-			klTransfer(&obj, res);
+			klTransfer(obj, res);
 		} else {
 			throw runtime_error("Can only add list to list");
 		}
@@ -369,7 +369,7 @@ static void klist_add(KLObject *x, KLObject *y, KLObject **res) {
 			klCopy(a->at(i), &list->at(i));
 		}
 
-		klTransfer(&obj, res);
+		klTransfer(obj, res);
 	}
 }
 

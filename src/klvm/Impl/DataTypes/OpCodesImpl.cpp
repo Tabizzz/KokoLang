@@ -54,7 +54,7 @@ static inline void call_core(KLCall &call, KLObject *argv[], size_t argc, KLObje
 	auto ret = klInvoke(obj, args.data(), size);
 	if (reg >= 0) {
 		vecref save = call.st.at(reg);
-		klTransfer(&ret, &save);
+		klTransfer(ret, &save);
 	} else {
 		// dismiss return value
 		klDeref(ret);
@@ -87,7 +87,7 @@ static void opcode_ins(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	}
 	vecref ref = call.st.at(reg);
 	auto obj = klIns(KLCAST(KLType, argv[0]));
-	klTransfer(&obj, &ref);
+	klTransfer(obj, &ref);
 }
 
 static void opcode_deref(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
@@ -175,7 +175,7 @@ static void opcode_new(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	}
 	auto ret = klNew(type, args.data(), size);
 	vecref save = call.st.at(reg);
-	klTransfer(&ret, &save);
+	klTransfer(ret, &save);
 }
 
 static void opcode_is(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
@@ -260,7 +260,7 @@ static void opcode_lde(const KLObject *caller, KLCall &call, KLObject *argv[], s
 		}
 	} else if (obj->type->KLIndexingFunctions.getter) {
 		auto value = obj->type->KLIndexingFunctions.getter(obj, index);
-		klTransfer(&value, &ref);
+		klTransfer(value, &ref);
 	}
 }
 
@@ -278,7 +278,7 @@ static void opcode_ard(const KLObject *caller, KLCall &call, KLObject *argv[], s
 			klCopy(val, &arr[i]);
 		}
 	}
-	klTransfer(&crt, &ref);
+	klTransfer(crt, &ref);
 }
 
 static void opcode_arl(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
@@ -305,7 +305,7 @@ static void opcode_arr(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	REQGETREG(size, klint_t)
 
 	auto arr = klBuiltinArr(KASINT(size));
-	klTransfer(&arr, &ref);
+	klTransfer(arr, &ref);
 }
 
 static void opcode_fill(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
@@ -352,7 +352,7 @@ static void opcode_aloc(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	// this allocation is arbitrary and not an object, so we use malloc instead of klConfig.alloc
 	auto ptr = KLPTR(malloc(val));
 	// transfer the pointer to register
-	klTransfer(&ptr, &regis);
+	klTransfer(ptr, &regis);
 }
 
 static void opcode_argc(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
@@ -379,7 +379,7 @@ static void opcode_cast(const KLObject *caller, KLCall &call, KLObject *argv[], 
 
 	if (type->KLConversionFunctions.toType) {
 		auto str = type->KLConversionFunctions.toType(val);
-		klTransfer(&str, &regis);
+		klTransfer(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
 	}
@@ -397,7 +397,7 @@ static void opcode_tobj(const KLObject *caller, KLCall &call, KLObject *argv[], 
 
 	if (val && val->type->KLConversionFunctions.cast) {
 		auto str = val->type->KLConversionFunctions.cast(val, argv[0]);
-		klTransfer(&str, &regis);
+		klTransfer(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
 	}
@@ -423,7 +423,7 @@ static void opcode_tflt(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	vecref regis = call.st.at(reg);
 	if (val && val->type->KLConversionFunctions.toFloat) {
 		auto str = val->type->KLConversionFunctions.toFloat(val);
-		klTransfer(&str, &regis);
+		klTransfer(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
 	}
@@ -436,7 +436,7 @@ static void opcode_tint(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	vecref regis = call.st.at(reg);
 	if (val && val->type->KLConversionFunctions.toInt) {
 		auto str = val->type->KLConversionFunctions.toInt(val);
-		klTransfer(&str, &regis);
+		klTransfer(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
 	}
@@ -449,7 +449,7 @@ static void opcode_tstr(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	vecref regis = call.st.at(reg);
 	if (val && val->type->KLConversionFunctions.toString) {
 		auto str = val->type->KLConversionFunctions.toString(val);
-		klTransfer(&str, &regis);
+		klTransfer(str, &regis);
 	} else if (val) {
 		klMove(nullptr, &regis);
 	} else {
@@ -470,7 +470,7 @@ static void opcode_mod(const KLObject *caller, KLCall &call, KLObject *argv[], s
 
 	if (first && first->type->KLNumericFunctions.opMod) { // first support op
 		auto tmp = first->type->KLNumericFunctions.opMod(first, second);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (first && second) {
 		throw runtime_error(
 			"operation mod not supported on types " + string(first->type->name) + " and " + second->type->name);
@@ -493,7 +493,7 @@ static void opcode_div(const KLObject *caller, KLCall &call, KLObject *argv[], s
 
 	if (first && first->type->KLNumericFunctions.opDiv) { // first support op
 		auto tmp = first->type->KLNumericFunctions.opDiv(first, second);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (first && second) {
 		throw runtime_error(
 			"operation div not supported on types " + string(first->type->name) + " and " + second->type->name);
@@ -516,10 +516,10 @@ static void opcode_mul(const KLObject *caller, KLCall &call, KLObject *argv[], s
 
 	if (first && first->type->KLNumericFunctions.opMul) { // first support op
 		auto tmp = first->type->KLNumericFunctions.opMul(first, second);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (second && second->type->KLNumericFunctions.opMul) { // second support op
 		auto tmp = second->type->KLNumericFunctions.opMul(second, first);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (first && second) {
 		throw runtime_error(
 			"operation mul not supported on types " + string(first->type->name) + " and " + second->type->name);
@@ -538,7 +538,7 @@ static void opcode_sub(const KLObject *caller, KLCall &call, KLObject *argv[], s
 
 	if (first && first->type->KLNumericFunctions.opSub) { // first support op
 		auto tmp = first->type->KLNumericFunctions.opSub(first, second);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (first && second) {
 		throw runtime_error(
 			"operation sub not supported on types " + string(first->type->name) + " and " + second->type->name);
@@ -790,10 +790,10 @@ static void opcode_add(const KLObject *caller, KLCall &call, KLObject *argv[], s
 
 	if (first && first->type->KLNumericFunctions.opAdd) { // first support op
 		auto tmp = first->type->KLNumericFunctions.opAdd(first, second);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (second && second->type->KLNumericFunctions.opAdd) { // second support op
 		auto tmp = second->type->KLNumericFunctions.opAdd(second, first);
-		klTransfer(&tmp, &regis);
+		klTransfer(tmp, &regis);
 	} else if (first && second) {
 		throw runtime_error(
 			"operation add not supported on types " + string(first->type->name) + " and " + second->type->name);

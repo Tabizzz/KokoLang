@@ -29,7 +29,7 @@ CAPI
  *
  *  This package contains the standard types and functions.
  */
-KLPackage* klGlobalPackage();
+KLPackage *klGlobalPackage();
 
 CAPI
 /**
@@ -40,19 +40,19 @@ CAPI
  * pointer.
  * The returned array end with a null entry.
  */
-KLPackage** klRootPackages();
+KLPackage **klRootPackages();
 
 CAPI
 /**
  * @brief Add a package to the runtime to be used by others packages.
  */
-void klRegisterPackage(KLPackage* klPackage);
+void klRegisterPackage(KLPackage *klPackage);
 
 CAPI
 /**
  * @brief Define a type, use this to initialize the header of any type.
  */
-void klDefType(KLType* type);
+void klDefType(KLType *type);
 
 CAPI
 /**
@@ -60,7 +60,7 @@ CAPI
  *
  * This function will try to copy or move the object, dont clone.
  */
-void klTransfer(KLObject ** src, KLObject** dest);
+void klTransfer(KLObject *src, KLObject **dest);
 
 CAPI
 /**
@@ -93,7 +93,7 @@ CAPI
  * and the type support copy operation then src is copied into
  * dest and no ref count is changed.
  */
-void klCopy(KLObject *src, KLObject** dest);
+void klCopy(KLObject *src, KLObject **dest);
 
 CAPI
 /**
@@ -116,7 +116,7 @@ CAPI
  * operation, if not then the same instance is used and the ref
  * count is increased on src and decreased in dest.
  */
-void klClone(KLObject* src, KLObject** dest);
+void klClone(KLObject *src, KLObject **dest);
 
 CAPI
 /**
@@ -135,4 +135,4 @@ CAPI
  *  Case D, both src and dest are not null:
  * dest is deref, src is ref and set by reference to dest.
  */
-void klMove(KLObject* src, KLObject** dest);
+void klMove(KLObject *src, KLObject **dest);
