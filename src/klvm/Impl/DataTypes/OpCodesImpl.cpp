@@ -16,30 +16,6 @@ typedef vector<KLObject *>::reference vecref;
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnusedParameter"
 
-static inline bool getBool(KLObject *obj, KLCall &call) {
-	GETREG(obj)
-	if (obj) {
-		if (obj->type == klbool_t) {
-			return KASBOOL(obj);
-		}
-		if (obj->type == klstring_t) {
-			return KASSTRSIZE(obj);
-		}
-		if (obj->type == klint_t) {
-			return KASINT(obj);
-		}
-		if (obj->type == klfloat_t) {
-			return KASFLOAT(obj);
-		}
-		if (obj->type->KLConversionFunctions.toBool) {
-			return KASBOOL(obj->type->KLConversionFunctions.toBool(obj));
-		}
-
-		return true;
-	}
-	return false;
-}
-
 static inline void call_core(KLCall &call, KLObject *argv[], size_t argc, KLObject *function) {
 	auto reg = argv[1] ? KASINT(argv[1]) : -1;
 	auto obj = function;
@@ -377,8 +353,8 @@ static void opcode_cast(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	REGORRET(argv[2])
 	vecref regis = call.st.at(reg);
 
-	if (type->KLConversionFunctions.toType) {
-		auto str = type->KLConversionFunctions.toType(val);
+	if (type->KLConversionFunctions.cast) {
+		auto str = type->KLConversionFunctions.cast(nullptr, val);
 		klTransfer(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -395,8 +371,8 @@ static void opcode_tobj(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	REGORRET(argv[2])
 	vecref regis = call.st.at(reg);
 
-	if (val && val->type->KLConversionFunctions.cast) {
-		auto str = val->type->KLConversionFunctions.cast(val, argv[0]);
+	if (val && val->type->KLConversionFunctions.toType) {
+		auto str = val->type->KLConversionFunctions.toType(val, argv[0]);
 		klTransfer(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -639,24 +615,30 @@ static void opcode_ople(const KLObject *caller, KLCall &call, KLObject *argv[], 
 }
 
 static void opcode_xor(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
-	auto a = getBool(argv[0], call);
-	auto b = getBool(argv[1], call);
+	auto a = argv[0];
+	GETREG(a)
+	auto b = argv[1];
+	GETREG(b)
 
-	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a != b);
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, klTest(a) != klTest(b));
 }
 
 static void opcode_or(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
-	auto a = getBool(argv[0], call);
-	auto b = getBool(argv[1], call);
+	auto a = argv[0];
+	GETREG(a)
+	auto b = argv[1];
+	GETREG(b)
 
-	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a || b);
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, klTest(a) || klTest(b));
 }
 
 static void opcode_and(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
-	auto a = getBool(argv[0], call);
-	auto b = getBool(argv[1], call);
+	auto a = argv[0];
+	GETREG(a)
+	auto b = argv[1];
+	GETREG(b)
 
-	CALL_SET_FLAG(call, CALL_FLAG_CHECK, a && b);
+	CALL_SET_FLAG(call, CALL_FLAG_CHECK, klTest(a) && klTest(b));
 }
 
 static void opcode_ldarg(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {

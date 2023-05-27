@@ -119,7 +119,7 @@ struct CPPAPI KLType {
 		/**
 		 * @brief Convert a object to another type.
 		 */
-		klunaryop toType;
+		klbinaryop toType;
 		/**
 		 * @brief Called on this type to convert a object of another type to this type.
 		 */
@@ -256,6 +256,30 @@ struct CPPAPI KLType {
 		 */
 		klsetop setter;
 	} KLIndexingFunctions;
+
+	/**
+	 * @brief Functions for binary i/o.
+	 */
+	struct {
+		/**
+		 * @brief Write the text representation of this object into a stream.
+		 */
+		klserializer sRepr;
+		/**
+		 * @brief Try to create a object from a stream using the text representation.
+		 *
+		 * This operation is used to parse things.
+		 */
+		kldeserializer dRepr;
+		/**
+		 * @brief Serialize this type in binary format.
+		 */
+		klserializer sBin;
+		/**
+		 * @brief Read this type in binary format.
+		 */
+		kldeserializer dBin;
+	} KLStreamFunctions;
 
 	/* Insert new operations here before maps */
 

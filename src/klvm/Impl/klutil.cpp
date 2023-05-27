@@ -12,3 +12,20 @@ KLObject *klStringRepr(KLObject *val) {
 	}
 	return KLSTR("null");
 }
+
+kbyte klTest(KLObject *obj) {
+	if (!obj) return false;
+	// builtin types are inlined here to prevent an unnecessary call to toBool.
+	if (obj->type == klbool_t) {
+		return KASBOOL(obj);
+	} else if (obj->type == klstring_t) {
+		return KASSTRSIZE(obj);
+	} else if (obj->type == klint_t) {
+		return KASINT(obj);
+	} else if (obj->type == klfloat_t) {
+		return KASFLOAT(obj);
+	} else if (obj->type->KLConversionFunctions.toBool) {
+		return KASBOOL(obj->type->KLConversionFunctions.toBool(obj));
+	}
+	return true;
+}
