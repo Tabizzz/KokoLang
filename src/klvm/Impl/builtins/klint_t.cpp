@@ -93,7 +93,7 @@ static KLObject *kint_add(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
 			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opAdd(KLWRAP(&temp_float), second);;
+			return klfloat_t->KLNumericFunctions.opAdd(KLWRAP(&temp_float), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -115,7 +115,7 @@ static KLObject *kint_sub(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
 			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opSub(KLWRAP(&temp_float), second);;
+			return klfloat_t->KLNumericFunctions.opSub(KLWRAP(&temp_float), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -158,7 +158,7 @@ static KLObject *kint_div(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
 			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opDiv(KLWRAP(&temp_float), second);;
+			return klfloat_t->KLNumericFunctions.opDiv(KLWRAP(&temp_float), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -202,6 +202,117 @@ static KLObject *kint_mod(KLObject *first, KLObject *second) {
 	}
 }
 
+// int pow do not exist, we call float pow so this always return a float
+static KLObject *kint_pow(KLObject *first, KLObject *second) {
+	temp_float.value = KASINT(first);
+	return klfloat_t->KLNumericFunctions.opPow(KLWRAP(&temp_float), second);
+}
+
+static KLObject *kint_inc(KLObject *first) {
+	temp_int.value = KASINT(first) + 1;
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_dec(KLObject *first) {
+	temp_int.value = KASINT(first) - 1;
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_bit(KLObject *first) {
+	temp_int.value = ~KASINT(first);
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_lshift(KLObject *first, KLObject *second) {
+	if (second) {
+		auto x = KASINT(first);
+		kint y = 0;
+		if (second->type == klint_t) {
+			y = KASINT(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
+		}
+		temp_int.value = x << y;
+	} else {
+		temp_int.value = KASINT(first);
+	}
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_rshift(KLObject *first, KLObject *second) {
+	if (second) {
+		auto x = KASINT(first);
+		kint y = 0;
+		if (second->type == klint_t) {
+			y = KASINT(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
+		}
+		temp_int.value = x << y;
+	} else {
+		temp_int.value = KASINT(first);
+	}
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_and(KLObject *first, KLObject *second) {
+	if (second) {
+		auto x = KASINT(first);
+		kint y = 0;
+		if (second->type == klint_t) {
+			y = KASINT(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
+		}
+		temp_int.value = x & y;
+	} else {
+		temp_int.value = 0;
+	}
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_or(KLObject *first, KLObject *second) {
+	if (second) {
+		auto x = KASINT(first);
+		kint y = 0;
+		if (second->type == klint_t) {
+			y = KASINT(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
+		}
+		temp_int.value = x | y;
+	} else {
+		temp_int.value = KASINT(first);
+	}
+	return KLWRAP(&temp_int);
+}
+
+static KLObject *kint_xor(KLObject *first, KLObject *second) {
+	if (second) {
+		auto x = KASINT(first);
+		kint y = 0;
+		if (second->type == klint_t) {
+			y = KASINT(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
+			y = KASINT(frees);
+			klDeref(frees);
+		}
+		temp_int.value = x ^ y;
+	} else {
+		temp_int.value = KASINT(first) ^ 0;
+	}
+	return KLWRAP(&temp_int);
+}
+
 void global_klint_t() {
 	klint_t = new KLType{
 		{
@@ -228,10 +339,21 @@ void global_klint_t() {
 			kint_sub,
 			kint_mul,
 			kint_div,
-			kint_mod
+			kint_mod,
+			kint_pow,
+			kint_inc,
+			kint_dec
 		},
 		kint_clone,
 		kint_copy,
+		{
+			kint_bit,
+			kint_lshift,
+			kint_rshift,
+			kint_and,
+			kint_or,
+			kint_xor
+		}
 	};
 
 	KLTYPE_METADATA(klint_t)

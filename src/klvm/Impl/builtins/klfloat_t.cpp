@@ -197,6 +197,36 @@ static KLObject *kfloat_mod(KLObject *first, KLObject *second) {
 	}
 }
 
+static KLObject *kfloat_pow(KLObject *first, KLObject *second) {
+	if (second) {
+		auto x = KASFLOAT(first);
+		kfloat y = 0;
+		if (second->type == klfloat_t) {
+			y = KASFLOAT(second);
+		} else if (second->type == klint_t) {
+			y = KASINT(second);
+		} else if (second->type->KLConversionFunctions.toFloat) {
+			auto frees = second->type->KLConversionFunctions.toFloat(second);
+			y = KASFLOAT(frees);
+			klDeref(frees);
+		}
+		temp_float.value = std::pow(x, y);
+	} else {
+		temp_float.value = 1;
+	}
+	return KLWRAP(&temp_float);
+}
+
+static KLObject *kfloat_inc(KLObject *first) {
+	temp_float.value = KASFLOAT(first) + 1;
+	return KLWRAP(&temp_float);
+}
+
+static KLObject *kfloat_dec(KLObject *first) {
+	temp_float.value = KASFLOAT(first) - 1;
+	return KLWRAP(&temp_float);
+}
+
 void global_klfloat_t() {
 	klfloat_t = new KLType{
 		{
@@ -223,7 +253,10 @@ void global_klfloat_t() {
 			kfloat_sub,
 			kfloat_mul,
 			kfloat_div,
-			kfloat_mod
+			kfloat_mod,
+			kfloat_pow,
+			kfloat_inc,
+			kfloat_dec
 		},
 		kfloat_clone,
 		kfloat_copy
