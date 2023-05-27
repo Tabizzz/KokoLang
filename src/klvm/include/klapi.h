@@ -3,7 +3,7 @@
  * Generic kokolang functions exposed to the C API.
  */
 
-#include "DataTypes/KLRuntime.h"
+#include "DataTypes/KLPackage.h"
 
 CAPI
 /**

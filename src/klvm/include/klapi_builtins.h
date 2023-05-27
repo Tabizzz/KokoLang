@@ -1,5 +1,7 @@
 ﻿/*
-* This file contain utility methods and macros for creating builtin types instances
+* This file contain utility methods and macros for creating builtin types instances.
+ *
+ * Also in this file are the default implementation for type operations.
 */
 #pragma once
 #include "DataTypes/KLObject.h"
@@ -101,4 +103,5 @@ void klDefaultInitializer(KLObject* obj);
 CAPI
 void klDefaultFinalizer(KLObject* obj);
 
-CAPI KLObject* klDefaultConstructor();
+CAPI
+KLObject* klDefaultConstructor();

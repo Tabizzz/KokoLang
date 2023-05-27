@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "DataTypes/KLObject.h"
+#include "DataTypes/KLType.h"
 
 /*
  * here are the builtin types and functions related  creating
@@ -80,7 +81,8 @@ CAPI
  * Increase the ref count of an object.
  */
 inline void klRef(KLObject *object) {
-	if(object && !object->type->rflags.no_instance && !object->rflags.ignore_ref) object->refs++;
+	if(!object) return;
+	if(!object->type->rflags.no_instance && !object->rflags.ignore_ref) object->refs++;
 }
 
 CAPI

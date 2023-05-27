@@ -12,6 +12,7 @@
 #include "klresolver.h"
 #include "klruntime.h"
 #include "klconfig.h"
+#include "klutil.h"
 #include "DataTypes/KLRuntime.h"
 #include "Binary/KLMetaType.h"
 #include "Binary/KLDefinitionType.h"

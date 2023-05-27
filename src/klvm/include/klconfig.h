@@ -36,7 +36,7 @@ struct CPPAPI KLConfig {
 	 */
 	const char** argv;
 	/**
-	 * @brief Number of elements in argv, <b>dNo default value</b>.
+	 * @brief Number of elements in argv, <b>No default value</b>.
 	 */
 	int argc;
 
