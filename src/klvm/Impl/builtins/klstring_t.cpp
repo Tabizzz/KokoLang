@@ -25,9 +25,9 @@ static int8_t kstring_compare(KLObject *x, KLObject *y) {
 	if (y) {
 		if (y->type == klstring_t) {
 			second = KLCAST(kl_string, y);
-		} else if (y->type->toString) {
+		} else if (y->type->KLConversionFunctions.toString) {
 			flag = true;
-			second = KLCAST(kl_string, y->type->toString(y));
+			second = KLCAST(kl_string, y->type->KLConversionFunctions.toString(y));
 		}
 	}
 	if (!second) {
@@ -40,7 +40,8 @@ static int8_t kstring_compare(KLObject *x, KLObject *y) {
 		}
 	}
 
-	int8_t dev = strncmp(second->value, first->value, min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
+	int8_t dev = strncmp(second->value, first->value,
+	                     min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
 	dev = std::clamp(dev, static_cast<int8_t>(-1), static_cast<int8_t>(1));
 
 	if (dev == 0 && first->size != second->size) {
@@ -63,9 +64,9 @@ static int8_t kstring_equals(KLObject *x, KLObject *y) {
 	if (y) {
 		if (y->type == klstring_t) {
 			second = KLCAST(kl_string, y);
-		} else if (y->type->toString) {
+		} else if (y->type->KLConversionFunctions.toString) {
 			flag = true;
-			second = KLCAST(kl_string, y->type->toString(y));
+			second = KLCAST(kl_string, y->type->KLConversionFunctions.toString(y));
 		}
 	}
 	if (!second) {
@@ -89,34 +90,37 @@ static int8_t kstring_equals(KLObject *x, KLObject *y) {
 	return dev;
 }
 
-static void kstring_add(KLObject *x, KLObject *y, KLObject **target) {
+static KLObject* kstring_add(KLObject *x, KLObject *y) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
 	if (y) {
 		if (y->type == klstring_t) {
 			second = KLCAST(kl_string, y);
-		} else if (y->type->toString) {
+		} else if (y->type->KLConversionFunctions.toString) {
 			flag = true;
-			second = KLCAST(kl_string, y->type->toString(y));
+			second = KLCAST(kl_string, y->type->KLConversionFunctions.toString(y));
 		}
 	}
 	if (!second) {
+		KLObject* tmp = nullptr;
 		// second is null, so the resulting string is equals to first
-		klClone(x, target);
-		return;
+		klClone(x, &tmp);
+		return tmp;
 	}
 
 	if (first->size == 0) {
+		KLObject* tmp = nullptr;
 		// first is empty, so directly clone second
-		klClone(KLWRAP(second), target);
+		klClone(KLWRAP(second), &tmp);
 		if (flag) klDeref(KLWRAP(second));
-		return;
+		return tmp;
 	} else if (second->size == 0) {
+		KLObject* tmp = nullptr;
 		// second is empty, so directly clone first
-		klClone(x, target);
+		klClone(x, &tmp);
 		if (flag) klDeref(KLWRAP(second));
-		return;
+		return tmp;
 	}
 
 	auto size = first->size + second->size;
@@ -128,20 +132,19 @@ static void kstring_add(KLObject *x, KLObject *y, KLObject **target) {
 	auto dev = klIns(klstring_t);
 	KLCAST(kl_string, dev)->size = size;
 	KLCAST(kl_string, dev)->value = value;
-	// dereference any current value
-	klDeref(*target);
-	*target = dev;
 
 	if (flag) {
 		klDeref(KLWRAP(second));
 	}
+	return dev;
 }
 
 static KLObject *kstring_clone(KLObject *obj) {
 	return KLSTR(KSTRING(obj));
 }
 
-static inline kint isSubstring(const char *s1, const char *s2, uint32_t M, uint32_t N, uint32_t start = 0, uint32_t e = UINT32_MAX) {
+static inline kint
+isSubstring(const char *s1, const char *s2, uint32_t M, uint32_t N, uint32_t start = 0, uint32_t e = UINT32_MAX) {
 	if (M > N) return -1;
 	auto end = min(e, N);
 
@@ -175,7 +178,7 @@ static KLObject *kstring_find(KLObject *, KLObject **argv, kbyte argc) {
 			find = KASSTR(argv[1]);
 			size = KASSTRSIZE(argv[1]);
 		} else {
-			temp = argv[1]->type->toString(argv[1]);
+			temp = argv[1]->type->KLConversionFunctions.toString(argv[1]);
 			find = KASSTR(temp);
 			size = KASSTRSIZE(temp);
 		}
@@ -207,7 +210,7 @@ static KLObject *kstring_count(KLObject *, KLObject **argv, kbyte argc) {
 			find = KASSTR(argv[1]);
 			size = KASSTRSIZE(argv[1]);
 		} else {
-			temp = argv[1]->type->toString(argv[1]);
+			temp = argv[1]->type->KLConversionFunctions.toString(argv[1]);
 			find = KASSTR(temp);
 			size = KASSTRSIZE(temp);
 		}
@@ -234,7 +237,7 @@ static KLObject *kstring_startswith(KLObject *, KLObject **argv, kbyte) {
 			find = KASSTR(argv[1]);
 			size = KASSTRSIZE(argv[1]);
 		} else {
-			temp = argv[1]->type->toString(argv[1]);
+			temp = argv[1]->type->KLConversionFunctions.toString(argv[1]);
 			find = KASSTR(temp);
 			size = KASSTRSIZE(temp);
 		}
@@ -255,7 +258,7 @@ static KLObject *kstring_endswith(KLObject *, KLObject **argv, kbyte) {
 			find = KASSTR(argv[1]);
 			size = KASSTRSIZE(argv[1]);
 		} else {
-			temp = argv[1]->type->toString(argv[1]);
+			temp = argv[1]->type->KLConversionFunctions.toString(argv[1]);
 			find = KASSTR(temp);
 			size = KASSTRSIZE(temp);
 		}
@@ -308,20 +311,20 @@ static KLObject *kstring_split(KLObject *, KLObject **argv, kbyte argc) {
 	auto str = KLCAST(kl_string, argv[0]);
 	const char *sep = " ";
 	int32_t size = 1;
-	KLObject* temp = nullptr;
+	KLObject *temp = nullptr;
 	uint32_t start = 0;
 	if (argc > 1 && argv[1]) {
 		if (argv[1]->type == klstring_t) {
 			sep = KASSTR(argv[1]);
 			size = KASSTRSIZE(argv[1]);
 		} else {
-			temp = argv[1]->type->toString(argv[1]);
+			temp = argv[1]->type->KLConversionFunctions.toString(argv[1]);
 			sep = KASSTR(temp);
 			size = KASSTRSIZE(temp);
 		}
 	}
 	auto list = KLCAST(kl_sptr, klIns(kllist_t));
-	auto vec = new vector<KLObject*>();
+	auto vec = new vector<KLObject *>();
 	list->value = vec;
 
 	kint i;
@@ -340,7 +343,7 @@ static KLObject *kstring_split(KLObject *, KLObject **argv, kbyte argc) {
 		start = i + max(1, size);
 	}
 	// insert the last string on the list
-	if(str->size > start) {
+	if (str->size > start) {
 		auto ns = str->size - start;
 		auto split = KLCAST(kl_string, klIns(klstring_t));
 		split->size = ns;
@@ -386,17 +389,17 @@ void global_klstring_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"str",
-		0,
 		sizeof(kl_string),
+		0, 0,
 		kstring_init,
 		kstring_end,
 		nullptr,
-		klself_return,
-		REP5(nullptr)
+		{klself_return
+		},
 		kstring_compare,
 		kstring_equals,
-		kstring_add,
-		REP4(nullptr)
+		{kstring_add
+		},
 		kstring_clone
 	};
 	KLTYPE_METADATA(klstring_t)

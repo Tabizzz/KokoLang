@@ -32,8 +32,8 @@ static int8_t kfloat_comparer(KLObject *x, KLObject *y) {
 			second = KASINT(y);
 		} else if (y == KLBOOL(true)) {
 			second = 1;
-		} else if (y->type->toFloat) {
-			auto frees = y->type->toFloat(y);
+		} else if (y->type->KLConversionFunctions.toFloat) {
+			auto frees = y->type->KLConversionFunctions.toFloat(y);
 			second = KASFLOAT(frees);
 			klDeref(frees);
 		}
@@ -55,8 +55,8 @@ static int8_t kfloat_equal(KLObject *x, KLObject *y) {
 			return KASFLOAT(x) == KASFLOAT(y);
 		} else if (y->type == klint_t) {
 			return KASFLOAT(x) == KASINT(y);
-		} else if (y->type->toFloat) {
-			auto frees = y->type->toFloat(y);
+		} else if (y->type->KLConversionFunctions.toFloat) {
+			auto frees = y->type->KLConversionFunctions.toFloat(y);
 			auto dev = KASFLOAT(frees);
 			klDeref(frees);
 			return KASFLOAT(x) == dev;
@@ -92,7 +92,7 @@ static KLObject *kfloat_tobit(KLObject *base) {
 	return KLBOOL(val);
 }
 
-static void kfloat_add(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kfloat_add(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -100,19 +100,19 @@ static void kfloat_add(KLObject *first, KLObject *second, KLObject **target) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toFloat) {
-			auto frees = second->type->toFloat(second);
+		} else if (second->type->KLConversionFunctions.toFloat) {
+			auto frees = second->type->KLConversionFunctions.toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
 		temp_float.value = x + y;
-		klCopy(KLWRAP(&temp_float), target);
 	} else {
-		klCopy(nullptr, target);
+		temp_float.value = KASFLOAT(first);
 	}
+	return KLWRAP(&temp_float);
 }
 
-static void kfloat_sub(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kfloat_sub(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -120,19 +120,19 @@ static void kfloat_sub(KLObject *first, KLObject *second, KLObject **target) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toFloat) {
-			auto frees = second->type->toFloat(second);
+		} else if (second->type->KLConversionFunctions.toFloat) {
+			auto frees = second->type->KLConversionFunctions.toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
 		temp_float.value = x - y;
-		klCopy(KLWRAP(&temp_float), target);
 	} else {
-		klCopy(nullptr, target);
+		temp_float.value = KASFLOAT(first);
 	}
+	return KLWRAP(&temp_float);
 }
 
-static void kfloat_mul(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kfloat_mul(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -140,20 +140,19 @@ static void kfloat_mul(KLObject *first, KLObject *second, KLObject **target) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toFloat) {
-			auto frees = second->type->toFloat(second);
+		} else if (second->type->KLConversionFunctions.toFloat) {
+			auto frees = second->type->KLConversionFunctions.toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
 		temp_float.value = x * y;
-		klCopy(KLWRAP(&temp_float), target);
 	} else {
 		temp_float.value = 0;
-		klCopy(KLWRAP(&temp_float), target);
 	}
+	return KLWRAP(&temp_float);
 }
 
-static void kfloat_div(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kfloat_div(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -161,21 +160,22 @@ static void kfloat_div(KLObject *first, KLObject *second, KLObject **target) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toFloat) {
-			auto frees = second->type->toFloat(second);
+		} else if (second->type->KLConversionFunctions.toFloat) {
+			auto frees = second->type->KLConversionFunctions.toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
 		// throw before hardware error
 		if (y == 0) throw logic_error("Division by 0");
 		temp_float.value = x / y;
-		klCopy(KLWRAP(&temp_float), target);
+		return KLWRAP(&temp_float);
+
 	} else {
 		throw logic_error("Division by 0");
 	}
 }
 
-static void kfloat_mod(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kfloat_mod(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KASFLOAT(first);
 		kfloat y = 0;
@@ -183,15 +183,15 @@ static void kfloat_mod(KLObject *first, KLObject *second, KLObject **target) {
 			y = KASFLOAT(second);
 		} else if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toFloat) {
-			auto frees = second->type->toFloat(second);
+		} else if (second->type->KLConversionFunctions.toFloat) {
+			auto frees = second->type->KLConversionFunctions.toFloat(second);
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
 		// throw before hardware error
 		if (y == 0) throw logic_error("Division by 0");
 		temp_float.value = fmod(x, y);
-		klCopy(KLWRAP(&temp_float), target);
+		return KLWRAP(&temp_float);
 	} else {
 		throw logic_error("Division by 0");
 	}
@@ -205,24 +205,26 @@ void global_klfloat_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"num",
-		0,
 		sizeof(kl_float),
-		kfloat_init,
-		nullptr,
-		nullptr,
-		kfloat_tostr,
-		kfloat_toint,
-		klself_return,
-		kfloat_tobit,
-		nullptr,
-		nullptr,
+		0, 0,
+		{
+			kfloat_init
+		},
+		{
+			kfloat_tostr,
+			kfloat_toint,
+			klself_return,
+			kfloat_tobit
+		},
 		kfloat_comparer,
 		kfloat_equal,
-		kfloat_add,
-		kfloat_sub,
-		kfloat_mul,
-		kfloat_div,
-		kfloat_mod,
+		{
+			kfloat_add,
+			kfloat_sub,
+			kfloat_mul,
+			kfloat_div,
+			kfloat_mod
+		},
 		kfloat_clone,
 		kfloat_copy
 	};

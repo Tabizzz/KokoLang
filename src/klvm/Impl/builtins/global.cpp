@@ -15,7 +15,7 @@ KLPackage *kliBuildGlobalPackage() {
 	global_klpack_t();
 	dev->klbase.type = klpack_t;
 	klDefType(klpack_t);
-	klpack_t->initializer(KLWRAP(dev));
+	klpack_t->KLManagingFunctions.initializer(KLWRAP(dev));
 	klPackageRegType(dev, kltype_t);
 	klPackageRegType(dev, klpack_t);
 

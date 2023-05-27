@@ -31,8 +31,8 @@ static inline bool getBool(KLObject *obj, KLCall &call) {
 		if (obj->type == klfloat_t) {
 			return KASFLOAT(obj);
 		}
-		if (obj->type->toBool) {
-			return KASBOOL(obj->type->toBool(obj));
+		if (obj->type->KLConversionFunctions.toBool) {
+			return KASBOOL(obj->type->KLConversionFunctions.toBool(obj));
 		}
 
 		return true;
@@ -230,8 +230,8 @@ static void opcode_ste(const KLObject *caller, KLCall &call, KLObject *argv[], s
 		} else {
 			throw runtime_error("Index out of bounds");
 		}
-	} else if (obj->type->setter) {
-		obj->type->setter(obj, index, value);
+	} else if (obj->type->KLIndexingFunctions.setter) {
+		obj->type->KLIndexingFunctions.setter(obj, index, value);
 	}
 }
 
@@ -258,8 +258,8 @@ static void opcode_lde(const KLObject *caller, KLCall &call, KLObject *argv[], s
 		} else {
 			throw runtime_error("Index out of bounds");
 		}
-	} else if (obj->type->getter) {
-		auto value = obj->type->getter(obj, index);
+	} else if (obj->type->KLIndexingFunctions.getter) {
+		auto value = obj->type->KLIndexingFunctions.getter(obj, index);
 		klTransfer(&value, &ref);
 	}
 }
@@ -377,8 +377,8 @@ static void opcode_cast(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	REGORRET(argv[2])
 	vecref regis = call.st.at(reg);
 
-	if (type->cast) {
-		auto str = type->cast(val);
+	if (type->KLConversionFunctions.toType) {
+		auto str = type->KLConversionFunctions.toType(val);
 		klTransfer(&str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -395,8 +395,8 @@ static void opcode_tobj(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	REGORRET(argv[2])
 	vecref regis = call.st.at(reg);
 
-	if (val && val->type->toType) {
-		auto str = val->type->toType(val, argv[0]);
+	if (val && val->type->KLConversionFunctions.cast) {
+		auto str = val->type->KLConversionFunctions.cast(val, argv[0]);
 		klTransfer(&str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -408,8 +408,8 @@ static void opcode_tbit(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(val)
 	REGORRET(argv[1])
 	vecref regis = call.st.at(reg);
-	if (val && val->type->toBool) {
-		auto str = val->type->toBool(val);
+	if (val && val->type->KLConversionFunctions.toBool) {
+		auto str = val->type->KLConversionFunctions.toBool(val);
 		klMove(str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -421,8 +421,8 @@ static void opcode_tflt(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(val)
 	REGORRET(argv[1])
 	vecref regis = call.st.at(reg);
-	if (val && val->type->toFloat) {
-		auto str = val->type->toFloat(val);
+	if (val && val->type->KLConversionFunctions.toFloat) {
+		auto str = val->type->KLConversionFunctions.toFloat(val);
 		klTransfer(&str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -434,8 +434,8 @@ static void opcode_tint(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(val)
 	REGORRET(argv[1])
 	vecref regis = call.st.at(reg);
-	if (val && val->type->toInt) {
-		auto str = val->type->toInt(val);
+	if (val && val->type->KLConversionFunctions.toInt) {
+		auto str = val->type->KLConversionFunctions.toInt(val);
 		klTransfer(&str, &regis);
 	} else {
 		klMove(nullptr, &regis);
@@ -447,8 +447,8 @@ static void opcode_tstr(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(val)
 	REGORRET(argv[1])
 	vecref regis = call.st.at(reg);
-	if (val && val->type->toString) {
-		auto str = val->type->toString(val);
+	if (val && val->type->KLConversionFunctions.toString) {
+		auto str = val->type->KLConversionFunctions.toString(val);
 		klTransfer(&str, &regis);
 	} else if (val) {
 		klMove(nullptr, &regis);
@@ -468,10 +468,12 @@ static void opcode_mod(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	GETREG(second)
 	vecref regis = call.st.at(reg);
 
-	if (first && first->type->opMod) { // first support op
-		first->type->opMod(first, second, &regis);
+	if (first && first->type->KLNumericFunctions.opMod) { // first support op
+		auto tmp = first->type->KLNumericFunctions.opMod(first, second);
+		klTransfer(&tmp, &regis);
 	} else if (first && second) {
-		throw runtime_error("operation mod not supported on types " + string(first->type->name) + " and " + second->type->name);
+		throw runtime_error(
+			"operation mod not supported on types " + string(first->type->name) + " and " + second->type->name);
 	} else if (first) {
 		throw runtime_error("modulo by null not handled by type " + string(first->type->name));
 	} else if (second) {
@@ -489,10 +491,12 @@ static void opcode_div(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	GETREG(second)
 	vecref regis = call.st.at(reg);
 
-	if (first && first->type->opDiv) { // first support op
-		first->type->opDiv(first, second, &regis);
+	if (first && first->type->KLNumericFunctions.opDiv) { // first support op
+		auto tmp = first->type->KLNumericFunctions.opDiv(first, second);
+		klTransfer(&tmp, &regis);
 	} else if (first && second) {
-		throw runtime_error("operation div not supported on types " + string(first->type->name) + " and " + second->type->name);
+		throw runtime_error(
+			"operation div not supported on types " + string(first->type->name) + " and " + second->type->name);
 	} else if (first) {
 		throw runtime_error("division by null not handled by type " + string(first->type->name));
 	} else if (second) {
@@ -510,12 +514,15 @@ static void opcode_mul(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	GETREG(second)
 	vecref regis = call.st.at(reg);
 
-	if (first && first->type->opMul) { // first support op
-		first->type->opMul(first, second, &regis);
-	} else if (second && second->type->opMul) { // second support op
-		second->type->opMul(second, first, &regis);
+	if (first && first->type->KLNumericFunctions.opMul) { // first support op
+		auto tmp = first->type->KLNumericFunctions.opMul(first, second);
+		klTransfer(&tmp, &regis);
+	} else if (second && second->type->KLNumericFunctions.opMul) { // second support op
+		auto tmp = second->type->KLNumericFunctions.opMul(second, first);
+		klTransfer(&tmp, &regis);
 	} else if (first && second) {
-		throw runtime_error("operation mul not supported on types " + string(first->type->name) + " and " + second->type->name);
+		throw runtime_error(
+			"operation mul not supported on types " + string(first->type->name) + " and " + second->type->name);
 	} else {
 		klCopy(nullptr, &regis);
 	}
@@ -529,10 +536,12 @@ static void opcode_sub(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	GETREG(second)
 	vecref regis = call.st.at(reg);
 
-	if (first && first->type->opSub) { // first support op
-		first->type->opSub(first, second, &regis);
+	if (first && first->type->KLNumericFunctions.opSub) { // first support op
+		auto tmp = first->type->KLNumericFunctions.opSub(first, second);
+		klTransfer(&tmp, &regis);
 	} else if (first && second) {
-		throw runtime_error("operation sub not supported on types " + string(first->type->name) + " and " + second->type->name);
+		throw runtime_error(
+			"operation sub not supported on types " + string(first->type->name) + " and " + second->type->name);
 	} else if (first) {
 		klCopy(first, &regis);
 	} else if (second) {
@@ -549,10 +558,10 @@ static void opcode_opne(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(second)
 
 	int8_t operation;
-	if (first && first->type->equal) {
-		operation = first->type->equal(first, second);
-	} else if (second && second->type->equal) {
-		operation = second->type->equal(second, first);
+	if (first && first->type->KLComparerFunctions.equal) {
+		operation = first->type->KLComparerFunctions.equal(first, second);
+	} else if (second && second->type->KLComparerFunctions.equal) {
+		operation = second->type->KLComparerFunctions.equal(second, first);
 	} else {
 		operation = first == second ? 1 : 0;
 	}
@@ -567,10 +576,10 @@ static void opcode_opeq(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(second)
 
 	int8_t operation;
-	if (first && first->type->equal) {
-		operation = first->type->equal(first, second);
-	} else if (second && second->type->equal) {
-		operation = second->type->equal(second, first);
+	if (first && first->type->KLComparerFunctions.equal) {
+		operation = first->type->KLComparerFunctions.equal(first, second);
+	} else if (second && second->type->KLComparerFunctions.equal) {
+		operation = second->type->KLComparerFunctions.equal(second, first);
 	} else {
 		operation = first == second ? 1 : 0;
 	}
@@ -585,10 +594,10 @@ static void opcode_opge(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(second)
 
 	int8_t operation = 0;
-	if (first && first->type->comparer) {
-		operation = first->type->comparer(first, second);
-	} else if (second && second->type->comparer) {
-		operation = second->type->comparer(second, first);
+	if (first && first->type->KLComparerFunctions.comparer) {
+		operation = first->type->KLComparerFunctions.comparer(first, second);
+	} else if (second && second->type->KLComparerFunctions.comparer) {
+		operation = second->type->KLComparerFunctions.comparer(second, first);
 		operation *= -1;
 	}
 
@@ -602,10 +611,10 @@ static void opcode_opgt(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(second)
 
 	int8_t operation = 0;
-	if (first && first->type->comparer) {
-		operation = first->type->comparer(first, second);
-	} else if (second && second->type->comparer) {
-		operation = second->type->comparer(second, first);
+	if (first && first->type->KLComparerFunctions.comparer) {
+		operation = first->type->KLComparerFunctions.comparer(first, second);
+	} else if (second && second->type->KLComparerFunctions.comparer) {
+		operation = second->type->KLComparerFunctions.comparer(second, first);
 		operation *= -1;
 	}
 
@@ -619,10 +628,10 @@ static void opcode_ople(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(second)
 
 	int8_t operation = 0;
-	if (first && first->type->comparer) {
-		operation = first->type->comparer(first, second);
-	} else if (second && second->type->comparer) {
-		operation = second->type->comparer(second, first);
+	if (first && first->type->KLComparerFunctions.comparer) {
+		operation = first->type->KLComparerFunctions.comparer(first, second);
+	} else if (second && second->type->KLComparerFunctions.comparer) {
+		operation = second->type->KLComparerFunctions.comparer(second, first);
 		operation *= -1;
 	}
 
@@ -779,12 +788,15 @@ static void opcode_add(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	GETREG(second)
 	vecref regis = call.st.at(reg);
 
-	if (first && first->type->opAdd) { // first support op
-		first->type->opAdd(first, second, &regis);
-	} else if (second && second->type->opAdd) { // second support op
-		second->type->opAdd(second, first, &regis);
+	if (first && first->type->KLNumericFunctions.opAdd) { // first support op
+		auto tmp = first->type->KLNumericFunctions.opAdd(first, second);
+		klTransfer(&tmp, &regis);
+	} else if (second && second->type->KLNumericFunctions.opAdd) { // second support op
+		auto tmp = second->type->KLNumericFunctions.opAdd(second, first);
+		klTransfer(&tmp, &regis);
 	} else if (first && second) {
-		throw runtime_error("operation add not supported on types " + string(first->type->name) + " and " + second->type->name);
+		throw runtime_error(
+			"operation add not supported on types " + string(first->type->name) + " and " + second->type->name);
 	} else if (first) {
 		klCopy(first, &regis);
 	} else {
@@ -807,10 +819,10 @@ static void opcode_oplt(const KLObject *caller, KLCall &call, KLObject *argv[], 
 	GETREG(second)
 
 	int8_t operation = 0;
-	if (first && first->type->comparer) {
-		operation = first->type->comparer(first, second);
-	} else if (second && second->type->comparer) {
-		operation = second->type->comparer(second, first);
+	if (first && first->type->KLComparerFunctions.comparer) {
+		operation = first->type->KLComparerFunctions.comparer(first, second);
+	} else if (second && second->type->KLComparerFunctions.comparer) {
+		operation = second->type->KLComparerFunctions.comparer(second, first);
 		operation *= -1;
 	}
 

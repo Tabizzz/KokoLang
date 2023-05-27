@@ -42,8 +42,8 @@ KLObject *outImpl(KLObject *caller, KLObject **argv, kbyte passedArgs) {
     if (val) {
         if (val->type == klstring_t) {
             nowide::cout.write(KASSTR(val), KASSTRSIZE(val)) << std::endl;
-        } else if (val->type->toString) {
-            auto str = val->type->toString(val);
+        } else if (val->type->KLConversionFunctions.toString) {
+            auto str = val->type->KLConversionFunctions.toString(val);
             nowide::cout.write(KASSTR(str), KASSTRSIZE(str)) << std::endl;
             klDeref(str);
         }

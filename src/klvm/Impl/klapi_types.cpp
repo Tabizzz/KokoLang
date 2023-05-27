@@ -19,7 +19,7 @@ CAPI KLObject *klIns(KLType *type) {
 	space->flags = 0;
 	type->inscount++;
 	// call the initializer
-	KLINVOKE(type->initializer)(space);
+	KLINVOKE(type->KLManagingFunctions.initializer)(space);
 	return space;
 }
 
@@ -52,7 +52,7 @@ CAPI void klDestroy(KLObject *object) { // NOLINT(misc-no-recursion)
 	if (!object) return;
 	auto size = object->type->size;
 	// call finalizer
-	KLINVOKE(object->type->finalizer)(object);
+	KLINVOKE(object->type->KLManagingFunctions.finalizer)(object);
 	if (!object->rflags.no_inscount) {
 		object->type->inscount--;
 		if(object->type->inscount <= 0 && object->type->klbase.refs <= 0) {
@@ -84,7 +84,7 @@ static inline KLObject *klInvokeCore(KLFunction *func, KLObject **argv, kbyte ar
 CAPI KLObject *klNew(KLType *type, KLObject **args, kbyte argc) {
 	if (!type) return nullptr;
 	// type must have a constructor
-	if (!type->constructor) {
+	if (!type->KLManagingFunctions.constructor) {
 		throw runtime_error(string_format("The type %s dont have a constructor to invoke", type->name));
 	}
 	auto size = argc + 1;
@@ -96,7 +96,7 @@ CAPI KLObject *klNew(KLType *type, KLObject **args, kbyte argc) {
 		argv[i] = args[i - 1];
 	}
 	// we ignore the
-	klDeref(klInvokeCore(KLCAST(KLFunction, type->constructor), argv.data(), size));
+	klDeref(klInvokeCore(KLCAST(KLFunction, type->KLManagingFunctions.constructor), argv.data(), size));
 	return obj;
 }
 

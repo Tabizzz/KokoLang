@@ -86,7 +86,7 @@ static inline void klFunction_reallocateLabels(KLFunction *function) {
 						break;
 				}
 				if (reflabel && ref->operands[0]->type == klstring_t) {
-					if (klstring_t->equal(ref->operands[0], instruction->label)) {
+					if (klstring_t->KLComparerFunctions.equal(ref->operands[0], instruction->label)) {
 						klDeref(ref->operands[0]);
 						ref->operands[0] = KLINT(i);
 					}
@@ -165,8 +165,8 @@ void global_klfunc_t()
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"fn",
-		0,
 		sizeof(KLFunction),
+		0, 0,
 		kfunc_instantiator,
 		kfunc_destructor
 	};

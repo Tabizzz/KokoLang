@@ -55,21 +55,6 @@ KLObject *klist_ctor(KLObject *, KLObject **argv, kbyte argc) {
 	return nullptr;
 }
 
-static KLObject *klist_add(KLObject *, KLObject **argv, kbyte argc) {
-	auto ptr = KLCAST(kl_sptr, argv[0]);
-	auto list = KASLIST(argv[0]);
-
-	list->reserve(argc - 1);
-	for (int i = 1; i < argc; ++i) {
-		KLObject *temp = nullptr;
-		klCopy(argv[i], &temp);
-		list->push_back(temp);
-	}
-
-	ptr->size = list->size();
-	return nullptr;
-}
-
 static KLObject *klist_tostr(KLObject *obj) {
 	std::stringstream ss;
 	auto size = KASARRSIZE(obj);
@@ -86,8 +71,8 @@ static KLObject *klist_tostr(KLObject *obj) {
 					ss << "list(" << KASARRSIZE(val) << "), ";
 				} else if (val->type == klarray_t) {
 					ss << "array(" << KASARRSIZE(val) << "), ";
-				} else if (val->type->toString) {
-					auto str = val->type->toString(val);
+				} else if (val->type->KLConversionFunctions.toString) {
+					auto str = val->type->KLConversionFunctions.toString(val);
 					ss.write(KASSTR(str), KASSTRSIZE(str)) << ", ";
 					klDeref(str);
 				}
@@ -104,8 +89,8 @@ static KLObject *klist_tostr(KLObject *obj) {
 				ss << "list(" << KASARRSIZE(val) << ")";
 			} else if (val->type == klarray_t) {
 				ss << "array(" << KASARRSIZE(val) << ")";
-			} else if (val->type->toString) {
-				auto str = val->type->toString(val);
+			} else if (val->type->KLConversionFunctions.toString) {
+				auto str = val->type->KLConversionFunctions.toString(val);
 				ss.write(KASSTR(str), KASSTRSIZE(str));
 				klDeref(str);
 			}
@@ -124,6 +109,20 @@ static KLObject *klist_tostr(KLObject *obj) {
 	str->value = buff;
 
 	return KLWRAP(str);
+}
+static KLObject *klist_add(KLObject *, KLObject **argv, kbyte argc) {
+	auto ptr = KLCAST(kl_sptr, argv[0]);
+	auto list = KASLIST(argv[0]);
+
+	list->reserve(argc - 1);
+	for (int i = 1; i < argc; ++i) {
+		KLObject *temp = nullptr;
+		klCopy(argv[i], &temp);
+		list->push_back(temp);
+	}
+
+	ptr->size = list->size();
+	return nullptr;
 }
 
 static KLObject *klist_addall(KLObject *, KLObject **argv, kbyte) {
@@ -160,7 +159,7 @@ static KLObject *klist_index(KLObject *, KLObject **argv, kbyte) {
 	auto obj = argv[1];
 	for (auto j = 0; j < size; ++j) {
 		auto comp = list->at(j);
-		if (obj ? obj->type->equal(obj, comp) : !comp) {
+		if (obj ? obj->type->KLComparerFunctions.equal(obj, comp) : !comp) {
 			temp_int.value = j;
 			break;
 		}
@@ -174,7 +173,7 @@ static KLObject *klist_lastindex(KLObject *, KLObject **argv, kbyte) {
 	auto obj = argv[1];
 	for (long j = size - 1; j >= 0; --j) {
 		auto comp = list->at(j);
-		if (obj ? obj->type->equal(obj, comp) : !comp) {
+		if (obj ? obj->type->KLComparerFunctions.equal(obj, comp) : !comp) {
 			temp_int.value = j;
 			break;
 		}
@@ -191,10 +190,10 @@ static KLObject *klist_contains(KLObject *s, KLObject **argv, kbyte argc) {
 static bool objectComparer(KLObject *i1, KLObject *i2) {
 	if (!i1) return true;
 	if (!i2) return false;
-	if (i1->type->comparer) {
-		return i1->type->comparer(i1, i2) == 1;
-	} else if (i2->type->comparer) {
-		return i2->type->comparer(i2, i1) == -1;
+	if (i1->type->KLComparerFunctions.comparer) {
+		return i1->type->KLComparerFunctions.comparer(i1, i2) == 1;
+	} else if (i2->type->KLComparerFunctions.comparer) {
+		return i2->type->KLComparerFunctions.comparer(i2, i1) == -1;
 	}
 	return false;
 }
@@ -293,7 +292,7 @@ static KLObject *klist_remove(KLObject *, KLObject **argv, kbyte) {
 	auto obj = argv[1];
 	auto i = 0;
 	for (auto ref: *list) {
-		if (obj ? obj->type->equal(obj, ref) : !ref) {
+		if (obj ? obj->type->KLComparerFunctions.equal(obj, ref) : !ref) {
 			// derefence the element before remove from list
 			klDeref(ref);
 			list->erase(list->begin() + i);
@@ -374,10 +373,11 @@ static void klist_add(KLObject *x, KLObject *y, KLObject **res) {
 	}
 }
 
-static void klist_mul(KLObject *x, KLObject *y, KLObject **res) {
+static KLObject* klist_mul(KLObject *x, KLObject *y) {
 	auto a = KASLIST(x);
 	if (y) {
-		if (y->type != klint_t && !y->type->toInt) throw runtime_error("can only multiply list with int");
+		if (y->type != klint_t && !y->type->KLConversionFunctions.toInt)
+			throw runtime_error("can only multiply list with int");
 
 		ksize size = 0;
 		GET_INT(size, y);
@@ -394,23 +394,23 @@ static void klist_mul(KLObject *x, KLObject *y, KLObject **res) {
 				}
 			}
 		}
-		klTransfer(&obj1, res);
-		return;
+		return obj1;
 	} else {
 		auto obj = klIns(kllist_t);
 		auto ptr = KLCAST(kl_sptr, obj);
 		ptr->value = new vector<KLObject *>();
 
-		klTransfer(&obj, res);
+		return obj;
 	}
 }
 
-static KLObject* klist_get(KLObject* obj, KLObject* index) {
+static KLObject *klist_get(KLObject *obj, KLObject *index) {
 	auto list = KASLIST(obj);
 	auto ptr = KLCAST(kl_sptr, obj);
 	kint i = 0;
-	if(index) {
-		if (index->type != klint_t && !index->type->toInt) throw runtime_error("can only index list with ints");
+	if (index) {
+		if (index->type != klint_t && !index->type->KLConversionFunctions.toInt)
+			throw runtime_error("can only index list with ints");
 		GET_INT(i, index);
 		if (i < 0 || i > ptr->size) {
 			throw runtime_error("Index out of bounds");
@@ -422,18 +422,19 @@ static KLObject* klist_get(KLObject* obj, KLObject* index) {
 	return val;
 }
 
-static void klist_set(KLObject* obj, KLObject* index, KLObject* value) {
+static void klist_set(KLObject *obj, KLObject *index, KLObject *value) {
 	auto list = KASLIST(obj);
 	auto ptr = KLCAST(kl_sptr, obj);
 	kint i = 0;
-	if(index) {
-		if (index->type != klint_t && !index->type->toInt) throw runtime_error("can only index list with ints");
+	if (index) {
+		if (index->type != klint_t && !index->type->KLConversionFunctions.toInt)
+			throw runtime_error("can only index list with ints");
 		GET_INT(i, index);
 		if (i < 0 || i > ptr->size) {
 			throw runtime_error("Index out of bounds");
 		}
 	}
-	vector<KLObject*>::reference val = list->at(i);
+	vector<KLObject *>::reference val = list->at(i);
 	klCopy(value, &val);
 }
 
@@ -454,17 +455,22 @@ void global_kllist_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"list",
-		0,
 		sizeof(kl_sptr),
+		0, 0,
 		karr_init,
 		klist_end,
 		KLWRAP(func),
-		klist_tostr,
-		REP7(nullptr)
-		klist_add,
-		REP1(nullptr)
-		klist_mul,
-		REP4(nullptr)
+		{
+			klist_tostr
+		},
+		{},
+		{
+			REP2(nullptr)
+			klist_mul
+		},
+		{},
+		{},
+		nullptr,
 		klist_get,
 		klist_set
 	};

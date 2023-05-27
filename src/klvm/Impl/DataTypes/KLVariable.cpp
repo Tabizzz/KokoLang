@@ -45,19 +45,18 @@ KLObject *klGetVariable(KLVariable *variable, KLObject *target) {
 	}
 }
 
-KLType* klvar_t = nullptr;
+KLType *klvar_t = nullptr;
 
-void global_klvar_t()
-{
-	klvar_t = new KLType {
+void global_klvar_t() {
+	klvar_t = new KLType{
 		{
 			nullptr,
 			0,
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"var",
-		0,
 		sizeof(KLVariable),
+		0, 0,
 		kvar_instantiator,
 		kvar_destructor
 	};

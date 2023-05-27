@@ -12,7 +12,7 @@ static void ktype_ins(KLObject *obj) {
 
 static void ktype_end(KLObject *obj) {
 	auto type = KLCAST(KLType, obj);
-	klDeref(type->constructor);
+	klDeref(type->KLManagingFunctions.constructor);
 	kliDerefAndDeleteMap(type->variables);
 	kliDerefAndDeleteMap(type->functions);
 	kliDerefAndDeleteMap(type->metadata);
@@ -34,8 +34,8 @@ void global_kltype_t() {
 			KLOBJ_FLAG_USE_DELETE | KLOBJ_FLAG_IGNORE_REF | KLOBJ_FLAG_NO_INSCOUNT
 		},
 		"type",
-		0,
 		sizeof(KLType),
+		0, 0,
 		ktype_ins,
 		ktype_end,
 		REP1(nullptr)

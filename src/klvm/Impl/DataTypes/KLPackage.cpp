@@ -131,10 +131,10 @@ void global_klpack_t()
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"pack",
-		0,
 		 sizeof(KLPackage),
+		 0, 0,
 		kpack_init,
-		kpack_end
+		kpack_end,
 	};
 	KLTYPE_METADATA(klpack_t)
 }

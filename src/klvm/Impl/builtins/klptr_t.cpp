@@ -50,40 +50,40 @@ static KLObject *kptr_tobit(KLObject *base) {
 	return KLBOOL(val ? true : false);
 }
 
-static void kptr_add(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kptr_add(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KLCAST(kbyte, KASPTR(first));
 		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toInt) {
-			auto frees = second->type->toInt(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
 			y = KASINT(frees);
 			klDeref(frees);
 		}
 		temp_ptr.value = x + y;
-		klCopy(KLWRAP(&temp_ptr), target);
 	} else {
-		klCopy(first, target);
+		temp_ptr.value = KASPTR(first);
 	}
+	return KLWRAP(&temp_ptr);
 }
 
-static void kptr_sub(KLObject *first, KLObject *second, KLObject **target) {
+static KLObject *kptr_sub(KLObject *first, KLObject *second) {
 	if (second) {
 		auto x = KLCAST(kbyte, KASPTR(first));
 		kint y = 0;
 		if (second->type == klint_t) {
 			y = KASINT(second);
-		} else if (second->type->toInt) {
-			auto frees = second->type->toInt(second);
+		} else if (second->type->KLConversionFunctions.toInt) {
+			auto frees = second->type->KLConversionFunctions.toInt(second);
 			y = KASINT(frees);
 			klDeref(frees);
 		}
 		temp_ptr.value = x - y;
-		klCopy(KLWRAP(&temp_ptr), target);
 	} else {
-		klCopy(first, target);
+		temp_ptr.value = KASPTR(first);
 	}
+	return KLWRAP(&temp_ptr);
 }
 
 void global_klptr_t() {
@@ -94,18 +94,24 @@ void global_klptr_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"ptr",
-		0,
-		 sizeof(kl_ptr),
-		kptr_init,
-		REP2(nullptr)
-		kptr_tostr,
-		REP2(nullptr)
-		kptr_tobit,
-		REP3(nullptr)
-		kptr_equal,
-		kptr_add,
-		kptr_sub,
-		REP3(nullptr)
+		sizeof(kl_ptr),
+		0, 0,
+		{
+			kptr_init
+		},
+		{
+			kptr_tostr,
+			REP2(nullptr)
+			kptr_tobit
+		},
+		{
+			nullptr,
+			kptr_equal
+		},
+		{
+			kptr_add,
+			kptr_sub
+		},
 		kptr_clone,
 		kptr_copy,
 	};

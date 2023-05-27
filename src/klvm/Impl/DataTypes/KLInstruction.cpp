@@ -28,8 +28,8 @@ void global_klinstruction_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"instruction",
-		0,
 		sizeof(KLInstruction),
+		0, 0,
 		kins_init,
 		kins_end
 	};

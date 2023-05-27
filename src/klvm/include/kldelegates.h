@@ -14,6 +14,8 @@ typedef int8_t (*klcomparer)				// comparator signature
 		(KLObject* first,
 		 KLObject* second);
 
+typedef ksize (*klsizeget)(KLObject*);      // get the size of an object
+
 typedef void (*klcopyop)				    // the copy operation
 		(KLObject* first,
 		 KLObject* second);
@@ -22,15 +24,10 @@ typedef KLObject* (*klbinaryop)				// a binary operator, receive two objects and
 		(KLObject* first,
 		 KLObject* second);
 
-typedef void (*klsetop)						// a ternary operator, receive three objects
+typedef void (*klsetop)						// a setter operator, receive three objects
 	(KLObject* first,
 	 KLObject* second,
 	 KLObject* value);
-
-typedef void (* klresoperation)             // binary operation with a result
-		(KLObject* first,
-		 KLObject* second,
-		 KLObject** target);
 
 typedef KLObject* (*klunaryop)				// a unary operation, receive one object and returns a new one
 		(KLObject* obj);

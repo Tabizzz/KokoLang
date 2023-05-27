@@ -34,8 +34,8 @@ static KLObject *karr_tostr(KLObject *obj) {
 					ss.write(KASSTR(val), KASSTRSIZE(val)) << ", ";
 				} else if (val->type == klarray_t) {
 					ss << "array(" << KASARRSIZE(val) << "), ";
-				} else if (val->type->toString) {
-					auto str = val->type->toString(val);
+				} else if (val->type->KLConversionFunctions.toString) {
+					auto str = val->type->KLConversionFunctions.toString(val);
 					ss.write(KASSTR(str), KASSTRSIZE(str)) << ", ";
 					klDeref(str);
 				}
@@ -49,8 +49,8 @@ static KLObject *karr_tostr(KLObject *obj) {
 				ss.write(KASSTR(val), KASSTRSIZE(val));
 			} else if (val->type == klarray_t) {
 				ss << "array(" << KASARRSIZE(val) << ")";
-			} else if (val->type->toString) {
-				auto str = val->type->toString(val);
+			} else if (val->type->KLConversionFunctions.toString) {
+				auto str = val->type->KLConversionFunctions.toString(val);
 				ss.write(KASSTR(str), KASSTRSIZE(str));
 				klDeref(str);
 			}
@@ -70,8 +70,8 @@ void global_klarray_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"array",
-		0,
 		sizeof(kl_sptr),
+		0, 0,
 		karr_init,
 		karr_end,
 		nullptr,

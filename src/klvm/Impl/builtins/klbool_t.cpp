@@ -40,14 +40,13 @@ void global_klbool_t() {
 			KLOBJ_FLAG_USE_DELETE
 		},
 		"bool",
-		0,
 		sizeof(kl_bool),
-		REP3(nullptr)
+		0,
+		KLTYPE_FLAG_NOINSTANCE,
+		{},
 		kbool_tostr,
 		REP2(nullptr)
-		klself_return,
-		REP(1, 3, nullptr)
-		KLTYPE_FLAG_NOINSTANCE,        // cannot instance
+		klself_return
 	};
 	KLTYPE_METADATA(klbool_t)
 

@@ -120,11 +120,11 @@ CAPI void klDefType(KLType *type) {
 		throw runtime_error("Types cant contain the following characters in name: '.', ':' and '%'");
 	}
 
-	if (type->constructor) {
-		if (type->constructor->type != klfunc_t) {
+	if (type->KLManagingFunctions.constructor) {
+		if (type->KLManagingFunctions.constructor->type != klfunc_t) {
 			throw runtime_error("A type constructor must be a function.");
 		}
-		auto func = KLCAST(KLFunction, type->constructor);
+		auto func = KLCAST(KLFunction, type->KLManagingFunctions.constructor);
 		if (func->margs == 0) {
 			throw runtime_error("Type constructors must have at least 1 argument.");
 		}
@@ -139,11 +139,11 @@ CAPI void klDefType(KLType *type) {
 	type->inscount = 0;
 
 	// set default tostring and equals
-	if (!type->toString) {
-		type->toString = defaultToStr;
+	if (!type->KLConversionFunctions.toString) {
+		type->KLConversionFunctions.toString = defaultToStr;
 	}
-	if (!type->equal) {
-		type->equal = defaultEquals;
+	if (!type->KLComparerFunctions.equal) {
+		type->KLComparerFunctions.equal = defaultEquals;
 	}
 }
 
@@ -160,9 +160,9 @@ void inline kliCopyA(KLObject **dest) {
  */
 void inline kliCopyB(KLObject *src, KLObject **dest) {
 	//                      | dont clone constants
-	if (src->type->clone && !src->rflags.constant) {
+	if (src->type->KLRefFunctions.clone && !src->rflags.constant) {
 		// no need to deref dest because is null
-		*dest = src->type->clone(src);
+		*dest = src->type->KLRefFunctions.clone(src);
 	} else {
 		// no need to deref dest because is null
 		klRef(src);
@@ -173,11 +173,11 @@ void inline kliCopyB(KLObject *src, KLObject **dest) {
 void inline kliCopyD(KLObject *src, KLObject **dest) {
 	if (!src->rflags.constant) {
 		//  | if the target is a constant we cant change the value with a copy, so we need to clone or move
-		if (!(*dest)->rflags.constant && (src->type == (*dest)->type) && src->type->copy) {
-			src->type->copy(src, *dest);
+		if (!(*dest)->rflags.constant && (src->type == (*dest)->type) && src->type->KLRefFunctions.copy) {
+			src->type->KLRefFunctions.copy(src, *dest);
 			return;
-		} else if (src->type->clone) {
-			auto temp = src->type->clone(src);
+		} else if (src->type->KLRefFunctions.clone) {
+			auto temp = src->type->KLRefFunctions.clone(src);
 			klDeref(*dest);
 			*dest = temp;
 			return;
@@ -208,9 +208,9 @@ CAPI void klClone(KLObject *src, KLObject **dest) {
 	} else if (src) {
 		// we can safely deref dest, if iss null nothing happens
 		klDeref(*dest);
-		if (src->type->clone) {
+		if (src->type->KLRefFunctions.clone) {
 			// no need to ref src, we are creating a new instance on clone.
-			*dest = src->type->clone(src);
+			*dest = src->type->KLRefFunctions.clone(src);
 		} else {
 			klRef(src);
 			*dest = src;
@@ -240,11 +240,11 @@ CAPI void klTransfer(KLObject **src, KLObject **dest) {
 		// - src and dest have the same type
 		// - the type support copy
 		if (!val->rflags.constant && *dest && !(*dest)->rflags.constant && (val->type == (*dest)->type) &&
-		    val->type->copy) {
-			val->type->copy(val, *dest);
+		    val->type->KLRefFunctions.copy) {
+			val->type->KLRefFunctions.copy(val, *dest);
 			klDeref(val);
-		} else if (!val->rflags.constant && val->refs > 1 && val->type->clone) {
-			auto temp = val->type->clone(val);
+		} else if (!val->rflags.constant && val->refs > 1 && val->type->KLRefFunctions.clone) {
+			auto temp = val->type->KLRefFunctions.clone(val);
 			klDeref(*dest);
 			klDeref(val);
 			*dest = temp;

@@ -28,8 +28,8 @@ using namespace std;
 
 #define GET_INT(x, y) if (y->type == klint_t) { \
 x = KASINT(y);                                  \
-} else if (y->type->toInt) {                    \
-auto temp##x = y->type->toInt(y);               \
+} else if (y->type->KLConversionFunctions.toInt) {                    \
+auto temp##x = y->type->KLConversionFunctions.toInt(y);               \
 x = KASINT(temp##x);                            \
 klDeref(temp##x);}
 
