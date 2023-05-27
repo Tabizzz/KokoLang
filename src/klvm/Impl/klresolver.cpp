@@ -1,12 +1,10 @@
 #include "klvm_internal.h"
 #include "klresolver.h"
 
-klresolver resolver;
-
-static inline void split(vector<string> &vector, const string &source, char separator) {
+static inline void split(vector<string> &vector, const string &source) {
 	string::size_type start = 0;
 	string::size_type index;
-	while ((index = source.find(separator, start)) != string::npos) {
+	while ((index = source.find(46, start)) != string::npos) {
 		vector.push_back(source.substr(start, index));
 		start = index + 1;
 	}
@@ -22,7 +20,7 @@ static inline T mapfind(unordered_map<string, T> *map, string &find) {
 static inline KLObject *internalPackageResolver(const string &str) {
 	if (str == "global") return KLWRAP(klGlobalPackage());
 	vector<string> list;
-	split(list, str, '.');
+	split(list, str);
 
 	KLPackage *pack = nullptr;
 
@@ -52,6 +50,7 @@ static inline KLObject *defaultTypeResolver(const KLObject *fullname,
 		// fisrt check on the current pack.
 		auto var = mapfind(package->types, str);
 		if (var) return var;
+
 
 		// check on the global pack
 		var = mapfind(klGlobalPackage()->types, str);
@@ -133,7 +132,7 @@ static inline KLObject *defaultVariableResolver(const KLObject *fullname,
 	}
 }
 
-static KLObject *defaultResolver(const KLObject *fullname,
+KLObject *klDefaultResolver(const KLObject *fullname,
                                  const KLPackage *package,
                                  [[maybe_unused]] const KLType *type,
                                  [[maybe_unused]] const KLFunction *function,
@@ -151,16 +150,4 @@ static KLObject *defaultResolver(const KLObject *fullname,
 		return defaultTypeResolver(fullname, package);
 	}
 	return nullptr;
-}
-
-void klRestoreResolver() {
-	resolver = defaultResolver;
-}
-
-void klSetResolver(klresolver toset) {
-	resolver = toset;
-}
-
-klresolver klGetResolver() {
-	return resolver;
 }

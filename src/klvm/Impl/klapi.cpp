@@ -27,7 +27,10 @@ CAPI void klInit() {
 		klConfig.installDir = currentPath.c_str();
 	}
 
-	klRestoreResolver();
+	klState = new KLState{
+		klDefaultResolver,
+		klGetThreadState()
+	};
 
 	globalPackage = kliBuildGlobalPackage();
 
@@ -60,6 +63,8 @@ CAPI void klEnd() {
 	klinstruction_t = nullptr;
 
 	std::memset(&klConfig, 0, sizeof(KLConfig));
+	delete klState;
+	klState = nullptr;
 }
 
 CAPI KLPackage *klGlobalPackage() {

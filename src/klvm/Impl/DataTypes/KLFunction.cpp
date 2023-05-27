@@ -120,7 +120,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 			case KLOpcode::get:
 				if (instruction->operands[0]->type == klstring_t) {
 					auto current = instruction->operands[0];
-					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_VARIABLE | flag);
+					auto toset = klState->resolver(current, package, type, func, KLRESOLVE_VARIABLE | flag);
 					if (toset)
 						klMove(toset, &instruction->operands[0]);
 				}
@@ -134,7 +134,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 			case KLOpcode::ins:
 				if (instruction->operands[0]->type == klstring_t) {
 					auto current = instruction->operands[0];
-					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_TYPE | flag);
+					auto toset = klState->resolver(current, package, type, func, KLRESOLVE_TYPE | flag);
 					if (toset)
 						klMove(toset, &instruction->operands[0]);
 				}
@@ -142,7 +142,7 @@ void klBuildFunction(KLPackage *package, KLType *type, KLFunction *func) {
 			case KLOpcode::call:
 				if (instruction->operands[0]->type == klstring_t) {
 					auto current = instruction->operands[0];
-					auto toset = klGetResolver()(current, package, type, func, KLRESOLVE_FUNCTION | flag);
+					auto toset = klState->resolver(current, package, type, func, KLRESOLVE_FUNCTION | flag);
 					if (toset)
 						klMove(toset, &instruction->operands[0]);
 				}

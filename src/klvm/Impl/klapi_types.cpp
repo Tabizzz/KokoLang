@@ -63,8 +63,6 @@ CAPI void klDestroy(KLObject *object) { // NOLINT(misc-no-recursion)
 }
 
 static inline KLObject *klInvokeCore(KLFunction *func, KLObject **argv, kbyte argc) {
-	// implement call stack:
-	// add the function to the call stack
 	if (argc < func->margs) {
 		throw runtime_error(string_format("Error calling function %s, expected at least %i args but received %i",
 										  KSTRING(func->name).c_str(),
@@ -78,7 +76,11 @@ static inline KLObject *klInvokeCore(KLFunction *func, KLObject **argv, kbyte ar
 										  argc
 		));
 	}
-	return func->invokable(KLWRAP(func), argv, argc);
+	auto st = klGetThreadState();
+	st->callStack.push_back(func);
+	auto ret = func->invokable(KLWRAP(func), argv, argc);
+	st->callStack.pop_back();
+	return ret;
 }
 
 CAPI KLObject *klNew(KLType *type, KLObject **args, kbyte argc) {

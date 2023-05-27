@@ -87,10 +87,9 @@ CAPI int klRunPackage(KLPackage* klPackage, int argc, const char* argv[]) {
 		auto find = klPackage->functions->find("main");
 		if(find != klPackage->functions->end())
 		{
-			main = KLCAST(KLFunction, find->second);
 			auto dev = 0;
 			auto args = argstoobject(argv, argc);
-			auto ret = main->invokable(find->second, args, argc);
+			auto ret = klInvoke(find->second, args, argc);
 
 			// release allocated args
 			for (int i = 0; i < argc; ++i) {
