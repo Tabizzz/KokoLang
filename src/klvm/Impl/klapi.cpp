@@ -29,10 +29,16 @@ CAPI void klInit() {
 
 	klState = new KLState{
 		klDefaultResolver,
-		klGetThreadState()
+		klGetThreadState(),
+		nullptr,
+		&cout,
+		&cin,
+		&cerr,
+		&clog
 	};
 
 	globalPackage = kliBuildGlobalPackage();
+	kliCreateMetaType();
 
 	// we need to set the name after types definition
 	globalPackage->name = KLSTR("global");
@@ -63,6 +69,7 @@ CAPI void klEnd() {
 	klinstruction_t = nullptr;
 
 	std::memset(&klConfig, 0, sizeof(KLConfig));
+	delete klState->metaType;
 	delete klState;
 	klState = nullptr;
 }

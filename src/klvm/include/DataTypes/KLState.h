@@ -18,11 +18,15 @@ struct CPPAPI KLThreadState {
 struct CPPAPI KLState {
 	klresolver resolver;
 	KLThreadState* mainThreadState;
+	KLType* metaType;
+	decltype(std::cout)* out;
+	decltype(std::cin)* in;
+	decltype(std::cerr)* err;
+	decltype(std::clog)* log;
 };
 
 #ifdef __cplusplus
 }
-
 #endif
 
 CAPI KLState* klState;

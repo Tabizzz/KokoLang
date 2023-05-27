@@ -5,6 +5,31 @@
 
 KLConfig klConfig;
 
+KLObject *outImpl(KLObject *, KLObject **argv, kbyte) {
+	auto val = argv[0];
+	*klState->out << val << endl;
+	return nullptr;
+}
+
+KLObject *errImpl(KLObject *, KLObject **argv, kbyte) {
+	auto val = argv[0];
+	*klState->err << val;
+	klState->err->put(klState->err->widen('\n'));
+	return nullptr;
+}
+
+KLObject *logImpl(KLObject *, KLObject **argv, kbyte) {
+	auto val = argv[0];
+	*klState->log << val << endl;
+	return nullptr;
+}
+
+KLObject *inImpl(KLObject *, KLObject **, kbyte) {
+	string str;
+	*klState->in >> str;
+	return KLSTR(str);
+}
+
 KLPackage *kliBuildGlobalPackage() {
 	auto dev = new KLPackage();
 	dev->klbase.refs = 1;
@@ -36,6 +61,15 @@ KLPackage *kliBuildGlobalPackage() {
 	ADD_TYPE(klmap_t);
 
 	ADD_FUNTIONS(klstring_t)
+
+#pragma region global functions
+
+	ADD_FUNCTION(out, dev, outImpl, 1, 1)
+	ADD_FUNCTION(err, dev, errImpl, 1, 1)
+	ADD_FUNCTION(log, dev, logImpl, 1, 1)
+	ADD_FUNCTION(in, dev, inImpl, 0, 0)
+
+#pragma endregion
 
 	return dev;
 }

@@ -43,6 +43,8 @@ unordered_map<string, KLPackage *> *kliRootPackages();
 
 KLPackage *kliBuildGlobalPackage();
 
+void kliCreateMetaType();
+
 template<typename ... Args>
 std::string string_format(const std::string &format, Args ... args) {
 	int size_s = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
