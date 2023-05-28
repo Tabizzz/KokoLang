@@ -14,6 +14,7 @@
 #include <cmath>
 
 #if defined _WIN32 || defined __CYGWIN__
+#define WIN
 #ifdef klvm_EXPORTS
 #define EXPORT __declspec(dllexport)
 #elif defined KOKOLANG_STATIC

@@ -1,6 +1,6 @@
+#include "global.h"
 #include <map>
 #include <sstream>
-#include "global.h"
 
 #define KASMAP(x) KLCAST(map_t , KLCAST(kl_sptr, x)->value)
 
