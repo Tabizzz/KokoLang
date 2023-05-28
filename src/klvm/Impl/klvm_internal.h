@@ -33,9 +33,11 @@ auto temp##x = y->type->KLConversionFunctions.toInt(y);               \
 x = KASINT(temp##x);                            \
 klDeref(temp##x);}
 
-extern kl_int temp_int;
+kl_int& temp_int();
 
-extern kl_float temp_float;
+kl_float& temp_float();
+
+kl_string& temp_str();
 
 void kliDerefAndDeleteMap(MetaMap *pMap);
 

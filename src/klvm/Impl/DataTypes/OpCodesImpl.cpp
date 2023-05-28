@@ -128,8 +128,8 @@ static void opcode_sizeof(const KLObject *caller, KLCall &call, KLObject *argv[]
 			size = static_cast<kint>(t->type->size);
 		}
 		size -= sizeof(KLObject);
-		temp_int.value = size;
-		klCopy(KLWRAP(&temp_int), &ref);
+		temp_int().value = size;
+		klCopy(KLWRAP(&temp_int()), &ref);
 	} else {
 		klMove(nullptr, &ref);
 	}
@@ -265,13 +265,13 @@ static void opcode_arl(const KLObject *caller, KLCall &call, KLObject *argv[], s
 	GETREG(obj)
 
 	if (!obj) return;
-	temp_int.value = 0;
+	temp_int().value = 0;
 	if (obj->type == klstring_t) {
-		temp_int.value = KASSTRSIZE(obj);
+		temp_int().value = KASSTRSIZE(obj);
 	} else if (obj->type->size >= sizeof(kl_sptr)) {
-		temp_int.value = KASARRSIZE(obj);
+		temp_int().value = KASARRSIZE(obj);
 	}
-	klCopy(KLWRAP(&temp_int), &ref);
+	klCopy(KLWRAP(&temp_int()), &ref);
 }
 
 static void opcode_arr(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
@@ -333,9 +333,9 @@ static void opcode_aloc(const KLObject *caller, KLCall &call, KLObject *argv[], 
 
 static void opcode_argc(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {
 	REGORRET(argv[0])
-	temp_int.value = call.argc;
+	temp_int().value = call.argc;
 	vecref regis = call.st.at(reg);
-	klCopy(KLWRAP(&temp_int), &regis);
+	klCopy(KLWRAP(&temp_int()), &regis);
 }
 
 static void opcode_ivk(const KLObject *caller, KLCall &call, KLObject *argv[], size_t argc) {

@@ -24,7 +24,7 @@ static inline KLObject *internalPackageResolver(const string &str) {
 
 	KLPackage *pack = nullptr;
 
-	for (auto p: list) {
+	for (auto& p: list) {
 		if (pack == nullptr) {
 			pack = mapfind(kliRootPackages(), p);
 			if (pack == nullptr) return nullptr;

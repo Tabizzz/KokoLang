@@ -160,11 +160,11 @@ static KLObject *klist_index(KLObject *, KLObject **argv, kbyte) {
 	for (auto j = 0; j < size; ++j) {
 		auto comp = list->at(j);
 		if (obj ? obj->type->KLComparerFunctions.equal(obj, comp) : !comp) {
-			temp_int.value = j;
+			temp_int().value = j;
 			break;
 		}
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *klist_lastindex(KLObject *, KLObject **argv, kbyte) {
@@ -174,17 +174,17 @@ static KLObject *klist_lastindex(KLObject *, KLObject **argv, kbyte) {
 	for (long j = size - 1; j >= 0; --j) {
 		auto comp = list->at(j);
 		if (obj ? obj->type->KLComparerFunctions.equal(obj, comp) : !comp) {
-			temp_int.value = j;
+			temp_int().value = j;
 			break;
 		}
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *klist_contains(KLObject *s, KLObject **argv, kbyte argc) {
-	// this call sets temp_int
+	// this call sets temp_int()
 	klist_index(s, argv, argc);
-	return KLBOOL(temp_int.value != -1);
+	return KLBOOL(temp_int().value != -1);
 }
 
 static bool objectComparer(KLObject *i1, KLObject *i2) {

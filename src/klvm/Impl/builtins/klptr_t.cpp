@@ -4,10 +4,10 @@
 
 KLType *klptr_t = nullptr;
 
-kl_ptr temp_ptr = {
+thread_local kl_ptr temp_ptr = {
 	KLObject{
-		nullptr,
-		1,
+		klptr_t,
+		2,
 		KLOBJ_FLAG_IGNORE_REF
 	},
 	nullptr
@@ -116,6 +116,4 @@ void global_klptr_t() {
 		kptr_copy,
 	};
 	KLTYPE_METADATA(klptr_t)
-
-	temp_ptr.klbase.type = klptr_t;
 }

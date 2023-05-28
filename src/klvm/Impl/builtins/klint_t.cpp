@@ -1,13 +1,17 @@
 #include "global.h"
 
-kl_int temp_int = {
+thread_local kl_int tmp_int{
 	KLObject{
-		nullptr,
+		klint_t,
 		2,
 		KLOBJ_FLAG_IGNORE_REF
 	},
 	0
 };
+
+kl_int &temp_int() {
+	return tmp_int;
+}
 
 KLType *klint_t = nullptr;
 
@@ -92,8 +96,8 @@ static KLObject *klint_tobit(KLObject *base) {
 static KLObject *kint_add(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opAdd(KLWRAP(&temp_float), second);
+			temp_float().value = KASINT(first);
+			return klfloat_t->KLNumericFunctions.opAdd(KLWRAP(&temp_float()), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -104,18 +108,18 @@ static KLObject *kint_add(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x + y;
+		temp_int().value = x + y;
 	} else {
-		temp_int.value = KASINT(first);
+		temp_int().value = KASINT(first);
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_sub(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opSub(KLWRAP(&temp_float), second);
+			temp_float().value = KASINT(first);
+			return klfloat_t->KLNumericFunctions.opSub(KLWRAP(&temp_float()), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -126,11 +130,11 @@ static KLObject *kint_sub(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x - y;
+		temp_int().value = x - y;
 	} else {
-		temp_int.value = KASINT(first);
+		temp_int().value = KASINT(first);
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_mul(KLObject *first, KLObject *second) {
@@ -147,18 +151,18 @@ static KLObject *kint_mul(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x * y;
+		temp_int().value = x * y;
 	} else {
-		temp_int.value = 0;
+		temp_int().value = 0;
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_div(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opDiv(KLWRAP(&temp_float), second);
+			temp_float().value = KASINT(first);
+			return klfloat_t->KLNumericFunctions.opDiv(KLWRAP(&temp_float()), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -171,8 +175,8 @@ static KLObject *kint_div(KLObject *first, KLObject *second) {
 		}
 		// throw before hardware error
 		if (y == 0) throw logic_error("Division by 0");
-		temp_int.value = x / y;
-		return KLWRAP(&temp_int);
+		temp_int().value = x / y;
+		return KLWRAP(&temp_int());
 	} else {
 		throw logic_error("Division by 0");
 	}
@@ -181,8 +185,8 @@ static KLObject *kint_div(KLObject *first, KLObject *second) {
 static KLObject *kint_mod(KLObject *first, KLObject *second) {
 	if (second) {
 		if (second->type == klfloat_t) {
-			temp_float.value = KASINT(first);
-			return klfloat_t->KLNumericFunctions.opMod(KLWRAP(&temp_float), second);
+			temp_float().value = KASINT(first);
+			return klfloat_t->KLNumericFunctions.opMod(KLWRAP(&temp_float()), second);
 		}
 		auto x = KASINT(first);
 		kint y = 0;
@@ -195,8 +199,8 @@ static KLObject *kint_mod(KLObject *first, KLObject *second) {
 		}
 		// throw before hardware error
 		if (y == 0) throw logic_error("Division by 0");
-		temp_int.value = x % y;
-		return KLWRAP(&temp_int);
+		temp_int().value = x % y;
+		return KLWRAP(&temp_int());
 	} else {
 		throw logic_error("Division by 0");
 	}
@@ -204,23 +208,23 @@ static KLObject *kint_mod(KLObject *first, KLObject *second) {
 
 // int pow do not exist, we call float pow so this always return a float
 static KLObject *kint_pow(KLObject *first, KLObject *second) {
-	temp_float.value = KASINT(first);
-	return klfloat_t->KLNumericFunctions.opPow(KLWRAP(&temp_float), second);
+	temp_float().value = KASINT(first);
+	return klfloat_t->KLNumericFunctions.opPow(KLWRAP(&temp_float()), second);
 }
 
 static KLObject *kint_inc(KLObject *first) {
-	temp_int.value = KASINT(first) + 1;
-	return KLWRAP(&temp_int);
+	temp_int().value = KASINT(first) + 1;
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_dec(KLObject *first) {
-	temp_int.value = KASINT(first) - 1;
-	return KLWRAP(&temp_int);
+	temp_int().value = KASINT(first) - 1;
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_bit(KLObject *first) {
-	temp_int.value = ~KASINT(first);
-	return KLWRAP(&temp_int);
+	temp_int().value = ~KASINT(first);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_lshift(KLObject *first, KLObject *second) {
@@ -234,11 +238,11 @@ static KLObject *kint_lshift(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x << y;
+		temp_int().value = x << y;
 	} else {
-		temp_int.value = KASINT(first);
+		temp_int().value = KASINT(first);
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_rshift(KLObject *first, KLObject *second) {
@@ -252,11 +256,11 @@ static KLObject *kint_rshift(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x << y;
+		temp_int().value = x << y;
 	} else {
-		temp_int.value = KASINT(first);
+		temp_int().value = KASINT(first);
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_and(KLObject *first, KLObject *second) {
@@ -270,11 +274,11 @@ static KLObject *kint_and(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x & y;
+		temp_int().value = x & y;
 	} else {
-		temp_int.value = 0;
+		temp_int().value = 0;
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_or(KLObject *first, KLObject *second) {
@@ -288,11 +292,11 @@ static KLObject *kint_or(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x | y;
+		temp_int().value = x | y;
 	} else {
-		temp_int.value = KASINT(first);
+		temp_int().value = KASINT(first);
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kint_xor(KLObject *first, KLObject *second) {
@@ -306,11 +310,11 @@ static KLObject *kint_xor(KLObject *first, KLObject *second) {
 			y = KASINT(frees);
 			klDeref(frees);
 		}
-		temp_int.value = x ^ y;
+		temp_int().value = x ^ y;
 	} else {
-		temp_int.value = KASINT(first) ^ 0;
+		temp_int().value = KASINT(first) ^ 0;
 	}
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 void global_klint_t() {
@@ -379,6 +383,4 @@ void global_klint_t() {
 	};
 
 	KLTYPE_METADATA(klreg_t)
-
-	temp_int.klbase.type = klint_t;
 }

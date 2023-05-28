@@ -1,9 +1,21 @@
 #include <cstring>
-#include <functional>
 #include "global.h"
-#include <algorithm>
 
 #define STR_FUNC(x) func_##x->name->flags = KLOBJ_FLAG_NO_INSCOUNT; klstring_t->inscount--;
+
+thread_local kl_string tmp_str = {
+	KLObject{
+		klstring_t,
+		2,
+		KLOBJ_FLAG_IGNORE_REF
+	},
+	nullptr,
+	0
+};
+
+kl_string &temp_str() {
+	return tmp_str;
+}
 
 KLType *klstring_t = nullptr;
 
@@ -40,9 +52,10 @@ static int8_t kstring_compare(KLObject *x, KLObject *y) {
 		}
 	}
 
-	int8_t dev = strncmp(second->value, first->value,
-	                     min(first->size, second->size)); // NOLINT(cppcoreguidelines-narrowing-conversions)
-	dev = std::clamp(dev, static_cast<int8_t>(-1), static_cast<int8_t>(1));
+	auto tmp = strncmp(second->value, first->value, min(first->size, second->size));
+	int8_t dev = 0;
+	if (tmp < 0) dev = -1;
+	else if (tmp > 0) dev = 1;
 
 	if (dev == 0 && first->size != second->size) {
 		if (first->size < second->size)
@@ -90,7 +103,7 @@ static int8_t kstring_equals(KLObject *x, KLObject *y) {
 	return dev;
 }
 
-static KLObject* kstring_add(KLObject *x, KLObject *y) {
+static KLObject *kstring_add(KLObject *x, KLObject *y) {
 	auto first = KLCAST(kl_string, x);
 	kl_string *second = nullptr;
 	bool flag = false;
@@ -103,20 +116,20 @@ static KLObject* kstring_add(KLObject *x, KLObject *y) {
 		}
 	}
 	if (!second) {
-		KLObject* tmp = nullptr;
+		KLObject *tmp = nullptr;
 		// second is null, so the resulting string is equals to first
 		klClone(x, &tmp);
 		return tmp;
 	}
 
 	if (first->size == 0) {
-		KLObject* tmp = nullptr;
+		KLObject *tmp = nullptr;
 		// first is empty, so directly clone second
 		klClone(KLWRAP(second), &tmp);
 		if (flag) klDeref(KLWRAP(second));
 		return tmp;
 	} else if (second->size == 0) {
-		KLObject* tmp = nullptr;
+		KLObject *tmp = nullptr;
 		// second is empty, so directly clone first
 		klClone(x, &tmp);
 		if (flag) klDeref(KLWRAP(second));
@@ -183,15 +196,15 @@ static KLObject *kstring_find(KLObject *, KLObject **argv, kbyte argc) {
 			size = KASSTRSIZE(temp);
 		}
 	}
-	temp_int.value = isSubstring(find, str->value, size, str->size, start, end);
+	temp_int().value = isSubstring(find, str->value, size, str->size, start, end);
 	klDeref(temp);
-	return KLWRAP(&temp_int);
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kstring_contains(KLObject *s, KLObject **argv, kbyte argc) {
-	// this call sets temp_int
+	// this call sets temp_int()
 	kstring_find(s, argv, argc);
-	return KLBOOL(temp_int.value != -1);
+	return KLBOOL(temp_int().value != -1);
 }
 
 static KLObject *kstring_count(KLObject *, KLObject **argv, kbyte argc) {
@@ -222,8 +235,8 @@ static KLObject *kstring_count(KLObject *, KLObject **argv, kbyte argc) {
 	}
 
 	klDeref(temp);
-	temp_int.value = count;
-	return KLWRAP(&temp_int);
+	temp_int().value = count;
+	return KLWRAP(&temp_int());
 }
 
 static KLObject *kstring_startswith(KLObject *, KLObject **argv, kbyte) {

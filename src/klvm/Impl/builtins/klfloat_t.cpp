@@ -5,14 +5,18 @@ KLType *klfloat_t = nullptr;
 
 // static object used to temporary store the value of the operations
 
-kl_float temp_float = {
+thread_local kl_float tmp_float = {
 	KLObject{
-		nullptr,
+		klfloat_t,
 		2,
 		KLOBJ_FLAG_IGNORE_REF
 	},
 	0
 };
+
+kl_float &temp_float() {
+	return tmp_float;
+}
 
 static void kfloat_init(KLObject *obj) {
 	auto ptr = KLCAST(kl_float, obj);
@@ -105,11 +109,11 @@ static KLObject *kfloat_add(KLObject *first, KLObject *second) {
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
-		temp_float.value = x + y;
+		temp_float().value = x + y;
 	} else {
-		temp_float.value = KASFLOAT(first);
+		temp_float().value = KASFLOAT(first);
 	}
-	return KLWRAP(&temp_float);
+	return KLWRAP(&temp_float());
 }
 
 static KLObject *kfloat_sub(KLObject *first, KLObject *second) {
@@ -125,11 +129,11 @@ static KLObject *kfloat_sub(KLObject *first, KLObject *second) {
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
-		temp_float.value = x - y;
+		temp_float().value = x - y;
 	} else {
-		temp_float.value = KASFLOAT(first);
+		temp_float().value = KASFLOAT(first);
 	}
-	return KLWRAP(&temp_float);
+	return KLWRAP(&temp_float());
 }
 
 static KLObject *kfloat_mul(KLObject *first, KLObject *second) {
@@ -145,11 +149,11 @@ static KLObject *kfloat_mul(KLObject *first, KLObject *second) {
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
-		temp_float.value = x * y;
+		temp_float().value = x * y;
 	} else {
-		temp_float.value = 0;
+		temp_float().value = 0;
 	}
-	return KLWRAP(&temp_float);
+	return KLWRAP(&temp_float());
 }
 
 static KLObject *kfloat_div(KLObject *first, KLObject *second) {
@@ -167,8 +171,8 @@ static KLObject *kfloat_div(KLObject *first, KLObject *second) {
 		}
 		// throw before hardware error
 		if (y == 0) throw logic_error("Division by 0");
-		temp_float.value = x / y;
-		return KLWRAP(&temp_float);
+		temp_float().value = x / y;
+		return KLWRAP(&temp_float());
 
 	} else {
 		throw logic_error("Division by 0");
@@ -190,8 +194,8 @@ static KLObject *kfloat_mod(KLObject *first, KLObject *second) {
 		}
 		// throw before hardware error
 		if (y == 0) throw logic_error("Division by 0");
-		temp_float.value = fmod(x, y);
-		return KLWRAP(&temp_float);
+		temp_float().value = fmod(x, y);
+		return KLWRAP(&temp_float());
 	} else {
 		throw logic_error("Division by 0");
 	}
@@ -210,21 +214,21 @@ static KLObject *kfloat_pow(KLObject *first, KLObject *second) {
 			y = KASFLOAT(frees);
 			klDeref(frees);
 		}
-		temp_float.value = std::pow(x, y);
+		temp_float().value = std::pow(x, y);
 	} else {
-		temp_float.value = 1;
+		temp_float().value = 1;
 	}
-	return KLWRAP(&temp_float);
+	return KLWRAP(&temp_float());
 }
 
 static KLObject *kfloat_inc(KLObject *first) {
-	temp_float.value = KASFLOAT(first) + 1;
-	return KLWRAP(&temp_float);
+	temp_float().value = KASFLOAT(first) + 1;
+	return KLWRAP(&temp_float());
 }
 
 static KLObject *kfloat_dec(KLObject *first) {
-	temp_float.value = KASFLOAT(first) - 1;
-	return KLWRAP(&temp_float);
+	temp_float().value = KASFLOAT(first) - 1;
+	return KLWRAP(&temp_float());
 }
 
 void global_klfloat_t() {
@@ -263,5 +267,5 @@ void global_klfloat_t() {
 	};
 	KLTYPE_METADATA(klfloat_t)
 
-	temp_float.klbase.type = klfloat_t;
+	temp_float().klbase.type = klfloat_t;
 }
