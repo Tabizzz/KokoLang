@@ -15,7 +15,13 @@ thread_local kl_float tmp_float = {
 };
 
 kl_float &temp_float() {
+#ifdef WIN
+	auto& dev = tmp_float;
+	dev.klbase.type = klfloat_t;
+	return dev;
+#else
 	return tmp_float;
+#endif
 }
 
 static void kfloat_init(KLObject *obj) {

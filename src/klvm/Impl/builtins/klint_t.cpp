@@ -10,7 +10,13 @@ thread_local kl_int tmp_int{
 };
 
 kl_int &temp_int() {
+#ifdef WIN
+	auto& dev = tmp_int;
+	dev.klbase.type = klint_t;
+	return dev;
+#else
 	return tmp_int;
+#endif
 }
 
 KLType *klint_t = nullptr;

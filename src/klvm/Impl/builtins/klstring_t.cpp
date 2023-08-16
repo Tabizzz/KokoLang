@@ -1,5 +1,5 @@
-#include <cstring>
 #include "global.h"
+#include <cstring>
 
 #define STR_FUNC(x) func_##x->name->flags = KLOBJ_FLAG_NO_INSCOUNT; klstring_t->inscount--;
 
@@ -14,7 +14,13 @@ thread_local kl_string tmp_str = {
 };
 
 kl_string &temp_str() {
+#ifdef WIN
+	auto& dev = tmp_str;
+	dev.klbase.type = klstring_t;
+	return dev;
+#else
 	return tmp_str;
+#endif
 }
 
 KLType *klstring_t = nullptr;
